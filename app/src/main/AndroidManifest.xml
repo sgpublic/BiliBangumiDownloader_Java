@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,InnerclassSeparator"
         tools:targetApi="q">
-        <activity android:name=".License"></activity>
+        <activity android:name=".License" />
         <activity android:name=".Search" />
         <activity android:name=".LoginWeb" />
         <activity android:name=".Explore" />
@@ -46,5 +46,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

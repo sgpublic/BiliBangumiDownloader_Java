@@ -80,8 +80,11 @@
 
     <string name="title_download_doing">正在获取链接</string>
     <string name="title_download_alert_dir">您当前设置的目录无法访问</string>
-    <string name="text_download_alert_dir">您当前设置的目录无法访问，已为您重置为默认目录。%1$s</string>
-    <string name="text_download_alert_dir_p">\n在 Android 9 及以上的版本，由于系统限制，应用无法访问其他应用的私有目录，因此哔哩番剧将默认把番剧下载至"Download"目录，建议您将哔哩哔哩客户端中的缓存目录同样设置为此目录。</string>
+    <string name="text_download_alert_dir">您当前设置的目录无法访问，已为您重置为默认目录。\n%1$s</string>
+    <string name="title_download_alert_dir_p">读写权限受限</string>
+    <string name="text_download_alert_dir_p">在 Android 9 及以上的版本，由于系统限制，应用无法访问其他应用的私有目录，因此哔哩番剧将默认把番剧下载至"Download"目录，建议您将哔哩哔哩客户端中的缓存目录同样设置为此目录。</string>
+    <string name="text_download_alert_dir_positive">我知道了</string>
+    <string name="text_download_alert_dir_negative">不再提示</string>
 
     <string name="title_about_update">检查更新</string>
     <string name="title_about_developer">开发者</string>

@@ -17,7 +17,7 @@ public class APIHelper {
     private static final String TAG = "APIHelper";
 
     private static final String build = "5442100";
-    private static final String android_key = "4409e2ce8ffd12b8";
+    private static final String android_key = "1d8b6e7d45233436";
     private static final String platform = "android";
 
     private static final int METHOD_GET = 0;
@@ -147,12 +147,35 @@ public class APIHelper {
         return onReturn(url, METHOD_GET, arg_array, header_array, false);
     }
 
-    Call getSeasonInfoRequest(long sid) {
-        String url = "https://bangumi.bilibili.com/view/web_api/season";
+    Call getSeasonInfoAPPRequest(long sid) {
+        //String url = "https://bangumi.bilibili.com/view/web_api/season";
+        String url = "https://api.bilibili.com/pgc/view/app/season";
         String[][] arg_array = new String[][]{
-                {"season_id", String.valueOf(sid)}
+                {"access_key", access_token},
+                {"appkey", android_key},
+                {"build", build},
+                {"c_locale", "hk_CN"},
+                {"platform", platform},
+                {"s_locale", "hk_CN"},
+                {"season_id", String.valueOf(sid)},
+                {"ts", getTS()},
         };
-        return onReturn(url, METHOD_GET, arg_array, false);
+        return onReturn(url, METHOD_GET, arg_array, true);
+    }
+
+    Call getSeasonInfoWebRequest(long sid) {
+        String url = "https://api.bilibili.com/pgc/view/web/season";
+        String[][] arg_array = new String[][]{
+                {"access_key", access_token},
+                {"appkey", android_key},
+                {"build", build},
+                {"c_locale", "hk_CN"},
+                {"platform", platform},
+                {"s_locale", "hk_CN"},
+                {"season_id", String.valueOf(sid)},
+                {"ts", getTS()},
+        };
+        return onReturn(url, METHOD_GET, arg_array, true);
     }
 
     Call getEpisodeOfficialRequest(long cid, int qn) {
@@ -298,7 +321,7 @@ public class APIHelper {
         }
 
         private String getSign(String content) {
-            content = content + "59b43e04ad6965f34319062b478f83dd";
+            content = content + "560c52ccd288fed045859ed18bffd973";
             byte[] hash;
             try {
                 hash = MessageDigest.getInstance("MD5").digest(content.getBytes());

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -19,7 +20,6 @@ import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
 
 public class Welcome extends BaseActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

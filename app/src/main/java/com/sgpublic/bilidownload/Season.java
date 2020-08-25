@@ -1,7 +1,9 @@
 package com.sgpublic.bilidownload;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -380,7 +382,7 @@ public class Season extends BaseActivity {
                 ));
 
                 TextView episode_vip = item_season_episode.findViewById(R.id.episode_vip);
-                if (episodeData_index.episode_status == 13) {
+                if (episodeData_index.status == 13) {
                     episode_vip.setVisibility(View.VISIBLE);
                     if (seasonData.payment == 1) {
                         episode_vip.setText(R.string.text_episode_vip_all);
@@ -393,7 +395,7 @@ public class Season extends BaseActivity {
 
                 int episode_index_final = episode_index;
                 item_season_episode.setOnClickListener(v -> {
-                    if (episodeData.get(episode_index_final).episode_status == 13 && is_vip == 0) {
+                    if (episodeData.get(episode_index_final).status == 13 && is_vip == 0) {
                         onToast(Season.this, R.string.text_episode_vip_needed);
                     } else {
                         onSetupDownload(episode_index_final, (int) season_quality.getSelectedItemId());
@@ -439,124 +441,141 @@ public class Season extends BaseActivity {
     }
 
     private void onSetupDownload(int episode_index, int quality_index) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
-        builder.setCancelable(false);
-        builder.setView(R.layout.dialog_season_download);
-        dialog = builder.show();
+        Runnable runnable = () -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
+            builder.setCancelable(false);
+            builder.setView(R.layout.dialog_season_download);
+            dialog = builder.show();
 
-        episodeHelper.getDownloadInfo(episodeData.get(episode_index).cid,
-                season_area,
-                qualityData.get(quality_index).getQuality(),
-                new EpisodeHelper.Callback() {
-                    @Override
-                    public void onFailure(int code, String message, Throwable e) {
-                        runOnUiThread(dialog::dismiss);
-                        onToast(Season.this, R.string.error_download, message, code);
-                        saveExplosion(e, code);
-                    }
-
-                    @Override
-                    public void onResult(DASHDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
-                        try {
-                            DownloadHelper downloadHelper = new DownloadHelper(
-                                    Season.this, sharedPreferences, season_id, episodeData.get(episode_index).ep_id
-                            );
-                            downloadHelper.setFormatJSON(
-                                    downloadData, episodeData.get(episode_index), qualityData.get(quality_index), season_title, cover_url, episode_index
-                            );
-                            downloadHelper.handleDownload(
-                                    downloadData.video_url, episodeData.get(episode_index).title, downloadHelper.getFilePath(), "video.m4s"
-                            );
-                            downloadHelper.handleDownload(
-                                    downloadData.audio_url, episodeData.get(episode_index).title, downloadHelper.getFilePath(), "audio.m4s"
-                            );
-                            episode_download_count++;
-                            onToast(Season.this, R.string.text_download_start);
+            episodeHelper.getDownloadInfo(episodeData.get(episode_index).cid,
+                    season_area,
+                    qualityData.get(quality_index).getQuality(),
+                    new EpisodeHelper.Callback() {
+                        @Override
+                        public void onFailure(int code, String message, Throwable e) {
                             runOnUiThread(dialog::dismiss);
-                        } catch (NullPointerException | JSONException | IllegalArgumentException | IOException | SecurityException e) {
-                            e.printStackTrace();
-                            int exception_code;
-                            if (e instanceof JSONException) {
-                                exception_code = -613;
-                            } else if (e instanceof IllegalArgumentException) {
-                                exception_code = -615;
-                            } else if (e instanceof IOException || e instanceof SecurityException) {
-                                exception_code = -616;
-                                AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
-                                builder.setTitle(R.string.title_download_alert_dir);
-
-                                String default_dir;
-                                String alert_info;
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                    default_dir = "/storage/emulated/0/Download/";
-                                    alert_info = getString(R.string.text_download_alert_dir_p);
-                                } else {
-                                    default_dir = "/storage/emulated/0/Android/data/";
-                                    alert_info = "";
-                                }
-                                sharedPreferences.edit()
-                                        .putString("location", default_dir)
-                                        .apply();
-
-                                builder.setMessage(String.format(
-                                        getString(R.string.text_download_alert_dir),
-                                        alert_info
-                                ));
-                                builder.setPositiveButton(R.string.text_ok, null);
-                                runOnUiThread(builder::show);
-                            } else {
-                                exception_code = -617;
-                            }
-                            onToast(Season.this, R.string.error_download_start, exception_code);
-                            runOnUiThread(dialog::dismiss);
+                            onToast(Season.this, R.string.error_download, message, code);
+                            saveExplosion(e, code);
                         }
-                    }
 
-                    @Override
-                    public void onResult(FLVDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
-                        try {
-                            DownloadHelper downloadHelper = new DownloadHelper(
-                                    Season.this,
-                                    sharedPreferences,
-                                    season_id,
-                                    episodeData.get(episode_index).ep_id
-                            );
-                            downloadHelper.setFormatJSON(
-                                    downloadData,
-                                    episodeData.get(episode_index),
-                                    qualityData.get(quality_index),
-                                    season_title,
-                                    cover_url,
-                                    episode_index
-                            );
-                            for (int url_index = 0; url_index < downloadData.flv_url.length; url_index++) {
-                                String url_index_string = downloadData.flv_url[url_index];
-                                downloadHelper.handleDownload(
-                                        url_index_string,
-                                        episodeData.get(episode_index).title,
-                                        downloadHelper.getFilePath(),
-                                        url_index + ".blv"
+                        @Override
+                        public void onResult(DASHDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
+                            try {
+                                DownloadHelper downloadHelper = new DownloadHelper(
+                                        Season.this, sharedPreferences, season_id, episodeData.get(episode_index).ep_id
                                 );
+                                downloadHelper.setFormatJSON(
+                                        downloadData, episodeData.get(episode_index), qualityData.get(quality_index), season_title, cover_url, episode_index
+                                );
+                                downloadHelper.handleDownload(
+                                        downloadData.video_url, episodeData.get(episode_index).title, downloadHelper.getFilePath(), "video.m4s"
+                                );
+                                downloadHelper.handleDownload(
+                                        downloadData.audio_url, episodeData.get(episode_index).title, downloadHelper.getFilePath(), "audio.m4s"
+                                );
+                                episode_download_count++;
+                                onToast(Season.this, R.string.text_download_start);
+                                runOnUiThread(dialog::dismiss);
+                            } catch (NullPointerException | JSONException | IllegalArgumentException | IOException | SecurityException e) {
+                                e.printStackTrace();
+                                int exception_code;
+                                if (e instanceof JSONException) {
+                                    exception_code = -613;
+                                } else if (e instanceof IllegalArgumentException) {
+                                    exception_code = -615;
+                                } else if (e instanceof IOException || e instanceof SecurityException) {
+                                    exception_code = -616;
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
+                                    builder.setTitle(R.string.title_download_alert_dir);
+
+                                    String default_dir;
+                                    String alert_info;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                        default_dir = "/storage/emulated/0/Download/";
+                                        alert_info = getString(R.string.text_download_alert_dir_p);
+                                    } else {
+                                        default_dir = "/storage/emulated/0/Android/data/";
+                                        alert_info = "";
+                                    }
+                                    sharedPreferences.edit()
+                                            .putString("location", default_dir)
+                                            .apply();
+
+                                    builder.setMessage(String.format(
+                                            getString(R.string.text_download_alert_dir),
+                                            alert_info
+                                    ));
+                                    builder.setPositiveButton(R.string.text_ok, null);
+                                    runOnUiThread(builder::show);
+                                } else {
+                                    exception_code = -617;
+                                }
+                                onToast(Season.this, R.string.error_download_start, exception_code);
+                                runOnUiThread(dialog::dismiss);
                             }
-                            onToast(Season.this, R.string.text_download_start);
-                            runOnUiThread(dialog::dismiss);
-                        } catch (NullPointerException | JSONException | IllegalArgumentException | IOException e) {
-                            e.printStackTrace();
-                            int exception_code;
-                            if (e instanceof JSONException) {
-                                exception_code = -603;
-                            } else if (e instanceof IllegalArgumentException) {
-                                exception_code = -605;
-                            } else if (e instanceof IOException) {
-                                exception_code = -606;
-                            } else {
-                                exception_code = -607;
-                            }
-                            onToast(Season.this, R.string.error_download_start, exception_code);
-                            runOnUiThread(dialog::dismiss);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onResult(FLVDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
+                            try {
+                                DownloadHelper downloadHelper = new DownloadHelper(
+                                        Season.this,
+                                        sharedPreferences,
+                                        season_id,
+                                        episodeData.get(episode_index).ep_id
+                                );
+                                downloadHelper.setFormatJSON(
+                                        downloadData,
+                                        episodeData.get(episode_index),
+                                        qualityData.get(quality_index),
+                                        season_title,
+                                        cover_url,
+                                        episode_index
+                                );
+                                for (int url_index = 0; url_index < downloadData.flv_url.length; url_index++) {
+                                    String url_index_string = downloadData.flv_url[url_index];
+                                    downloadHelper.handleDownload(
+                                            url_index_string,
+                                            episodeData.get(episode_index).title,
+                                            downloadHelper.getFilePath(),
+                                            url_index + ".blv"
+                                    );
+                                }
+                                onToast(Season.this, R.string.text_download_start);
+                                runOnUiThread(dialog::dismiss);
+                            } catch (NullPointerException | JSONException | IllegalArgumentException | IOException e) {
+                                e.printStackTrace();
+                                int exception_code;
+                                if (e instanceof JSONException) {
+                                    exception_code = -603;
+                                } else if (e instanceof IllegalArgumentException) {
+                                    exception_code = -605;
+                                } else if (e instanceof IOException) {
+                                    exception_code = -606;
+                                } else {
+                                    exception_code = -607;
+                                }
+                                onToast(Season.this, R.string.error_download_start, exception_code);
+                                runOnUiThread(dialog::dismiss);
+                            }
+                        }
+                    });
+        };
+        if (!sharedPreferences.getBoolean("alert_dir", false)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
+            builder.setTitle(R.string.title_download_alert_dir_p);
+            builder.setMessage(R.string.text_download_alert_dir_p);
+            builder.setPositiveButton(R.string.text_download_alert_dir_positive, (dialogInterface, i) -> runnable.run());
+            builder.setNegativeButton(R.string.text_download_alert_dir_negative, (dialogInterface, i) -> {
+                sharedPreferences.edit()
+                        .putBoolean("alert_dir", true)
+                        .apply();
+                runnable.run();
+            });
+            builder.show();
+        } else {
+            runnable.run();
+        }
     }
 
     @Override
