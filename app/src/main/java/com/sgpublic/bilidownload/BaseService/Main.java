@@ -2,7 +2,9 @@ package com.sgpublic.bilidownload.BaseService;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 
+import com.sgpublic.bilidownload.BuildConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 
@@ -13,7 +15,9 @@ public class Main extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        initSDK(this);
+        if (!BuildConfig.DEBUG){
+            initSDK(this);
+        }
     }
 
     private void initSDK(Context context) {
