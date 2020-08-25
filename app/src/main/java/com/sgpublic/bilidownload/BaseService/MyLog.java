@@ -3,13 +3,12 @@ package com.sgpublic.bilidownload.BaseService;
 import android.util.Log;
 
 public class MyLog {
+    private static boolean out = false;
+
     public static void d(String tag, String message){
-        doLog(new DoLog() {
-            @Override
-            public void onLog(String tag, String message) {
-                Log.d(tag, message);
-            }
-        }, tag, message);
+        if (out){
+            doLog(Log::d, tag, message);
+        }
     }
 
     private static void doLog(DoLog doLog, String tag, String message){
