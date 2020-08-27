@@ -561,7 +561,7 @@ public class Season extends BaseActivity {
                         }
                     });
         };
-        if (!sharedPreferences.getBoolean("alert_dir", false)){
+        if (!sharedPreferences.getBoolean("alert_dir", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
             AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
             builder.setTitle(R.string.title_download_alert_dir_p);
             builder.setMessage(R.string.text_download_alert_dir_p);

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -47,7 +48,7 @@ public class UserManager {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String result = response.body().string();
+                String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
                     if (object.getInt("code") == 0) {

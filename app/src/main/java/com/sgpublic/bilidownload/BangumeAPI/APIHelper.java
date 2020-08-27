@@ -147,16 +147,13 @@ public class APIHelper {
         return onReturn(url, METHOD_GET, arg_array, header_array, false);
     }
 
-    Call getSeasonInfoAPPRequest(long sid) {
-        //String url = "https://bangumi.bilibili.com/view/web_api/season";
+    Call getSeasonInfoAppRequest(long sid) {
         String url = "https://api.bilibili.com/pgc/view/app/season";
         String[][] arg_array = new String[][]{
                 {"access_key", access_token},
                 {"appkey", android_key},
                 {"build", build},
-                {"c_locale", "hk_CN"},
                 {"platform", platform},
-                {"s_locale", "hk_CN"},
                 {"season_id", String.valueOf(sid)},
                 {"ts", getTS()},
         };
@@ -176,6 +173,14 @@ public class APIHelper {
                 {"ts", getTS()},
         };
         return onReturn(url, METHOD_GET, arg_array, true);
+    }
+
+    Call getSeasonInfoOldRequest(long sid) {
+        String url = "https://bangumi.bilibili.com/view/web_api/season";
+        String[][] arg_array = new String[][]{
+                {"season_id", String.valueOf(sid)}
+        };
+        return onReturn(url, METHOD_GET, arg_array, false);
     }
 
     Call getEpisodeOfficialRequest(long cid, int qn) {

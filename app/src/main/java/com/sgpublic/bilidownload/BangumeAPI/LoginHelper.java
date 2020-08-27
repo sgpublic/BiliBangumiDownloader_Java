@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.sgpublic.bilidownload.BaseService.Base64Helper;
+import com.sgpublic.bilidownload.BaseService.MyLog;
 import com.sgpublic.bilidownload.R;
 
 import org.json.JSONException;
@@ -118,7 +119,7 @@ public class LoginHelper {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String result = response.body().string();
+                String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
                     if (object.getInt("code") == 0) {

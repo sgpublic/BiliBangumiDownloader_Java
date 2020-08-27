@@ -39,7 +39,7 @@ public class SeasonHelper {
     public void getInfoBySid(long sid, Callback callback) {
         this.callback_private = callback;
         APIHelper helper = new APIHelper(access_key);
-        Call call = helper.getSeasonInfoAPPRequest(sid);
+        Call call = helper.getSeasonInfoAppRequest(sid);
         call.enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -139,11 +139,8 @@ public class SeasonHelper {
         description.append("\n");
 
         int area = 1;
-        if (!object.isNull("up_info")) {
-            JSONObject object_up_info = object.getJSONObject("up_info");
-            if (object_up_info.getString("uname").equals("哔哩哔哩番剧出差")) {
-                area = 0;
-            }
+        if (!object.isNull("limit")) {
+            area = 0;
         }
 
         if (!object.isNull("payment")) {
@@ -190,6 +187,12 @@ public class SeasonHelper {
     }
 
     private void doParseWebResult(JSONObject object, SeasonData seasonData, int area) throws JSONException{
+        JSONArray array = object.getJSONArray("episodes");
+        ArrayList<InfoData> episodeData = getEpisodesInfo(array);
+        callback_private.onResult(episodeData, seasonData, area);
+    }
+
+    private void doParseOldResult(JSONObject object, SeasonData seasonData, int area) throws JSONException{
         JSONArray array = object.getJSONArray("episodes");
         ArrayList<InfoData> episodeData = getEpisodesInfo(array);
         callback_private.onResult(episodeData, seasonData, area);
