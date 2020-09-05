@@ -1,12 +1,8 @@
-package com.sgpublic.bilidownload.BangumeAPI;
+package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.sgpublic.bilidownload.BaseService.Base64Helper;
-import com.sgpublic.bilidownload.BaseService.MyLog;
 import com.sgpublic.bilidownload.R;
 
 import org.json.JSONException;
@@ -15,7 +11,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.nio.LongBuffer;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -24,8 +19,6 @@ import java.util.Objects;
 import javax.crypto.Cipher;
 
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 public class LoginHelper {
@@ -130,7 +123,7 @@ public class LoginHelper {
                                     object.getString("access_token"),
                                     object.getLong("mid"));
                         } else if (object.getInt("status") == 3) {
-                            callback_private.onFailure(-126, context.getString(R.string.error_login_verify), null);
+                            callback_private.onLimited();
                         } else {
                             callback_private.onFailure(-126, null, null);
                         }
@@ -212,7 +205,7 @@ public class LoginHelper {
 
     public interface Callback {
         void onFailure(int code, String message, Throwable e);
-
+        void onLimited();
         void onResult(String access_key, long mid);
     }
 }

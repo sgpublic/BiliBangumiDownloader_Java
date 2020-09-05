@@ -1,9 +1,7 @@
 package com.sgpublic.bilidownload;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,9 +32,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
-import com.sgpublic.bilidownload.BangumeAPI.DownloadHelper;
-import com.sgpublic.bilidownload.BangumeAPI.EpisodeHelper;
-import com.sgpublic.bilidownload.BangumeAPI.SeasonHelper;
+import com.sgpublic.bilidownload.BangumiAPI.DownloadHelper;
+import com.sgpublic.bilidownload.BangumiAPI.EpisodeHelper;
+import com.sgpublic.bilidownload.BangumiAPI.SeasonHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataHelper.Episode.DASHDownloadData;
 import com.sgpublic.bilidownload.DataHelper.Episode.FLVDownloadData;
@@ -266,7 +264,7 @@ public class Season extends BaseActivity {
 
             int data_info_index = 0;
             for (SeriesData data : seasonData.series) {
-                View item_bangume_follow = LayoutInflater.from(Season.this).inflate(R.layout.item_bangume_follow, season_series, false);
+                View item_bangume_follow = LayoutInflater.from(Season.this).inflate(R.layout.item_bangumi_follow, season_series, false);
                 TextView follow_content = item_bangume_follow.findViewById(R.id.follow_content);
                 follow_content.setText(data.title);
 

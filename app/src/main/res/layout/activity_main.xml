@@ -30,8 +30,8 @@
         android:fitsSystemWindows="true">
 
         <include
-            android:id="@+id/layout_bangume"
-            layout="@layout/fragment_bangume"
+            android:id="@+id/layout_bangumi"
+            layout="@layout/fragment_bangumi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"

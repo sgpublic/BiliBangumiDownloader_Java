@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.BangumeAPI;
+package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.app.DownloadManager;
 import android.content.Context;
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 

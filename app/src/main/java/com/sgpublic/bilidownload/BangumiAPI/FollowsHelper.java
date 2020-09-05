@@ -1,9 +1,6 @@
-package com.sgpublic.bilidownload.BangumeAPI;
+package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.sgpublic.bilidownload.DataHelper.FollowData;
 import com.sgpublic.bilidownload.R;

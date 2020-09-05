@@ -1,21 +1,27 @@
 package com.sgpublic.bilidownload;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.sgpublic.bilidownload.BangumeAPI.LoginHelper;
-import com.sgpublic.bilidownload.BangumeAPI.UserManager;
+import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseService.UpdateHelper;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
 
@@ -111,7 +117,76 @@ public class Welcome extends BaseActivity {
                 intent.putExtra("grand", 1);
             }
         }
-        runOnUiThread(() -> Welcome.this.startActivity(intent));
+
+        new UpdateHelper(Welcome.this).getUpdate(0, new UpdateHelper.Callback() {
+            @Override
+            public void onFailure(int code, String message, Throwable e) {
+                saveExplosion(e, code);
+                runOnUiThread(() -> Welcome.this.startActivity(intent));
+            }
+
+            @Override
+            public void onUpToDate() {
+                runOnUiThread(() -> Welcome.this.startActivity(intent));
+            }
+
+            @Override
+            public void onUpdate(int force, String ver_name, String size_string, String changelog, String dl_url) {
+                int[] update_header = {
+                        R.string.text_update_content,
+                        R.string.text_update_content_force,
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(Welcome.this);
+                builder.setTitle(R.string.title_update_get);
+                builder.setCancelable(force == 0);
+                builder.setMessage(String.format(Welcome.this.getString(update_header[force]), size_string) + "\n" +
+                        Welcome.this.getString(R.string.text_update_version) + ver_name + "\n" +
+                        Welcome.this.getString(R.string.text_update_changelog) + "\n" + changelog);
+                builder.setPositiveButton(R.string.text_ok, (dialog, which) -> {
+                    new Thread(() -> {
+                        Uri url = Uri.parse(dl_url);
+                        DownloadManager downloadManager = (DownloadManager) getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
+                        DownloadManager.Request req = new DownloadManager.Request(url);
+                        req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                        String apkName = Welcome.this.getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".apk";
+                        req.setDestinationInExternalFilesDir(getApplicationContext(), Environment.DIRECTORY_DOWNLOADS, apkName);
+                        req.setVisibleInDownloadsUi(true);
+                        req.setTitle(Welcome.this.getString(R.string.title_update_download));
+                        req.setMimeType("application/vnd.android.package-archive");
+                        if (downloadManager != null) {
+                            downloadManager.enqueue(req);
+                        }
+                    }).start();
+                    Welcome.this.startActivity(intent);
+                });
+                builder.setNegativeButton(R.string.text_cancel, (dialog, which) -> {
+                    if (force == 1) {
+                        finishAll();
+                    } else {
+                        runOnUiThread(() -> Welcome.this.startActivity(intent));
+                    }
+                });
+                runOnUiThread(builder::show);
+            }
+
+            @Override
+            public void onDisabled(long time, String reason) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Welcome.this);
+                builder.setTitle(R.string.title_update_disable);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+                Date date = new Date();
+                date.setTime(time);
+
+                builder.setMessage(String.format(
+                        Welcome.this.getString(R.string.text_update_content_disable),
+                        reason, sdf.format(date)
+                ));
+                builder.setCancelable(false);
+                builder.setPositiveButton(R.string.text_ok, (dialogInterface, i) -> finishAll());
+                runOnUiThread(builder::show);
+            }
+        });
     }
 
     @Override
@@ -121,7 +196,6 @@ public class Welcome extends BaseActivity {
     }
 
     long last = -1;
-
     @Override
     public void onBackPressed() {
         long now = System.currentTimeMillis();

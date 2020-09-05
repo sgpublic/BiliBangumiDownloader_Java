@@ -41,14 +41,14 @@
             tools:ignore="Autofill,TextFields" />
 
         <View
-            android:id="@+id/bangume_search"
+            android:id="@+id/bangumi_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground" />
     </androidx.cardview.widget.CardView>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/bangume_refresh"
+        android:id="@+id/bangumi_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
@@ -59,20 +59,20 @@
             android:layout_height="wrap_content">
 
             <com.sgpublic.bilidownload.UIHelper.ObservableScrollView
-                android:id="@+id/bangume_base"
+                android:id="@+id/bangumi_base"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="none"
                 android:overScrollMode="never">
 
                 <LinearLayout
-                    android:id="@+id/bangume_placeholder"
+                    android:id="@+id/bangumi_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <com.zhpan.bannerview.BannerViewPager
-                        android:id="@+id/bangume_banner"
+                        android:id="@+id/bangumi_banner"
                         android:layout_width="match_parent"
                         android:layout_height="207dp"
                         android:layout_marginTop="5dp"
@@ -84,14 +84,14 @@
                         app:bvp_scroll_duration="1000" />
 
                     <GridLayout
-                        android:id="@+id/bangume_follows"
+                        android:id="@+id/bangumi_follows"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp" />
 
                     <ImageView
-                        android:id="@+id/bangume_follow_end"
+                        android:id="@+id/bangumi_follow_end"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:scaleType="fitCenter"
@@ -100,7 +100,7 @@
             </com.sgpublic.bilidownload.UIHelper.ObservableScrollView>
 
             <ImageView
-                android:id="@+id/bangume_load_state"
+                android:id="@+id/bangumi_load_state"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="80dp"

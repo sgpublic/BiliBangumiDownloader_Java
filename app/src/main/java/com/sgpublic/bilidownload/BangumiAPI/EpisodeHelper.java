@@ -1,7 +1,6 @@
-package com.sgpublic.bilidownload.BangumeAPI;
+package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.sgpublic.bilidownload.DataHelper.Episode.DASHDownloadData;
 import com.sgpublic.bilidownload.DataHelper.Episode.FLVDownloadData;

@@ -2,25 +2,18 @@ package com.sgpublic.bilidownload.BaseService;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
-import com.sgpublic.bilidownload.BangumeAPI.APIHelper;
-import com.sgpublic.bilidownload.BangumeAPI.DownloadHelper;
+import com.sgpublic.bilidownload.BangumiAPI.APIHelper;
+import com.sgpublic.bilidownload.BangumiAPI.DownloadHelper;
 import com.sgpublic.bilidownload.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.jar.JarOutputStream;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Response;
 
 public class UpdateHelper {
@@ -58,28 +51,39 @@ public class UpdateHelper {
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
                 try {
-                    int ver_code_now = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+                    int ver_code_now = context.getPackageManager()
+                            .getPackageInfo(context.getPackageName(), 0).versionCode;
                     JSONObject object = new JSONObject(result);
                     JSONObject update_table = object.getJSONObject("latest");
-                    long ver_code = update_table.getInt("ver_code");
-                    if (ver_code > ver_code_now) {
-                        String url_dl = "https://sgpublic.xyz/bilidl/update/apk/app-" + version + ".apk";
+                    long disable = update_table.getInt("disable");
+                    if (disable == 0){
+                        long ver_code = update_table.getInt("ver_code");
+                        if (ver_code > ver_code_now) {
+                            String url_dl = "https://sgpublic.xyz/bilidl/update/apk/app-"
+                                    + version + ".apk";
 
-                        int is_force = 0;
-                        if (version.equals("release")) {
-                            is_force = update_table.getInt("force_ver") > ver_code_now ? 1 : 0;
+                            int is_force = 0;
+                            if (version.equals("release")) {
+                                is_force = update_table
+                                        .getInt("force_ver") > ver_code_now ? 1 : 0;
+                            }
+
+                            String size_string = new DownloadHelper(context).getSizeString(url_dl);
+                            callback_private.onUpdate(
+                                    is_force, update_table.getString("ver_name"), size_string,
+                                    update_table.getString("changelog"), url_dl
+                            );
+                        } else {
+                            callback_private.onUpToDate();
                         }
-
-                        String size_string = new DownloadHelper(context).getSizeString(url_dl);
-                        callback_private.onUpdate(
-                                is_force,
-                                update_table.getString("ver_name"),
-                                size_string,
-                                update_table.getString("changelog"),
-                                url_dl
-                        );
                     } else {
-                        callback_private.onUpToDate();
+                        String disable_reason = update_table.getString("disable_reason");
+                        if (disable_reason.equals("")){
+                            disable_reason = context.getString(R.string.text_update_disable_unknown);
+                        }
+                        callback_private.onDisabled(
+                                disable, disable_reason
+                        );
                     }
                 } catch (JSONException e) {
                     callback_private.onFailure(-703, null, e);
@@ -92,9 +96,8 @@ public class UpdateHelper {
 
     public interface Callback {
         void onFailure(int code, String message, Throwable e);
-
         void onUpToDate();
-
         void onUpdate(int force, String ver_name, String size_string, String changelog, String dl_url);
+        void onDisabled(long time, String reason);
     }
 }

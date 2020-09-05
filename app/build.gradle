@@ -16,7 +16,7 @@ android {
         applicationId "com.sgpublic.bilidownload"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 200827
+        versionCode 200905
         versionName "3.2.1.200826"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

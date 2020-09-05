@@ -1,6 +1,4 @@
-package com.sgpublic.bilidownload.BangumeAPI;
-
-import android.util.Log;
+package com.sgpublic.bilidownload.BangumiAPI;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -55,7 +53,7 @@ public class APIHelper {
                 {"username", username}
         };
         String[][] header_array = {
-                {"User-Agent", "Dart/2.7 (dart:io)"}
+                {"User-Agent", "Mozilla/5.0 BiliDroid/6.8.2 (bbcallen@gmail.com)"}
         };
         return onReturn(url, METHOD_POST, arg_array, header_array, true);
     }

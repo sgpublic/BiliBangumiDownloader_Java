@@ -27,7 +27,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.sgpublic.bilidownload.BangumeAPI.FollowsHelper;
+import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataHelper.FollowData;
 import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
@@ -81,7 +81,7 @@ public class OtherFollows extends BaseActivity {
 
         int data_info_index = 0;
         for (final FollowData data_info : data_array) {
-            View item_others_follow = LayoutInflater.from(OtherFollows.this).inflate(R.layout.item_bangume_follow, others_grid, false);
+            View item_others_follow = LayoutInflater.from(OtherFollows.this).inflate(R.layout.item_bangumi_follow, others_grid, false);
             TextView follow_content = item_others_follow.findViewById(R.id.follow_content);
             follow_content.setText(data_info.title);
 

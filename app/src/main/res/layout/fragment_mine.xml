@@ -154,11 +154,11 @@
                         android:layout_height="match_parent"
                         android:padding="15dp"
                         android:tint="#FFFFFF"
-                        android:src="@drawable/ic_bangume"
+                        android:src="@drawable/ic_bangumi"
                         tools:ignore="ContentDescription" />
 
                     <View
-                        android:id="@+id/mine_other_bangume"
+                        android:id="@+id/mine_other_bangumi"
                         android:background="?android:attr/selectableItemBackground"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />

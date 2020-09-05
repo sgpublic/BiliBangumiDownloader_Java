@@ -29,7 +29,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.sgpublic.bilidownload.BangumeAPI.SearchHelper;
+import com.sgpublic.bilidownload.BangumiAPI.SearchHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataHelper.SearchData;
 import com.sgpublic.bilidownload.UIHelper.FlowLayout;

@@ -4,15 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.http.SslError;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -22,15 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
-import com.sgpublic.bilidownload.BangumeAPI.LoginHelper;
-import com.sgpublic.bilidownload.BangumeAPI.UserManager;
+import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
+import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class LoginWeb extends BaseActivity {
@@ -95,6 +86,10 @@ public class LoginWeb extends BaseActivity {
                             login_load_state.setVisibility(View.INVISIBLE);
                             stopOnLoadingState();
                             finish();
+                        }
+
+                        @Override
+                        public void onLimited() {
                         }
 
                         @Override

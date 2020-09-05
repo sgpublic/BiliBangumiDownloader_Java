@@ -1,10 +1,9 @@
-package com.sgpublic.bilidownload.BangumeAPI;
+package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 
 import com.sgpublic.bilidownload.DataHelper.SearchData;
 import com.sgpublic.bilidownload.R;

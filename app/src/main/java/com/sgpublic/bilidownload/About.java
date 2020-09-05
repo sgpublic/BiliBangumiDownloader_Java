@@ -28,6 +28,9 @@ import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.BaseService.UpdateHelper;
 import com.sgpublic.bilidownload.UIHelper.DoubleClickListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
 
 public class About extends BaseActivity {
@@ -178,6 +181,24 @@ public class About extends BaseActivity {
                     });
                     builder.show();
                 });
+            }
+
+            @Override
+            public void onDisabled(long time, String reason) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(About.this);
+                builder.setTitle(R.string.title_update_disable);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+                Date date = new Date();
+                date.setTime(time);
+
+                builder.setMessage(String.format(
+                        About.this.getString(R.string.text_update_content_disable),
+                        reason, sdf.format(date)
+                ));
+                builder.setCancelable(false);
+                builder.setPositiveButton(R.string.text_ok, (dialogInterface, i) -> finishAll());
+                runOnUiThread(builder::show);
             }
         });
     }

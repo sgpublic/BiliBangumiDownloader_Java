@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,9 +24,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import com.sgpublic.bilidownload.BangumeAPI.APIHelper;
-import com.sgpublic.bilidownload.BangumeAPI.LoginHelper;
-import com.sgpublic.bilidownload.BangumeAPI.UserManager;
+import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
+import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
@@ -76,6 +74,13 @@ public class Login extends BaseActivity {
                     onToast(Login.this, R.string.error_login, message, code);
                     setLoadState(false);
                     saveExplosion(e, code);
+                }
+
+                @Override
+                public void onLimited() {
+                    onToast(Login.this, R.string.error_login_verify);
+                    Intent intent = new Intent(Login.this, LoginWeb.class);
+                    startActivity(intent);
                 }
 
                 @Override

@@ -28,7 +28,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.sgpublic.bilidownload.BangumeAPI.FollowsHelper;
+import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
 import com.sgpublic.bilidownload.BaseService.UpdateHelper;
 import com.sgpublic.bilidownload.DataHelper.FollowData;
 import com.sgpublic.bilidownload.UIHelper.BannerItem;
@@ -45,15 +45,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
 
 public class Main extends BaseActivity {
-    private View layout_bangume;
+    private View layout_bangumi;
     private View layout_mine;
-    private BannerViewPager<BannerItem, SeasonBannerAdapter> bangume_banner;
-    private SwipeRefreshLayout bangume_refresh;
-    private GridLayout bangume_follows;
-    private ObservableScrollView bangume_base;
-    private LinearLayout bangume_placeholder;
-    private ImageView bangume_follow_end;
-    private ImageView bangume_load_state;
+    private BannerViewPager<BannerItem, SeasonBannerAdapter> bangumi_banner;
+    private SwipeRefreshLayout bangumi_refresh;
+    private GridLayout bangumi_follows;
+    private ObservableScrollView bangumi_base;
+    private LinearLayout bangumi_placeholder;
+    private ImageView bangumi_follow_end;
+    private ImageView bangumi_load_state;
     private CircleImageView mine_vip;
     private TextView mine_vip_string;
 
@@ -68,11 +68,9 @@ public class Main extends BaseActivity {
         mid = sharedPreferences.getLong("mid", 0);
 
         setViewState(1);
-        bangume_base.setVisibility(View.INVISIBLE);
-        startOnLoadingState(bangume_load_state);
+        bangumi_base.setVisibility(View.INVISIBLE);
+        startOnLoadingState(bangumi_load_state);
         getFollowData(1);
-
-        onUpdate();
     }
 
     private void getFollowData(final int page_index) {
@@ -83,7 +81,7 @@ public class Main extends BaseActivity {
                 onToast(Main.this, R.string.error_bangumi_load, message, code);
                 runOnUiThread(() -> {
                     stopOnLoadingState();
-                    bangume_load_state.setImageResource(R.drawable.pic_load_failed);
+                    bangumi_load_state.setImageResource(R.drawable.pic_load_failed);
                     setRefreshState(false);
                 });
                 saveExplosion(e, code);
@@ -94,11 +92,11 @@ public class Main extends BaseActivity {
                 runOnUiThread(() -> {
                     stopOnLoadingState();
                     if (followData.length == 0) {
-                        bangume_load_state.setImageResource(R.drawable.pic_null);
+                        bangumi_load_state.setImageResource(R.drawable.pic_null);
                         setRefreshState(false);
                     } else {
-                        bangume_load_state.setVisibility(View.INVISIBLE);
-                        bangume_base.setVisibility(View.VISIBLE);
+                        bangumi_load_state.setVisibility(View.INVISIBLE);
+                        bangumi_base.setVisibility(View.VISIBLE);
                         if (page_index == 1) {
                             setupUserData(followData, has_next);
                         } else {
@@ -161,15 +159,15 @@ public class Main extends BaseActivity {
         }
 
         runOnUiThread(() -> {
-            bangume_follows.removeAllViews();
-            bangume_banner.showIndicator(true);
-            bangume_banner.setIndicatorGravity(IndicatorGravity.CENTER);
-            bangume_banner.setOnPageClickListener(i -> {
+            bangumi_follows.removeAllViews();
+            bangumi_banner.showIndicator(true);
+            bangumi_banner.setIndicatorGravity(IndicatorGravity.CENTER);
+            bangumi_banner.setOnPageClickListener(i -> {
                 BannerItem data_info = banner_info_list.get(i);
                 onGetSeason(data_info.getTitle(), data_info.getSeasonId(), data_info.getSeasonCover());
             });
-            bangume_banner.setHolderCreator(SeasonBannerAdapter::new);
-            bangume_banner.create(banner_info_list);
+            bangumi_banner.setHolderCreator(SeasonBannerAdapter::new);
+            bangumi_banner.create(banner_info_list);
 
             CircleImageView mine_avatar = Main.this.findViewById(R.id.mine_avatar);
             Glide.with(Main.this)
@@ -228,9 +226,9 @@ public class Main extends BaseActivity {
     private void setGrid(FollowData[] data_array, final int has_next) {
         if (has_next == 0) {
             stopOnLoadingState();
-            bangume_follow_end.setImageResource(R.drawable.pic_nomore);
+            bangumi_follow_end.setImageResource(R.drawable.pic_nomore);
         } else {
-            startOnLoadingState(bangume_follow_end);
+            startOnLoadingState(bangumi_follow_end);
         }
         float list_row_add = data_array.length / 3;
         int row_count = (int) list_row_add;
@@ -239,8 +237,8 @@ public class Main extends BaseActivity {
         }
         int list_row_size_old = list_row_size;
         list_row_size = list_row_size + row_count;
-        bangume_follows.setRowCount(list_row_size);
-        bangume_follows.setColumnCount(3);
+        bangumi_follows.setRowCount(list_row_size);
+        bangumi_follows.setColumnCount(3);
 
         int view_width = (getResources().getDisplayMetrics().widthPixels - dip2px(Main.this, 20)) / 3;
         int image_height = (view_width - dip2px(Main.this, 12)) / 3 * 4;
@@ -248,11 +246,11 @@ public class Main extends BaseActivity {
 
         int data_info_index = 0;
         for (FollowData data_info : data_array) {
-            View item_bangume_follow = LayoutInflater.from(Main.this).inflate(R.layout.item_bangume_follow, bangume_follows, false);
-            TextView follow_content = item_bangume_follow.findViewById(R.id.follow_content);
+            View item_bangumi_follow = LayoutInflater.from(Main.this).inflate(R.layout.item_bangumi_follow, bangumi_follows, false);
+            TextView follow_content = item_bangumi_follow.findViewById(R.id.follow_content);
             follow_content.setText(data_info.title);
 
-            TextView item_follow_badges = item_bangume_follow.findViewById(R.id.item_follow_badges);
+            TextView item_follow_badges = item_bangumi_follow.findViewById(R.id.item_follow_badges);
             if (data_info.badge.equals("")) {
                 item_follow_badges.setVisibility(View.GONE);
             } else {
@@ -260,8 +258,8 @@ public class Main extends BaseActivity {
                 item_follow_badges.setText(data_info.badge);
             }
 
-            ImageView follow_image_placeholder = item_bangume_follow.findViewById(R.id.follow_image_placeholder);
-            ImageView follow_image = item_bangume_follow.findViewById(R.id.follow_image);
+            ImageView follow_image_placeholder = item_bangumi_follow.findViewById(R.id.follow_image_placeholder);
+            ImageView follow_image = item_bangumi_follow.findViewById(R.id.follow_image);
             RequestOptions requestOptions = new RequestOptions()
                     .placeholder(R.drawable.pic_doing_v)
                     .error(R.drawable.pic_load_failed)
@@ -298,21 +296,21 @@ public class Main extends BaseActivity {
             params.width = view_width;
             params.height = view_height;
 
-            item_bangume_follow.setOnClickListener(v ->
+            item_bangumi_follow.setOnClickListener(v ->
                     Main.this.onGetSeason(data_info.title, data_info.season_id, data_info.cover)
             );
 
-            bangume_follows.addView(item_bangume_follow, params);
+            bangumi_follows.addView(item_bangumi_follow, params);
             data_info_index = data_info_index + 1;
         }
 
-        bangume_base.setScrollViewListener((scrollView, x, y, oldx, oldy) -> {
+        bangumi_base.setScrollViewListener((scrollView, x, y, oldx, oldy) -> {
             //if (!page_scrolling && y == 0) {
-            //    bangume_refresh.setEnabled(true);
+            //    bangumi_refresh.setEnabled(true);
             //} else {
-            //    bangume_refresh.setEnabled(false);
+            //    bangumi_refresh.setEnabled(false);
             //}
-            if (bangume_placeholder.getHeight() > y + bangume_base.getHeight()) {
+            if (bangumi_placeholder.getHeight() > y + bangumi_base.getHeight()) {
                 scroll_to_end = false;
             } else if (!scroll_to_end) {
                 scroll_to_end = true;
@@ -339,21 +337,21 @@ public class Main extends BaseActivity {
 
         setContentView(R.layout.activity_main);
 
-        bangume_refresh = findViewById(R.id.bangume_refresh);
-        bangume_follows = findViewById(R.id.bangume_follows);
-        bangume_banner = findViewById(R.id.bangume_banner);
-        bangume_follow_end = findViewById(R.id.bangume_follow_end);
-        bangume_base = findViewById(R.id.bangume_base);
-        bangume_placeholder = findViewById(R.id.bangume_placeholder);
-        bangume_load_state = findViewById(R.id.bangume_load_state);
+        bangumi_refresh = findViewById(R.id.bangumi_refresh);
+        bangumi_follows = findViewById(R.id.bangumi_follows);
+        bangumi_banner = findViewById(R.id.bangumi_banner);
+        bangumi_follow_end = findViewById(R.id.bangumi_follow_end);
+        bangumi_base = findViewById(R.id.bangumi_base);
+        bangumi_placeholder = findViewById(R.id.bangumi_placeholder);
+        bangumi_load_state = findViewById(R.id.bangumi_load_state);
         mine_vip_string = findViewById(R.id.mine_vip_string);
         mine_vip = findViewById(R.id.mine_vip);
-        layout_bangume = findViewById(R.id.layout_bangume);
+        layout_bangumi = findViewById(R.id.layout_bangumi);
         layout_mine = findViewById(R.id.layout_mine);
 
         findViewById(R.id.mine_more).setOnClickListener(v -> Main.this.onToast(Main.this, R.string.text_mine_developing));
 
-        findViewById(R.id.mine_other_bangume).setOnClickListener(v -> {
+        findViewById(R.id.mine_other_bangumi).setOnClickListener(v -> {
             Intent intent = new Intent(Main.this, OtherFollows.class);
             Main.this.startActivity(intent);
         });
@@ -384,7 +382,7 @@ public class Main extends BaseActivity {
             startActivity(intent);
         });
 
-        findViewById(R.id.bangume_search).setOnClickListener(v -> {
+        findViewById(R.id.bangumi_search).setOnClickListener(v -> {
             Intent intent = new Intent(Main.this, Search.class);
             startActivity(intent);
         });
@@ -392,7 +390,7 @@ public class Main extends BaseActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.navigation_bangume:
+                case R.id.navigation_bangumi:
                     Main.this.setViewState(1);
                     break;
                 case R.id.navigation_mine:
@@ -402,7 +400,7 @@ public class Main extends BaseActivity {
             return true;
         });
 
-        bangume_refresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> getFollowData(1), 1000));
+        bangumi_refresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> getFollowData(1), 1000));
     }
 
     private int viewNowIndex = 0;
@@ -410,9 +408,9 @@ public class Main extends BaseActivity {
     private void setViewState(final int viewIntoIndex) {
         runOnUiThread(() -> {
             if (viewIntoIndex != viewNowIndex) {
-                if (layout_bangume.getVisibility() == View.VISIBLE) {
-                    layout_bangume.animate().alpha(0f).setDuration(200).setListener(null);
-                    layout_bangume.setVisibility(View.INVISIBLE);
+                if (layout_bangumi.getVisibility() == View.VISIBLE) {
+                    layout_bangumi.animate().alpha(0f).setDuration(200).setListener(null);
+                    layout_bangumi.setVisibility(View.INVISIBLE);
                 }
                 if (layout_mine.getVisibility() == View.VISIBLE) {
                     layout_mine.animate().alpha(0f).setDuration(200).setListener(null);
@@ -421,14 +419,14 @@ public class Main extends BaseActivity {
 
                 switch (viewIntoIndex) {
                     case 1:
-                        layout_bangume.animate().alpha(1f).setDuration(200).setListener(null);
-                        layout_bangume.setVisibility(View.VISIBLE);
-                        //bangume_banner.setAutoPlay(true);
+                        layout_bangumi.animate().alpha(1f).setDuration(200).setListener(null);
+                        layout_bangumi.setVisibility(View.VISIBLE);
+                        //bangumi_banner.setAutoPlay(true);
                         break;
                     case 2:
                         layout_mine.animate().alpha(1f).setDuration(200).setListener(null);
                         layout_mine.setVisibility(View.VISIBLE);
-                        //bangume_banner.setAutoPlay(false);
+                        //bangumi_banner.setAutoPlay(false);
                         break;
                 }
             } else if (viewIntoIndex == 1) {
@@ -440,70 +438,21 @@ public class Main extends BaseActivity {
     }
 
     private void setRefreshState(boolean is_refresh) {
-        bangume_refresh.setRefreshing(is_refresh);
-    }
-
-    private void onUpdate() {
-        UpdateHelper helper = new UpdateHelper(Main.this);
-        helper.getUpdate(0, new UpdateHelper.Callback() {
-            @Override
-            public void onFailure(int code, String message, Throwable e) {
-            }
-
-            @Override
-            public void onUpToDate() {
-            }
-
-            @Override
-            public void onUpdate(int force, String ver_name, String size_string, String changelog, String dl_url) {
-                runOnUiThread(() -> {
-                    int[] update_header = {
-                            R.string.text_update_content,
-                            R.string.text_update_content_force,
-                    };
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Main.this);
-                    builder.setTitle(R.string.title_update_get);
-                    builder.setCancelable(force == 0);
-                    builder.setMessage(String.format(Main.this.getString(update_header[force]), size_string) + "\n" +
-                            Main.this.getString(R.string.text_update_version) + ver_name + "\n" +
-                            Main.this.getString(R.string.text_update_changelog) + "\n" + changelog);
-                    builder.setPositiveButton(R.string.text_ok, (dialog, which) -> {
-                        Uri url = Uri.parse(dl_url);
-                        DownloadManager downloadManager = (DownloadManager) getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
-                        DownloadManager.Request req = new DownloadManager.Request(url);
-                        req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                        String apkName = Main.this.getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".apk";
-                        req.setDestinationInExternalFilesDir(getApplicationContext(), Environment.DIRECTORY_DOWNLOADS, apkName);
-                        req.setVisibleInDownloadsUi(true);
-                        req.setTitle(Main.this.getString(R.string.title_update_download));
-                        req.setMimeType("application/vnd.android.package-archive");
-                        if (downloadManager != null) {
-                            downloadManager.enqueue(req);
-                        }
-                    });
-                    builder.setNegativeButton(R.string.text_cancel, (dialog, which) -> {
-                        if (force == 1) {
-                            finishAll();
-                        }
-                    });
-                    builder.show();
-                });
-            }
-        });
+        bangumi_refresh.setRefreshing(is_refresh);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (bangume_banner != null)
-            bangume_banner.stopLoop();
+        if (bangumi_banner != null)
+            bangumi_banner.stopLoop();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (bangume_banner != null)
-            bangume_banner.startLoop();
+        if (bangumi_banner != null)
+            bangumi_banner.startLoop();
     }
 
     long last = -1;
