@@ -302,7 +302,9 @@ public class DownloadHelper {
             url_con.setRequestProperty("connection", "Keep-Alive");
             url_con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             url_con.setRequestProperty("User-Agent", user_agent);
-            return url_con.getContentLength();
+            long size = url_con.getContentLength();
+            url_con.disconnect();
+            return size;
         } catch (IOException e) {
             return 0;
         }

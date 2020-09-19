@@ -1,12 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        release {
-            storeFile file(SIGN_DIR)
-            storePassword SIGN_PASSWORD_STORE
-            keyAlias SIGN_ALIAS
-            keyPassword SIGN_PASSWORD_KEY
+    if (file("./gradle.properties").exists()){
+        signingConfigs {
+            release {
+                storeFile file(SIGN_DIR)
+                storePassword SIGN_PASSWORD_STORE
+                keyAlias SIGN_ALIAS
+                keyPassword SIGN_PASSWORD_KEY
+            }
         }
     }
     compileSdkVersion 30
@@ -16,7 +18,7 @@ android {
         applicationId "com.sgpublic.bilidownload"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 200919
+        versionCode 200920
         versionName "3.2.2.200919"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -25,12 +27,16 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            if (file("./gradle.properties").exists()){
+                signingConfig signingConfigs.release
+            }
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (file("./gradle.properties").exists()){
+                signingConfig signingConfigs.release
+            }
         }
     }
 

@@ -86,7 +86,8 @@ public class SeasonHelper {
                 try {
                     JSONObject object = new JSONObject(result);
                     if (object.getInt("code") != 0) {
-                        callback_private.onFailure(-404, object.getString("message"), null);
+                        callback_private.onFailure(-404,
+                                object.getString("message"), null);
                     } else {
                         object = object.getJSONObject("result");
                         doParseWebResult(object, seasonData, area);

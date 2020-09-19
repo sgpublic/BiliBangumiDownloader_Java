@@ -29,6 +29,7 @@ public class EpisodeHelper {
     private Callback callback_private;
     private APIHelper helper;
     private Context context;
+    private boolean setup = false;
 
     private int qn_private;
     private ArrayList<QualityData> qualityData;
@@ -36,6 +37,12 @@ public class EpisodeHelper {
     public EpisodeHelper(Context context, String access_key) {
         this.context = context;
         this.helper = new APIHelper(access_key);
+    }
+
+    public EpisodeHelper(Context context, String access_key, boolean setup) {
+        this.context = context;
+        this.helper = new APIHelper(access_key);
+        this.setup = setup;
     }
 
     public void getDownloadInfo(long cid, int area, Callback callback) {
@@ -164,33 +171,35 @@ public class EpisodeHelper {
 
     private void getFLVData(JSONObject object) throws JSONException {
         FLVDownloadData downloadData = new FLVDownloadData();
-        downloadData.flv_codecid = object.getInt("video_codecid");
-        downloadData.time_length = object.getLong("timelength");
+        if (!setup){
+            downloadData.flv_codecid = object.getInt("video_codecid");
+            downloadData.time_length = object.getLong("timelength");
 
-        JSONArray array = object.getJSONArray("durl");
-        int size_durl = array.length();
+            JSONArray array = object.getJSONArray("durl");
+            int size_durl = array.length();
 
-        downloadData.section_count = size_durl;
-        downloadData.total_size = 0;
+            downloadData.section_count = size_durl;
+            downloadData.total_size = 0;
 
-        downloadData.flv_url = new String[size_durl];
-        downloadData.flv_backup_url = new String[size_durl][2];
-        downloadData.flv_size = new long[size_durl];
-        downloadData.flv_length = new long[size_durl];
-        downloadData.flv_md5 = new String[size_durl];
+            downloadData.flv_url = new String[size_durl];
+            downloadData.flv_backup_url = new String[size_durl][2];
+            downloadData.flv_size = new long[size_durl];
+            downloadData.flv_length = new long[size_durl];
+            downloadData.flv_md5 = new String[size_durl];
 
-        for (int durl_index = 0; durl_index < size_durl; durl_index++) {
-            object = array.getJSONObject(durl_index);
-            downloadData.total_size = downloadData.total_size + object.getLong("size");
-            downloadData.flv_size[durl_index] = object.getLong("size");
-            downloadData.flv_url[durl_index] = object.getString("url");
-            downloadData.flv_length[durl_index] = object.getLong("length");
-            downloadData.flv_backup_url[durl_index][0] = downloadData.flv_url[durl_index];
-            downloadData.flv_backup_url[durl_index][1] = downloadData.flv_url[durl_index];
-            if (object.isNull("md5")) {
-                downloadData.flv_md5[durl_index] = "";
-            } else {
-                downloadData.flv_md5[durl_index] = object.getString("md5");
+            for (int durl_index = 0; durl_index < size_durl; durl_index++) {
+                object = array.getJSONObject(durl_index);
+                downloadData.total_size = downloadData.total_size + object.getLong("size");
+                downloadData.flv_size[durl_index] = object.getLong("size");
+                downloadData.flv_url[durl_index] = object.getString("url");
+                downloadData.flv_length[durl_index] = object.getLong("length");
+                downloadData.flv_backup_url[durl_index][0] = downloadData.flv_url[durl_index];
+                downloadData.flv_backup_url[durl_index][1] = downloadData.flv_url[durl_index];
+                if (object.isNull("md5")) {
+                    downloadData.flv_md5[durl_index] = "";
+                } else {
+                    downloadData.flv_md5[durl_index] = object.getString("md5");
+                }
             }
         }
         callback_private.onResult(downloadData, qualityData);
@@ -198,75 +207,79 @@ public class EpisodeHelper {
 
     private void getDASHData(JSONObject object) throws JSONException {
         DASHDownloadData downloadData = new DASHDownloadData();
-        JSONObject private_object = object.getJSONObject("dash");
-        JSONArray array;
-        array = private_object.getJSONArray("video");
-        JSONObject object_video = null;
-        for (int array_index = 0; array_index < array.length(); array_index++) {
-            JSONObject object_video_index = array.getJSONObject(array_index);
-            int video_qn_pre = object_video == null ? -1 : object_video.getInt("id");
-            int video_qn_this = object_video_index.getInt("id");
-            if (video_qn_this > video_qn_pre && video_qn_this <= qn_private){
-                object_video = object_video_index;
+        if (!setup){
+            JSONObject private_object = object.getJSONObject("dash");
+            JSONArray array;
+            array = private_object.getJSONArray("video");
+            JSONObject object_video = null;
+            for (int array_index = 0; array_index < array.length(); array_index++) {
+                JSONObject object_video_index = array.getJSONObject(array_index);
+                int video_qn_pre = object_video == null ? -1 : object_video.getInt("id");
+                int video_qn_this = object_video_index.getInt("id");
+                if (video_qn_this > video_qn_pre && video_qn_this <= qn_private){
+                    object_video = object_video_index;
+                }
             }
-        }
-        if (object_video != null){
-            downloadData.video_url = object_video.getString("base_url");
-            downloadData.video_bandwidth = object_video.getLong("bandwidth");
-            downloadData.video_codecid = object_video.isNull("codecid") ? 0 : object_video.getInt("codecid");
-            downloadData.video_id = object_video.getInt("id");
-            downloadData.video_md5 = object_video.isNull("md5") ? "" : object_video.getString("md5");
-            if (object_video.isNull("backup_url") || object_video.getJSONArray("backup_url").length() == 0) {
-                downloadData.video_backup_url = new String[]{
-                        downloadData.video_url,
-                        downloadData.video_url
-                };
+            if (object_video != null){
+                downloadData.video_url = object_video.getString("base_url");
+                downloadData.video_bandwidth = object_video.getLong("bandwidth");
+                downloadData.video_codecid = object_video.isNull("codecid") ? 0 : object_video.getInt("codecid");
+                downloadData.video_id = object_video.getInt("id");
+                downloadData.video_md5 = object_video.isNull("md5") ? "" : object_video.getString("md5");
+                if (object_video.isNull("backup_url") || object_video.getJSONArray("backup_url").length() == 0) {
+                    downloadData.video_backup_url = new String[]{
+                            downloadData.video_url,
+                            downloadData.video_url
+                    };
+                } else {
+                    JSONArray object_backup_url = object_video.getJSONArray("backup_url");
+                    downloadData.video_backup_url = new String[]{
+                            object_backup_url.getString(0),
+                            object_backup_url.getString(object_backup_url.length() - 1)
+                    };
+                }
+                downloadData.video_size = new DownloadHelper(context)
+                        .getSizeLong(downloadData.video_url);
+            }
+            array = private_object.getJSONArray("audio");
+            JSONObject object_audio = null;
+            for (int array_index = 0; array_index < array.length(); array_index++) {
+                JSONObject object_audio_index = array.getJSONObject(array_index);
+                int audio_qn_pre = object_audio == null ? -1 : object_audio.getInt("id") - 30200;
+                int audio_qn_this = object_audio_index.getInt("id") - 30200;
+                if (audio_qn_this > audio_qn_pre && audio_qn_this <= qn_private){
+                    object_audio = object_audio_index;
+                }
+            }
+            if (object_audio != null) {
+                downloadData.audio_url = object_audio.getString("base_url");
+                downloadData.audio_bandwidth = object_audio.getLong("bandwidth");
+                downloadData.audio_codecid = object_audio.isNull("codecid") ? 0 : object_audio.getInt("codecid");
+                downloadData.audio_id = object_audio.getInt("id");
+                downloadData.audio_md5 = object_audio.isNull("md5") ? "" : object_audio.getString("md5");
+                if (object_audio.isNull("backup_url") || object_audio.getJSONArray("backup_url").length() == 0) {
+                    downloadData.audio_backup_url = new String[]{
+                            downloadData.video_url,
+                            downloadData.video_url
+                    };
+                } else {
+                    JSONArray object_backup_url = object_audio.getJSONArray("backup_url");
+                    downloadData.audio_backup_url = new String[]{
+                            object_backup_url.getString(0),
+                            object_backup_url.getString(object_backup_url.length() - 1)
+                    };
+                }
+                downloadData.audio_size = new DownloadHelper(context)
+                        .getSizeLong(downloadData.audio_url);
+            }
+            if (object_video != null && object_audio != null){
+                downloadData.total_size = downloadData.audio_size + downloadData.video_size;
+                callback_private.onResult(downloadData, qualityData);
             } else {
-                JSONArray object_backup_url = object_video.getJSONArray("backup_url");
-                downloadData.video_backup_url = new String[]{
-                        object_backup_url.getString(0),
-                        object_backup_url.getString(object_backup_url.length() - 1)
-                };
+                callback_private.onFailure(-521, context.getString(R.string.error_download_url), null);
             }
-            downloadData.video_size = new DownloadHelper(context)
-                    .getSizeLong(downloadData.video_url);
-        }
-        array = private_object.getJSONArray("audio");
-        JSONObject object_audio = null;
-        for (int array_index = 0; array_index < array.length(); array_index++) {
-            JSONObject object_audio_index = array.getJSONObject(array_index);
-            int audio_qn_pre = object_audio == null ? -1 : object_audio.getInt("id") - 30200;
-            int audio_qn_this = object_audio_index.getInt("id") - 30200;
-            if (audio_qn_this > audio_qn_pre && audio_qn_this <= qn_private){
-                object_audio = object_audio_index;
-            }
-        }
-        if (object_audio != null) {
-            downloadData.audio_url = object_audio.getString("base_url");
-            downloadData.audio_bandwidth = object_audio.getLong("bandwidth");
-            downloadData.audio_codecid = object_audio.isNull("codecid") ? 0 : object_audio.getInt("codecid");
-            downloadData.audio_id = object_audio.getInt("id");
-            downloadData.audio_md5 = object_audio.isNull("md5") ? "" : object_audio.getString("md5");
-            if (object_audio.isNull("backup_url") || object_audio.getJSONArray("backup_url").length() == 0) {
-                downloadData.audio_backup_url = new String[]{
-                        downloadData.video_url,
-                        downloadData.video_url
-                };
-            } else {
-                JSONArray object_backup_url = object_audio.getJSONArray("backup_url");
-                downloadData.audio_backup_url = new String[]{
-                        object_backup_url.getString(0),
-                        object_backup_url.getString(object_backup_url.length() - 1)
-                };
-            }
-            downloadData.audio_size = new DownloadHelper(context)
-                    .getSizeLong(downloadData.audio_url);
-        }
-        if (object_video != null && object_audio != null){
-            downloadData.total_size = downloadData.audio_size + downloadData.video_size;
-            callback_private.onResult(downloadData, qualityData);
         } else {
-            callback_private.onFailure(-521, context.getString(R.string.error_download_url), null);
+            callback_private.onResult(downloadData, qualityData);
         }
     }
 
