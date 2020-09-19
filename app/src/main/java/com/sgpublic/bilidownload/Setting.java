@@ -31,12 +31,12 @@ public class Setting extends BaseActivity {
             "国际版"
     };
     private static final String[] quality_description = {
-            "超清 4K",
-            "高清 1080P+",
-            "高清 1080P",
-            "高清 720P",
-            "清晰 480P",
-            "流畅 360P"
+            "4K 超清",
+            "1080P 高码率",
+            "1080P 高清",
+            "720P 高清",
+            "480P 清晰",
+            "360P 流畅"
     };
     private static final int[] quality_int = {
             120, 112, 80, 64, 32, 16
