@@ -84,7 +84,6 @@ public class Welcome extends BaseActivity {
                                     onSetupFinished(true);
                                 }
                             });
-                    onSetupFinished(true);
                 }, 100);
             } else {
                 new Handler().postDelayed(() -> {
@@ -161,13 +160,15 @@ public class Welcome extends BaseActivity {
                     }).start();
                     Welcome.this.startActivity(intent);
                 });
-                builder.setNegativeButton(R.string.text_cancel, (dialog, which) -> {
+                Runnable runnable = () -> {
                     if (force == 1) {
                         finishAll();
                     } else {
                         runOnUiThread(() -> Welcome.this.startActivity(intent));
                     }
-                });
+                };
+                builder.setNegativeButton(R.string.text_cancel, (dialog, which) -> runnable.run());
+                builder.setOnCancelListener(dialog -> runnable.run());
                 runOnUiThread(builder::show);
             }
 
