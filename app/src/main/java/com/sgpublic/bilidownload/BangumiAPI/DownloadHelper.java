@@ -133,8 +133,6 @@ public class DownloadHelper {
         object_index_video.put("id", downloadData.video_id);
         object_index_video.put("base_url", downloadData.video_url);
         JSONArray object_index_video_backup_url = new JSONArray();
-        object_index_video_backup_url.put(downloadData.video_backup_url[0]);
-        object_index_video_backup_url.put(downloadData.video_backup_url[1]);
         object_index_video.put("backup_url", object_index_video_backup_url);
         object_index_video.put("bandwidth", downloadData.video_bandwidth);
         object_index_video.put("codecid", downloadData.video_codecid);
@@ -148,8 +146,6 @@ public class DownloadHelper {
         object_index_audio.put("id", downloadData.audio_id);
         object_index_audio.put("base_url", downloadData.audio_url);
         JSONArray object_index_audio_backup_url = new JSONArray();
-        object_index_audio_backup_url.put(downloadData.audio_backup_url[0]);
-        object_index_audio_backup_url.put(downloadData.audio_backup_url[1]);
         object_index_audio.put("backup_url", object_index_audio_backup_url);
         object_index_audio.put("bandwidth", downloadData.audio_bandwidth);
         object_index_audio.put("codecid", downloadData.audio_codecid);
@@ -230,8 +226,6 @@ public class DownloadHelper {
             object_index_segment.put("vhead", "");
             object_index_segment.put("md5", downloadData.flv_md5[list_index]);
             JSONArray object_index_segment_list_backup_urls = new JSONArray();
-            object_index_segment_list_backup_urls.put(downloadData.flv_backup_url[list_index][0]);
-            object_index_segment_list_backup_urls.put(downloadData.flv_backup_url[list_index][1]);
             object_index_segment.put("backup_urls", object_index_segment_list_backup_urls);
             object_index_segment_list.put(object_index_segment);
         }

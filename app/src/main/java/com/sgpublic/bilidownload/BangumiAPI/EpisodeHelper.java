@@ -1,9 +1,7 @@
 package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.sgpublic.bilidownload.BaseService.MyLog;
 import com.sgpublic.bilidownload.DataHelper.Episode.DASHDownloadData;
 import com.sgpublic.bilidownload.DataHelper.Episode.FLVDownloadData;
 import com.sgpublic.bilidownload.DataHelper.Episode.QualityData;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Response;
 
 public class EpisodeHelper {
@@ -29,7 +26,7 @@ public class EpisodeHelper {
     private Callback callback_private;
     private APIHelper helper;
     private Context context;
-    private boolean setup = false;
+    private boolean setup = true;
 
     private int qn_private;
     private ArrayList<QualityData> qualityData;
@@ -39,10 +36,8 @@ public class EpisodeHelper {
         this.helper = new APIHelper(access_key);
     }
 
-    public EpisodeHelper(Context context, String access_key, boolean setup) {
-        this.context = context;
-        this.helper = new APIHelper(access_key);
-        this.setup = setup;
+    public void onSetupFinish(){
+        this.setup = false;
     }
 
     public void getDownloadInfo(long cid, int area, Callback callback) {
@@ -68,7 +63,8 @@ public class EpisodeHelper {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String result = Objects.requireNonNull(response.body()).string();
-                        try {
+                    //MyLog.d(TAG, result);
+                    try {
                         JSONObject object = new JSONObject(result);
                         if (object.getInt("code") != 0) {
                             callback_private.onFailure(-504, object.getString("message"), null);
@@ -182,7 +178,6 @@ public class EpisodeHelper {
             downloadData.total_size = 0;
 
             downloadData.flv_url = new String[size_durl];
-            downloadData.flv_backup_url = new String[size_durl][2];
             downloadData.flv_size = new long[size_durl];
             downloadData.flv_length = new long[size_durl];
             downloadData.flv_md5 = new String[size_durl];
@@ -193,8 +188,6 @@ public class EpisodeHelper {
                 downloadData.flv_size[durl_index] = object.getLong("size");
                 downloadData.flv_url[durl_index] = object.getString("url");
                 downloadData.flv_length[durl_index] = object.getLong("length");
-                downloadData.flv_backup_url[durl_index][0] = downloadData.flv_url[durl_index];
-                downloadData.flv_backup_url[durl_index][1] = downloadData.flv_url[durl_index];
                 if (object.isNull("md5")) {
                     downloadData.flv_md5[durl_index] = "";
                 } else {
@@ -226,18 +219,6 @@ public class EpisodeHelper {
                 downloadData.video_codecid = object_video.isNull("codecid") ? 0 : object_video.getInt("codecid");
                 downloadData.video_id = object_video.getInt("id");
                 downloadData.video_md5 = object_video.isNull("md5") ? "" : object_video.getString("md5");
-                if (object_video.isNull("backup_url") || object_video.getJSONArray("backup_url").length() == 0) {
-                    downloadData.video_backup_url = new String[]{
-                            downloadData.video_url,
-                            downloadData.video_url
-                    };
-                } else {
-                    JSONArray object_backup_url = object_video.getJSONArray("backup_url");
-                    downloadData.video_backup_url = new String[]{
-                            object_backup_url.getString(0),
-                            object_backup_url.getString(object_backup_url.length() - 1)
-                    };
-                }
                 downloadData.video_size = new DownloadHelper(context)
                         .getSizeLong(downloadData.video_url);
             }
@@ -257,18 +238,6 @@ public class EpisodeHelper {
                 downloadData.audio_codecid = object_audio.isNull("codecid") ? 0 : object_audio.getInt("codecid");
                 downloadData.audio_id = object_audio.getInt("id");
                 downloadData.audio_md5 = object_audio.isNull("md5") ? "" : object_audio.getString("md5");
-                if (object_audio.isNull("backup_url") || object_audio.getJSONArray("backup_url").length() == 0) {
-                    downloadData.audio_backup_url = new String[]{
-                            downloadData.video_url,
-                            downloadData.video_url
-                    };
-                } else {
-                    JSONArray object_backup_url = object_audio.getJSONArray("backup_url");
-                    downloadData.audio_backup_url = new String[]{
-                            object_backup_url.getString(0),
-                            object_backup_url.getString(object_backup_url.length() - 1)
-                    };
-                }
                 downloadData.audio_size = new DownloadHelper(context)
                         .getSizeLong(downloadData.audio_url);
             }
@@ -300,9 +269,7 @@ public class EpisodeHelper {
         //{"code":-10403,"message":"抱歉您所在地区不可观看！"}
         //{"code":-10403,"message":"大会员专享限制"}
         void onFailure(int code, String message, Throwable e);
-
         void onResult(DASHDownloadData downloadData, ArrayList<QualityData> qualityData);
-
         void onResult(FLVDownloadData downloadData, ArrayList<QualityData> qualityData);
     }
 }

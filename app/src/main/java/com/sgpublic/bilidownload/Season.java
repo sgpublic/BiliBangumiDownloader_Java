@@ -110,7 +110,7 @@ public class Season extends BaseActivity {
         String access_key = sharedPreferences.getString("access_key", "");
         is_vip = sharedPreferences.getInt("vip_state", 0);
 
-        episodeHelper = new EpisodeHelper(Season.this, access_key, true);
+        episodeHelper = new EpisodeHelper(Season.this, access_key);
 
         SeasonHelper helper = new SeasonHelper(this, access_key);
         helper.getInfoBySid(season_id, new SeasonHelper.Callback() {
@@ -200,6 +200,7 @@ public class Season extends BaseActivity {
                     }
                     onSeasonInfoLoad();
                     onEpisodeLoad();
+                    episodeHelper.onSetupFinish();
                 } catch (NullPointerException ignore) {}
             }, 310);
         });

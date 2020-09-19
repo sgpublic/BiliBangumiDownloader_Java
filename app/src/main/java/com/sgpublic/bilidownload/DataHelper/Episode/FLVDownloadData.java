@@ -8,7 +8,6 @@ public class FLVDownloadData {
 
     public int section_count;
     public String[] flv_url;
-    public String[][] flv_backup_url;
     public long[] flv_size;
     public String[] flv_md5;
     public long[] flv_length;
