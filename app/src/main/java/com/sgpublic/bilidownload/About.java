@@ -171,7 +171,8 @@ public class About extends BaseActivity {
                         req.setTitle(About.this.getString(R.string.title_update_download));
                         req.setMimeType("application/vnd.android.package-archive");
                         if (downloadManager != null) {
-                            downloadManager.enqueue(req);
+                            long referer = downloadManager.enqueue(req);
+                            helper.listener(referer);
                         }
                     });
                     builder.setNegativeButton(R.string.text_cancel, (dialog, which) -> {

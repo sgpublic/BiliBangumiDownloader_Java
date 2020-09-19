@@ -1,7 +1,16 @@
 package com.sgpublic.bilidownload.BaseService;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+
+import androidx.core.content.FileProvider;
 
 import com.sgpublic.bilidownload.BangumiAPI.APIHelper;
 import com.sgpublic.bilidownload.BangumiAPI.DownloadHelper;
@@ -10,8 +19,10 @@ import com.sgpublic.bilidownload.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -20,7 +31,6 @@ public class UpdateHelper {
     private String TAG = "UpdateHelper";
 
     private Callback callback_private;
-    private APIHelper helper;
     private Context context;
 
     public UpdateHelper(Context context) {
@@ -28,7 +38,7 @@ public class UpdateHelper {
     }
 
     public void getUpdate(int type, Callback callback) {
-        helper = new APIHelper();
+        APIHelper helper = new APIHelper();
         this.callback_private = callback;
         final String version;
         if (type == 1) {
@@ -58,7 +68,7 @@ public class UpdateHelper {
                     long disable = update_table.getInt("disable");
                     if (disable == 0){
                         long ver_code = update_table.getInt("ver_code");
-                        if (ver_code > ver_code_now) {
+                        if (ver_code < ver_code_now) {
                             String url_dl = "https://sgpublic.xyz/bilidl/update/apk/app-"
                                     + version + ".apk";
 
@@ -92,6 +102,49 @@ public class UpdateHelper {
                 }
             }
         });
+    }
+
+    public void listener(final long Id) {
+        IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                DownloadManager manager = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
+                long ID = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                if (ID == Id) {
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(Id);
+
+                    Cursor cursor = manager.query(query);
+                    if (cursor.moveToFirst()){
+                        String fileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                        if (fileName != null){
+                            openAPK(fileName);
+                        }
+                    }
+                    cursor.close();
+                }
+            }
+        };
+        context.getApplicationContext().registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private void openAPK(String fileSavePath){
+        File file = new File(Objects
+                .requireNonNull(Uri.parse(fileSavePath).getPath()));
+        String filePath = file.getAbsolutePath();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri data;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            data = FileProvider.getUriForFile(context.getApplicationContext(), "com.sgpublic.bilidownload.fileprovider", new File(filePath));
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            data = Uri.fromFile(file);
+        }
+
+        intent.setDataAndType(data, "application/vnd.android.package-archive");
+        context.startActivity(intent);
     }
 
     public interface Callback {

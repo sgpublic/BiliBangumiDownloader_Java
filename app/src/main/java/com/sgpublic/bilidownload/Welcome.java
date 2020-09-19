@@ -118,7 +118,8 @@ public class Welcome extends BaseActivity {
             }
         }
 
-        new UpdateHelper(Welcome.this).getUpdate(0, new UpdateHelper.Callback() {
+        UpdateHelper helper = new UpdateHelper(Welcome.this);
+        helper.getUpdate(0, new UpdateHelper.Callback() {
             @Override
             public void onFailure(int code, String message, Throwable e) {
                 saveExplosion(e, code);
@@ -154,7 +155,8 @@ public class Welcome extends BaseActivity {
                         req.setTitle(Welcome.this.getString(R.string.title_update_download));
                         req.setMimeType("application/vnd.android.package-archive");
                         if (downloadManager != null) {
-                            downloadManager.enqueue(req);
+                            long referer = downloadManager.enqueue(req);
+                            helper.listener(referer);
                         }
                     }).start();
                     Welcome.this.startActivity(intent);
