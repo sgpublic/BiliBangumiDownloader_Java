@@ -3,11 +3,13 @@ package com.sgpublic.bilidownload.BangumiAPI;
 import android.content.Context;
 import android.util.Log;
 
+import com.sgpublic.bilidownload.BaseService.MyLog;
 import com.sgpublic.bilidownload.DataHelper.Episode.DASHDownloadData;
 import com.sgpublic.bilidownload.DataHelper.Episode.FLVDownloadData;
 import com.sgpublic.bilidownload.DataHelper.Episode.QualityData;
 import com.sgpublic.bilidownload.R;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 
 public class EpisodeHelper {
@@ -58,7 +61,7 @@ public class EpisodeHelper {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String result = Objects.requireNonNull(response.body()).string();
-                    try {
+                        try {
                         JSONObject object = new JSONObject(result);
                         if (object.getInt("code") != 0) {
                             callback_private.onFailure(-504, object.getString("message"), null);
@@ -93,28 +96,70 @@ public class EpisodeHelper {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    String result = Objects.requireNonNull(response.body()).string();
-                    try {
-                        JSONObject object = new JSONObject(result);
-                        if (object.getInt("code") != 0) {
-                            callback_private.onFailure(-514, object.getString("message"), null);
-                        } else {
-                            getEpisodeQuality(object);
-                            if (!object.isNull("durl")) {
-                                getFLVData(object);
-                            } else if (!object.isNull("dash")) {
-                                getDASHData(object);
+                    if (response.code() == 504){
+                        getKghostDownloadInfo(cid);
+                    } else {
+                        String result = Objects.requireNonNull(response.body()).string();
+                        try {
+                            JSONObject object = new JSONObject(result);
+                            if (object.getInt("code") != 0) {
+                                callback_private.onFailure(-514, object.getString("message"), null);
                             } else {
-                                callback_private.onFailure(-515, null, null);
+                                getEpisodeQuality(object);
+                                if (!object.isNull("durl")) {
+                                    getFLVData(object);
+                                } else if (!object.isNull("dash")) {
+                                    getDASHData(object);
+                                } else {
+                                    callback_private.onFailure(-515, null, null);
+                                }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            callback_private.onFailure(-513, null, e);
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        callback_private.onFailure(-513, null, e);
                     }
                 }
             });
         }
+    }
+
+    private void getKghostDownloadInfo(long cid) {
+        Call call = helper.getEpisodeKghostRequest(cid, qn_private);
+        call.enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                if (e instanceof UnknownHostException) {
+                    callback_private.onFailure(-521, context.getString(R.string.error_network), e);
+                } else {
+                    callback_private.onFailure(-522, null, e);
+                }
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String result = Objects.requireNonNull(response.body()).string();
+                try {
+                    JSONObject object = new JSONObject(result);
+                    if (object.getInt("code") != 0) {
+                        callback_private.onFailure(-524, object.getString("message"), null);
+                    } else {
+                        object = object.getJSONObject("result");
+                        getEpisodeQuality(object);
+                        if (!object.isNull("durl")) {
+                            getFLVData(object);
+                        } else if (!object.isNull("dash")) {
+                            getDASHData(object);
+                        } else {
+                            callback_private.onFailure(-525, null, null);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callback_private.onFailure(-523, null, e);
+                }
+            }
+        });
     }
 
     private void getFLVData(JSONObject object) throws JSONException {
@@ -171,7 +216,7 @@ public class EpisodeHelper {
             downloadData.video_codecid = object_video.isNull("codecid") ? 0 : object_video.getInt("codecid");
             downloadData.video_id = object_video.getInt("id");
             downloadData.video_md5 = object_video.isNull("md5") ? "" : object_video.getString("md5");
-            if (object_video.isNull("backup_url")) {
+            if (object_video.isNull("backup_url") || object_video.getJSONArray("backup_url").length() == 0) {
                 downloadData.video_backup_url = new String[]{
                         downloadData.video_url,
                         downloadData.video_url
@@ -202,7 +247,7 @@ public class EpisodeHelper {
             downloadData.audio_codecid = object_audio.isNull("codecid") ? 0 : object_audio.getInt("codecid");
             downloadData.audio_id = object_audio.getInt("id");
             downloadData.audio_md5 = object_audio.isNull("md5") ? "" : object_audio.getString("md5");
-            if (object_audio.isNull("backup_url")) {
+            if (object_audio.isNull("backup_url") || object_audio.getJSONArray("backup_url").length() == 0) {
                 downloadData.audio_backup_url = new String[]{
                         downloadData.video_url,
                         downloadData.video_url
@@ -227,13 +272,13 @@ public class EpisodeHelper {
 
     private void getEpisodeQuality(JSONObject object) throws JSONException {
         ArrayList<QualityData> arrayList = new ArrayList<>();
-        JSONArray array_description = object.getJSONArray("accept_description");
-        JSONArray array_quality = object.getJSONArray("accept_quality");
-        for (int array_index = 0; array_index < array_description.length(); array_index++) {
-            String accept_description = array_description.getString(array_index);
-            int accept_quality = array_quality.getInt(array_index);
-            String accept_format = object.getString("accept_format").split(",")[array_index];
-            arrayList.add(new QualityData(accept_quality, accept_description, accept_format));
+        JSONArray support_formats = object.getJSONArray("support_formats");
+        for (int array_index = 0; array_index < support_formats.length(); array_index++) {
+            JSONObject support_format = support_formats.getJSONObject(array_index);
+            String new_description = support_format.getString("new_description");
+            int accept_quality = support_format.getInt("quality");
+            String accept_format = support_format.getString("format");
+            arrayList.add(new QualityData(accept_quality, new_description, accept_format));
         }
         qualityData = arrayList;
     }

@@ -222,6 +222,27 @@ public class APIHelper {
         return onReturn(url, METHOD_GET, arg_array, true);
     }
 
+    Call getEpisodeKghostRequest(long cid, int qn) {
+        String url = "https://bilibili-tw-api.kghost.info/pgc/player/web/playurl";
+        String[][] arg_array = new String[][]{
+                {"access_key", access_token},
+                {"appkey", android_key},
+                {"build", build},
+                {"cid", String.valueOf(cid)},
+                {"device", platform},
+                {"fnval", "16"},
+                {"fnver", "0"},
+                {"fourk", "1"},
+                {"module", "bangumi"},
+                {"otype", "json"},
+                {"platform", platform},
+                {"qn", String.valueOf(qn)},
+                {"season_type", "1"},
+                {"ts", getTS()}
+        };
+        return onReturn(url, METHOD_GET, arg_array, true);
+    }
+
     Call getDanmakuRequest(long cid) {
         String url = "https://api.bilibili.com/x/v1/dm/list.so";
         String[][] arg_array = new String[][]{
