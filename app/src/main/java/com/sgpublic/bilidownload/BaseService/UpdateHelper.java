@@ -68,7 +68,7 @@ public class UpdateHelper {
                     long disable = update_table.getInt("disable");
                     if (disable == 0){
                         long ver_code = update_table.getInt("ver_code");
-                        if (ver_code < ver_code_now) {
+                        if (ver_code > ver_code_now) {
                             String url_dl = "https://sgpublic.xyz/bilidl/update/apk/app-"
                                     + version + ".apk";
 
