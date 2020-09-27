@@ -63,7 +63,6 @@ public class EpisodeHelper {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String result = Objects.requireNonNull(response.body()).string();
-                    //MyLog.d(TAG, result);
                     try {
                         JSONObject object = new JSONObject(result);
                         if (object.getInt("code") != 0) {
@@ -160,6 +159,9 @@ public class EpisodeHelper {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     callback_private.onFailure(-523, null, e);
+                } catch (IndexOutOfBoundsException e){
+                    e.printStackTrace();
+                    callback_private.onFailure(-524, null, e);
                 }
             }
         });
@@ -254,13 +256,24 @@ public class EpisodeHelper {
 
     private void getEpisodeQuality(JSONObject object) throws JSONException {
         ArrayList<QualityData> arrayList = new ArrayList<>();
-        JSONArray support_formats = object.getJSONArray("support_formats");
-        for (int array_index = 0; array_index < support_formats.length(); array_index++) {
-            JSONObject support_format = support_formats.getJSONObject(array_index);
-            String new_description = support_format.getString("new_description");
-            int accept_quality = support_format.getInt("quality");
-            String accept_format = support_format.getString("format");
-            arrayList.add(new QualityData(accept_quality, new_description, accept_format));
+        if (object.isNull("support_formats")){
+            JSONArray accept_description = object.getJSONArray("accept_description");
+            String[] accept_format = object.getString("accept_format").split(",");
+            JSONArray accept_quality = object.getJSONArray("accept_quality");
+            for (int i = 0; i < accept_description.length(); i++){
+                arrayList.add(new QualityData(
+                        accept_quality.getInt(i), accept_description.getString(i), accept_format[i]
+                ));
+            }
+        } else {
+            JSONArray support_formats = object.getJSONArray("support_formats");
+            for (int array_index = 0; array_index < support_formats.length(); array_index++) {
+                JSONObject support_format = support_formats.getJSONObject(array_index);
+                String new_description = support_format.getString("new_description");
+                int accept_quality = support_format.getInt("quality");
+                String accept_format = support_format.getString("format");
+                arrayList.add(new QualityData(accept_quality, new_description, accept_format));
+            }
         }
         qualityData = arrayList;
     }
