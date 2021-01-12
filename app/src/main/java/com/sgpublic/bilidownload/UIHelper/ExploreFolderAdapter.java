@@ -20,7 +20,7 @@ import com.sgpublic.bilidownload.R;
 import java.util.List;
 
 public class ExploreFolderAdapter extends ArrayAdapter<ExploreFolderItem> {
-    private int resource;
+    private final int resource;
 
     public ExploreFolderAdapter(@NonNull Context context, int resource, @NonNull List<ExploreFolderItem> objects) {
         super(context, resource, objects);

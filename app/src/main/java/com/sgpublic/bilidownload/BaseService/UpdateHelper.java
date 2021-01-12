@@ -28,10 +28,10 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 public class UpdateHelper {
-    private String TAG = "UpdateHelper";
+    private final String TAG = "UpdateHelper";
 
     private Callback callback_private;
-    private Context context;
+    private final Context context;
 
     public UpdateHelper(Context context) {
         this.context = context;

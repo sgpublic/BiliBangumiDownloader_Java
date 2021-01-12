@@ -289,9 +289,9 @@ public class APIHelper {
         String url_final = url;
         if (arg_array != null) {
             if (method == METHOD_POST) {
-                requestBuilder.post(new getArgs(arg_array).getForm(with_sign));
+                requestBuilder.post(new GetArgs(arg_array).getForm(with_sign));
             } else if (method == METHOD_GET) {
-                url_final = url + "?" + new getArgs(arg_array).getString(with_sign);
+                url_final = url + "?" + new GetArgs(arg_array).getString(with_sign);
             }
         }
 
@@ -301,13 +301,13 @@ public class APIHelper {
         return client.newCall(requestBuilder.build());
     }
 
-    static class getArgs {
+    static class GetArgs {
         String[][] arg_array;
 
         String arg_string;
         FormBody.Builder arg_form = new FormBody.Builder();
 
-        getArgs(String[][] arg_array) {
+        GetArgs(String[][] arg_array) {
             this.arg_array = arg_array;
 
             StringBuilder arg_builder = new StringBuilder();

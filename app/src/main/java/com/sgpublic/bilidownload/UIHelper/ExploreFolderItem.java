@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class ExploreFolderItem {
-    private String fold_name;
-    private long fold_description;
+    private final String fold_name;
+    private final long fold_description;
 
     public ExploreFolderItem(String fold_name, long fold_description) {
         this.fold_name = fold_name;

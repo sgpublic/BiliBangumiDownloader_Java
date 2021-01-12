@@ -27,8 +27,8 @@ import okhttp3.Response;
 public class SearchHelper {
     private static final String TAG = "SearchHelper";
 
-    private APIHelper helper;
-    private Context context;
+    private final APIHelper helper;
+    private final Context context;
 
     public SearchHelper(Context context) {
         this.helper = new APIHelper();

@@ -1,9 +1,9 @@
 package com.sgpublic.bilidownload.DataHelper.Episode;
 
 public class QualityData {
-    private int quality;
-    private String description;
-    private String format;
+    private final int quality;
+    private final String description;
+    private final String format;
 
     public QualityData(int quality, String description, String format) {
         this.description = description;

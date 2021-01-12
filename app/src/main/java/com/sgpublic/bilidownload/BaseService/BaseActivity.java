@@ -57,14 +57,14 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void onUiLoad() {
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //int mode_state = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
             //if (mode_state == Configuration.UI_MODE_NIGHT_YES){
             //    this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             //} else {
             this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             //}
-        }
+        //}
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 

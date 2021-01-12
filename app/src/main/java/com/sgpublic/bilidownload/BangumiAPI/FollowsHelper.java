@@ -20,9 +20,9 @@ public class FollowsHelper {
     private static final String TAG = "FollowsHelper";
 
     private Callback callback_private;
-    private APIHelper helper;
+    private final APIHelper helper;
 
-    private Context context;
+    private final Context context;
 
     public FollowsHelper(Context context, String access_key) {
         this.helper = new APIHelper(access_key);

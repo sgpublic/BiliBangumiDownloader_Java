@@ -17,8 +17,8 @@ import com.sgpublic.bilidownload.R;
 import java.util.List;
 
 public class LicenseListAdapter extends ArrayAdapter<LicenseListItem> {
-    private int resource;
-    private Context context;
+    private final int resource;
+    private final Context context;
 
     public LicenseListAdapter(@NonNull Context context, int resource, @NonNull List<LicenseListItem> objects) {
         super(context, resource, objects);

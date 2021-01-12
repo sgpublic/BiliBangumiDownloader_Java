@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityController {
-    private static List<Activity> activities = new ArrayList<>();
+    private static final List<Activity> activities = new ArrayList<>();
 
     static void addActivity(Activity activity) {
         activities.add(activity);

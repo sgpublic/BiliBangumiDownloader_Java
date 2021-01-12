@@ -1,10 +1,10 @@
 package com.sgpublic.bilidownload.UIHelper;
 
 public class LicenseListItem {
-    private String title;
-    private String about;
-    private String author;
-    private String url;
+    private final String title;
+    private final String about;
+    private final String author;
+    private final String url;
 
     public LicenseListItem(String title, String about, String author, String url){
         this.about = about;

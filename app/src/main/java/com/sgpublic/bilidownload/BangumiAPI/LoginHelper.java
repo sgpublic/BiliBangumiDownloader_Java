@@ -34,9 +34,9 @@ public class LoginHelper {
     private String public_key = "";
 
     private Callback callback_private;
-    private APIHelper helper;
+    private final APIHelper helper;
 
-    private Context context;
+    private final Context context;
 
     public LoginHelper(Context context) {
         this.context = context;

@@ -19,8 +19,8 @@ public class BlurHelper extends BitmapTransformation {
     private static final int VERSION = 1;
     private static final String ID = "BlurTransformation." + VERSION;
 
-    private int radius = 21;
-    private int sampling = 1;
+    private final int radius = 21;
+    private final int sampling = 1;
 
     public BlurHelper() {
     }

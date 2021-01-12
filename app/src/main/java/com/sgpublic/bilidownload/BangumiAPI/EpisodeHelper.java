@@ -24,8 +24,8 @@ public class EpisodeHelper {
     private static final String TAG = "EpisodeHelper";
 
     private Callback callback_private;
-    private APIHelper helper;
-    private Context context;
+    private final APIHelper helper;
+    private final Context context;
     private boolean setup = true;
 
     private int qn_private;

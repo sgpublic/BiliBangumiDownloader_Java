@@ -16,8 +16,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class SeasonPagerAdapter extends PagerAdapter {
-    private ArrayList<View> view_list;
-    private ArrayList<String> tab_titles;
+    private final ArrayList<View> view_list;
+    private final ArrayList<String> tab_titles;
 
     public SeasonPagerAdapter(ArrayList<View> view_list, ArrayList<String> tab_titles) {
         this.view_list = view_list;

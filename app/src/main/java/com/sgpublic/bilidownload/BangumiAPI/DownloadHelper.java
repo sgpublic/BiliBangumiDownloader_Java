@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 public class DownloadHelper {
     private static final String TAG = "DownloadHelper";
 
-    private Context context;
+    private final Context context;
     private SharedPreferences sharedPreferences;
     private String quality_set;
     private String type_set;

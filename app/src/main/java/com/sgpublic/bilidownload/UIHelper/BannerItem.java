@@ -6,13 +6,13 @@ import androidx.annotation.Nullable;
 
 public class BannerItem {
 
-    private String cover_episode;
-    private String season_cover;
-    private long season_id;
-    private String indicator;
-    private String title;
-    private Context context;
-    private String badges;
+    private final String cover_episode;
+    private final String season_cover;
+    private final long season_id;
+    private final String indicator;
+    private final String title;
+    private final Context context;
+    private final String badges;
 
     public BannerItem(Context context, String cover_episode, String season_cover, long season_id, String title, String indicator, String badges) {
         this.context = context;

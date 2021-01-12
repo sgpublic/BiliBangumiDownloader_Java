@@ -24,8 +24,8 @@ import okhttp3.Response;
 public class SeasonHelper {
     private static final String TAG = "SeasonHelper";
 
-    private Context context;
-    private String access_key;
+    private final Context context;
+    private final String access_key;
 
     private Callback callback_private;
 

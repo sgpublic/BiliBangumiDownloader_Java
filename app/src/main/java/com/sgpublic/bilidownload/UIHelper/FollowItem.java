@@ -1,9 +1,9 @@
 package com.sgpublic.bilidownload.UIHelper;
 
 public class FollowItem {
-    private String cover;
-    private String title;
-    private long sid;
+    private final String cover;
+    private final String title;
+    private final long sid;
 
     public FollowItem(String cover, String title, long sid) {
         this.cover = cover;

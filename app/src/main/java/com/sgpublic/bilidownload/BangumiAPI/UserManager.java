@@ -18,11 +18,11 @@ import okhttp3.Response;
 public class UserManager {
     private static final String TAG = "UserManager";
 
-    private String mid;
+    private final String mid;
 
     private Callback callback_private;
-    private APIHelper helper;
-    private Context context;
+    private final APIHelper helper;
+    private final Context context;
 
     public UserManager(Context context, String access_key, long mid) {
         this.mid = String.valueOf(mid);
