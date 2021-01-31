@@ -18,8 +18,8 @@ android {
         applicationId "com.sgpublic.bilidownload"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 200927
-        versionName "3.2.2.200919"
+        versionCode 210131
+        versionName "3.2.4.210131"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         if (file("./gradle.properties").exists()) {
