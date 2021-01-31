@@ -33,7 +33,7 @@ import com.sgpublic.bilidownload.BangumiAPI.SearchHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataHelper.SearchData;
 import com.sgpublic.bilidownload.UIHelper.FlowLayout;
-import com.umeng.analytics.MobclickAgent;
+//import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -495,11 +495,11 @@ public class Search extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        Map<String, Object> season_search = new HashMap<>();
-        season_search.put("count", search_count);
-        MobclickAgent.onEventObject(Search.this, "season_search", season_search);
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        Map<String, Object> season_search = new HashMap<>();
+//        season_search.put("count", search_count);
+//        MobclickAgent.onEventObject(Search.this, "season_search", season_search);
+//        super.onDestroy();
+//    }
 }

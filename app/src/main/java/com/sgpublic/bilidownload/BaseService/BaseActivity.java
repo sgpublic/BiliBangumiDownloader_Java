@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.sgpublic.bilidownload.R;
 
-import com.umeng.analytics.MobclickAgent;
+//import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -112,23 +112,23 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onResume() {
-        MobclickAgent.onResume(this);
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        MobclickAgent.onPause(this);
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        ActivityController.removeActivity(this);
-        super.onDestroy();
-    }
+//    @Override
+//    public void onResume() {
+//        MobclickAgent.onResume(this);
+//        super.onResume();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        MobclickAgent.onPause(this);
+//        super.onPause();
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        ActivityController.removeActivity(this);
+//        super.onDestroy();
+//    }
 
     protected void setAnimateState(boolean is_visible, int duration, View view, Runnable callback) {
         runOnUiThread(() -> {
@@ -243,7 +243,6 @@ public class BaseActivity extends AppCompatActivity {
                 fileOutputStream.write(crash_msg_json.toString().getBytes());
                 fileOutputStream.close();
             }
-        } catch (JSONException | IOException | IllegalArgumentException ignore) {
-        }
+        } catch (JSONException | IOException | IllegalArgumentException ignore) { }
     }
 }

@@ -96,8 +96,8 @@ public class Welcome extends BaseActivity {
 
     private void onSetupFinished(boolean is_login) {
         int[] permissions = new int[]{
-                ContextCompat.checkSelfPermission(Welcome.this, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                ContextCompat.checkSelfPermission(Welcome.this, Manifest.permission.READ_PHONE_STATE)
+//                ContextCompat.checkSelfPermission(Welcome.this, Manifest.permission.READ_PHONE_STATE),
+                ContextCompat.checkSelfPermission(Welcome.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         };
         boolean isAllowed = true;
         for (int permission : permissions) {

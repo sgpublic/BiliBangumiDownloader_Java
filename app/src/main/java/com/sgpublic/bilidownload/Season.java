@@ -44,7 +44,7 @@ import com.sgpublic.bilidownload.DataHelper.SeasonData;
 import com.sgpublic.bilidownload.DataHelper.SeriesData;
 import com.sgpublic.bilidownload.UIHelper.BlurHelper;
 import com.sgpublic.bilidownload.UIHelper.SeasonPagerAdapter;
-import com.umeng.analytics.MobclickAgent;
+//import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 
@@ -130,10 +130,10 @@ public class Season extends BaseActivity {
                 Season.this.episodeData = episodeData;
                 Season.this.seasonData = seasonData;
 
-                Map<String, Object> season_view = new HashMap<>();
-                season_view.put("name", season_title + " (" + season_id + ")");
-                season_view.put("area", season_area == 0 ? "港澳台" : "大陆");
-                MobclickAgent.onEventObject(Season.this, "season_view", season_view);
+//                Map<String, Object> season_view = new HashMap<>();
+//                season_view.put("name", season_title + " (" + season_id + ")");
+//                season_view.put("area", season_area == 0 ? "港澳台" : "大陆");
+//                MobclickAgent.onEventObject(Season.this, "season_view", season_view);
 
                 if (episodeData.size() > 0) {
                     episodeHelper.getDownloadInfo(episodeData.get(0).cid, season_area, new EpisodeHelper.Callback() {
@@ -712,15 +712,15 @@ public class Season extends BaseActivity {
             dialog.dismiss();
         }
 
-        if (qualityData != null && episode_download_count != 0) {
-            Map<String, Object> episode_download = new HashMap<>();
-            episode_download.put("count", episode_download_count);
-            episode_download.put("quality", qualityData
-                    .get((int) season_quality.getSelectedItemId())
-                    .getDescription()
-            );
-            MobclickAgent.onEventObject(Season.this, "episode_download", episode_download);
-        }
+//        if (qualityData != null && episode_download_count != 0) {
+//            Map<String, Object> episode_download = new HashMap<>();
+//            episode_download.put("count", episode_download_count);
+//            episode_download.put("quality", qualityData
+//                    .get((int) season_quality.getSelectedItemId())
+//                    .getDescription()
+//            );
+//            MobclickAgent.onEventObject(Season.this, "episode_download", episode_download);
+//        }
 
         super.onDestroy();
     }
