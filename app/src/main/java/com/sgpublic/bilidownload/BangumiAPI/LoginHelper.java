@@ -1,6 +1,7 @@
 package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.sgpublic.bilidownload.BaseService.Base64Helper;
 import com.sgpublic.bilidownload.R;
@@ -113,6 +114,7 @@ public class LoginHelper {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
+                Log.d(TAG, result);
                 try {
                     JSONObject object = new JSONObject(result);
                     if (object.getInt("code") == 0) {
@@ -122,7 +124,7 @@ public class LoginHelper {
                             callback_private.onResult(
                                     object.getString("access_token"),
                                     object.getLong("mid"));
-                        } else if (object.getInt("status") == 3) {
+                        } else if (object.getInt("status") == 3 || object.getInt("status") == 2) {
                             callback_private.onLimited();
                         } else {
                             callback_private.onFailure(-126, null, null);
@@ -133,7 +135,6 @@ public class LoginHelper {
                 } catch (JSONException e) {
                     callback_private.onFailure(-123, null, e);
                 }
-
             }
         });
     }
@@ -188,7 +189,7 @@ public class LoginHelper {
             public void onResponse(Call call, Response response) throws IOException {
                 String location = response.header("Location");
                 if (location != null && !Objects.equals(location, "")) {
-                    if (location.substring(0, 28).equals("http://link.acg.tv/forum.php")) {
+                    if (location.startsWith("http://link.acg.tv/forum.php")) {
                         String[] url_split = location.split("&");
                         String access_key = url_split[0].substring(40);
                         long mid = Long.parseLong(url_split[1].substring(4));

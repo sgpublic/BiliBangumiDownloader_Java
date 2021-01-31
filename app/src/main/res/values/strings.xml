@@ -94,7 +94,7 @@
     <string name="error_network">请检查网络连接</string>
     <string name="error_login">登陆失败</string>
     <string name="error_login_refresh">登陆状态失效，请重新登陆</string>
-    <string name="error_login_verify">您已开启登陆设备管理，请使用网页登陆</string>
+    <string name="error_login_verify">您的账号登录受限，请使用网页登陆</string>
     <string name="error_bangumi_load">数据加载出错</string>
     <string name="error_update">检查更新出错</string>
     <string name="error_download_url">获取链接失败</string>

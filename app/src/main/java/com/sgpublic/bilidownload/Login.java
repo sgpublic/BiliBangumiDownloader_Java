@@ -171,7 +171,7 @@ public class Login extends BaseActivity {
         });
 
         findViewById(R.id.login_button_access).setOnClickListener(v -> ActivityCompat.requestPermissions(Login.this, new String[]{
-                Manifest.permission.READ_PHONE_STATE,
+//                Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         }, 1));
 
