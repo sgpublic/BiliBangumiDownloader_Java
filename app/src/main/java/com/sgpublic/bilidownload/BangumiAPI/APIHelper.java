@@ -15,7 +15,7 @@ public class APIHelper {
     private static final String TAG = "APIHelper";
 
     private static final String build = "5442100";
-    private static final String android_key = "1d8b6e7d45233436";
+    private static final String android_key = "4409e2ce8ffd12b8";
     private static final String platform = "android";
 
     private static final int METHOD_GET = 0;
@@ -46,6 +46,7 @@ public class APIHelper {
         String[][] arg_array = {
                 {"appkey", android_key},
                 {"build", build},
+                {"gee_type", "10"},
                 {"mobi_app", platform},
                 {"password", password_encrypted},
                 {"platform", platform},
@@ -53,7 +54,7 @@ public class APIHelper {
                 {"username", username}
         };
         String[][] header_array = {
-                {"User-Agent", "Mozilla/5.0 BiliDroid/6.17.1 (bbcallen@gmail.com)"}
+                {"User-Agent", "Mozilla/5.0 (bbcallen@gmail.com)"}
         };
         return onReturn(url, METHOD_POST, arg_array, header_array, true);
     }
@@ -70,6 +71,17 @@ public class APIHelper {
                 {"User-Agent", user_agent}
         };
         return onReturn(url, METHOD_GET, arg_array, header_array, false);
+    }
+
+    Call getRefreshTokenRequest(String refresh_token){
+        String url = "https://passport.bilibili.com/api/oauth2/refreshToken";
+        String[][] arg_array = {
+                {"access_token", access_token},
+                {"appkey", android_key},
+                {"refresh_token", refresh_token},
+                {"ts", getTS()}
+        };
+        return onReturn(url, METHOD_POST, arg_array, true);
     }
 
     Call getLoginConfirmRequest(String url, String cookie, String user_agent) {
@@ -345,7 +357,7 @@ public class APIHelper {
         }
 
         private String getSign(String content) {
-            content = content + "560c52ccd288fed045859ed18bffd973";
+            content = content + "59b43e04ad6965f34319062b478f83dd";
             byte[] hash;
             try {
                 hash = MessageDigest.getInstance("MD5").digest(content.getBytes());
@@ -363,7 +375,7 @@ public class APIHelper {
         }
     }
 
-    private String getTS() {
+    public static String getTS() {
         return String.valueOf(System.currentTimeMillis());
     }
 }
