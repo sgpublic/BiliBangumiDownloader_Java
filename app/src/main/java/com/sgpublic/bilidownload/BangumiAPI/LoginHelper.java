@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.sgpublic.bilidownload.BaseService.Base64Helper;
+import com.sgpublic.bilidownload.DataHelper.TokenData;
 import com.sgpublic.bilidownload.R;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +22,7 @@ import java.util.Objects;
 import javax.crypto.Cipher;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 
 public class LoginHelper {
@@ -114,16 +117,17 @@ public class LoginHelper {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
-                Log.d(TAG, result);
                 try {
                     JSONObject object = new JSONObject(result);
                     if (object.getInt("code") == 0) {
                         object = object.getJSONObject("data");
                         if (object.getInt("status") == 0) {
                             object = object.getJSONObject("token_info");
-                            callback_private.onResult(
-                                    object.getString("access_token"),
-                                    object.getLong("mid"));
+                            TokenData token = new TokenData();
+                            token.access_token = object.getString("access_token");
+                            token.refresh_token = object.getString("refresh_token");
+                            token.expires_in = object.getLong("expires_in") * 1000 + Long.parseLong(APIHelper.getTS()) - 1;
+                            callback_private.onResult(token, object.getLong("mid"));
                         } else if (object.getInt("status") == 3 || object.getInt("status") == 2) {
                             callback_private.onLimited();
                         } else {
@@ -138,7 +142,6 @@ public class LoginHelper {
             }
         });
     }
-
 
     public void loginInWeb(String cookie, String user_agent, Callback callback) {
         this.cookie = cookie;
@@ -193,7 +196,11 @@ public class LoginHelper {
                         String[] url_split = location.split("&");
                         String access_key = url_split[0].substring(40);
                         long mid = Long.parseLong(url_split[1].substring(4));
-                        callback_private.onResult(access_key, mid);
+                        TokenData token = new TokenData();
+                        token.access_token = access_key;
+                        token.refresh_token = "";
+                        token.expires_in = 2591999 + Long.parseLong(APIHelper.getTS());
+                        callback_private.onResult(token, mid);
                     } else {
                         callback_private.onFailure(-144, null, null);
                     }
@@ -204,9 +211,46 @@ public class LoginHelper {
         });
     }
 
+    public void refreshToken(String access_token, String refresh_token, Callback callback){
+        this.callback_private = callback;
+        APIHelper helper = new APIHelper(access_token);
+        Call call = helper.getRefreshTokenRequest(refresh_token);
+        call.enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                if (e instanceof UnknownHostException) {
+                    callback_private.onFailure(-151, context.getString(R.string.error_network), e);
+                } else {
+                    callback_private.onFailure(-152, e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String result = Objects.requireNonNull(response.body()).string();
+                Log.d(TAG, result);
+                try {
+                    JSONObject object = new JSONObject(result);
+                    if (object.getInt("code") == 0) {
+                        object = object.getJSONObject("data");
+                        TokenData token = new TokenData();
+                        token.access_token = object.getString("access_token");
+                        token.refresh_token = object.getString("refresh_token");
+                        token.expires_in = object.getLong("expires_in") * 1000 + Long.parseLong(APIHelper.getTS()) - 1;
+                        callback_private.onResult(token, object.getLong("mid"));
+                    } else {
+                        callback_private.onFailure(-154, object.getString("message"), null);
+                    }
+                } catch (JSONException e) {
+                    callback_private.onFailure(-153, null, e);
+                }
+            }
+        });
+    }
+
     public interface Callback {
         void onFailure(int code, String message, Throwable e);
         void onLimited();
-        void onResult(String access_key, long mid);
+        void onResult(TokenData token, long mid);
     }
 }
