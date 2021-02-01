@@ -1,13 +1,10 @@
 package com.sgpublic.bilidownload;
 
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -29,10 +27,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
-import com.sgpublic.bilidownload.BaseService.UpdateHelper;
+import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataHelper.FollowData;
 import com.sgpublic.bilidownload.UIHelper.BannerItem;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
 import com.sgpublic.bilidownload.UIHelper.SeasonBannerAdapter;
 import com.zhpan.bannerview.BannerViewPager;
@@ -181,11 +178,12 @@ public class Main extends BaseActivity {
             } else {
                 mine_vip.setVisibility(View.VISIBLE);
                 mine_vip_string.setVisibility(View.VISIBLE);
-                if (vip_type == 2) {
-                    mine_vip_string.setText(R.string.text_mine_vip_year);
-                } else {
-                    mine_vip_string.setText(R.string.text_mine_vip_month);
-                }
+                mine_vip_string.setText(sharedPreferences.getString("vip_label", ""));
+//                if (vip_type == 2) {
+//                    mine_vip_string.setText(R.string.text_mine_vip_year);
+//                } else {
+//                    mine_vip_string.setText(R.string.text_mine_vip_month);
+//                }
             }
 
             int[] image_levels = {
@@ -245,16 +243,23 @@ public class Main extends BaseActivity {
         int view_height = image_height + dip2px(Main.this, 38);
 
         int data_info_index = 0;
+        boolean night_mode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         for (FollowData data_info : data_array) {
             View item_bangumi_follow = LayoutInflater.from(Main.this).inflate(R.layout.item_bangumi_follow, bangumi_follows, false);
             TextView follow_content = item_bangumi_follow.findViewById(R.id.follow_content);
             follow_content.setText(data_info.title);
 
-            TextView item_follow_badges = item_bangumi_follow.findViewById(R.id.item_follow_badges);
+            CardView item_follow_badges_background = item_bangumi_follow.findViewById(R.id.item_follow_badges_background);
             if (data_info.badge.equals("")) {
-                item_follow_badges.setVisibility(View.GONE);
+                item_follow_badges_background.setVisibility(View.GONE);
             } else {
-                item_follow_badges.setVisibility(View.VISIBLE);
+                item_follow_badges_background.setVisibility(View.VISIBLE);
+                if (night_mode){
+                    item_follow_badges_background.setCardBackgroundColor(data_info.badge_color_night);
+                } else {
+                    item_follow_badges_background.setCardBackgroundColor(data_info.badge_color);
+                }
+                TextView item_follow_badges = item_bangumi_follow.findViewById(R.id.item_follow_badges);
                 item_follow_badges.setText(data_info.badge);
             }
 
