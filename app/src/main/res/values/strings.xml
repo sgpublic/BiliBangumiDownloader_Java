@@ -39,8 +39,8 @@
     <string name="text_explore_storage">内部储存</string>
     <string name="text_explore_sdcard">SD卡储存</string>
 
-    <string name="text_mine_vip_year">年度大会员</string>
-    <string name="text_mine_vip_month">月度大会员</string>
+<!--    <string name="text_mine_vip_year">年度大会员</string>-->
+<!--    <string name="text_mine_vip_month">月度大会员</string>-->
     <string name="title_mine_category_quick">快捷启动</string>
     <string name="title_mine_other_bangumi">我的追番</string>
     <string name="title_mine_more">更多</string>
