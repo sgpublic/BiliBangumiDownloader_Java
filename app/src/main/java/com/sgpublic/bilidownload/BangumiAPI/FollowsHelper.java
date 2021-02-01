@@ -1,6 +1,7 @@
 package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import com.sgpublic.bilidownload.DataHelper.FollowData;
 import com.sgpublic.bilidownload.R;
@@ -71,7 +72,16 @@ public class FollowsHelper {
                                 followData.title = object.getString("title");
                                 followData.cover = object.getString("cover");
                                 followData.is_finish = object.getInt("is_finish");
-                                followData.badge = object.getString("badge");
+
+                                JSONObject badge = object.getJSONObject("badge_info");
+                                followData.badge = badge.getString("text");
+                                followData.badge_color = Color.parseColor(
+                                        badge.getString("bg_color")
+                                );
+                                followData.badge_color_night = Color.parseColor(
+                                        badge.getString("bg_color_night")
+                                );
+
                                 followData.square_cover = object.getString("square_cover");
 
                                 object = object.getJSONObject("new_ep");

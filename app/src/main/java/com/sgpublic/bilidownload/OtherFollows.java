@@ -2,11 +2,13 @@ package com.sgpublic.bilidownload;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import androidx.appcompat.app.ActionBar;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -80,16 +82,23 @@ public class OtherFollows extends BaseActivity {
         int view_height = image_height + dip2px(OtherFollows.this, 38);
 
         int data_info_index = 0;
+        boolean night_mode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         for (final FollowData data_info : data_array) {
             View item_others_follow = LayoutInflater.from(OtherFollows.this).inflate(R.layout.item_bangumi_follow, others_grid, false);
             TextView follow_content = item_others_follow.findViewById(R.id.follow_content);
             follow_content.setText(data_info.title);
 
-            TextView item_follow_badges = item_others_follow.findViewById(R.id.item_follow_badges);
+            CardView item_follow_badges_background = item_others_follow.findViewById(R.id.item_follow_badges_background);
             if (data_info.badge.equals("")) {
-                item_follow_badges.setVisibility(View.GONE);
+                item_follow_badges_background.setVisibility(View.GONE);
             } else {
-                item_follow_badges.setVisibility(View.VISIBLE);
+                item_follow_badges_background.setVisibility(View.VISIBLE);
+                if (night_mode){
+                    item_follow_badges_background.setCardBackgroundColor(data_info.badge_color_night);
+                } else {
+                    item_follow_badges_background.setCardBackgroundColor(data_info.badge_color);
+                }
+                TextView item_follow_badges = item_others_follow.findViewById(R.id.item_follow_badges);
                 item_follow_badges.setText(data_info.badge);
             }
 
