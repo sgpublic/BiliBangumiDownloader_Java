@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -27,30 +28,14 @@ import java.util.Objects;
 public class LoginWeb extends BaseActivity {
 
     private static final String login_url = "https://passport.bilibili.com/login";
-    private static final String login_success = "https://m.bilibili.com/index.html";
-
-    private class InJavaScriptLocalObj {
-        @JavascriptInterface
-        public void getSource(String html) {
-            String[] json_array = html.split(">");
-            if (json_array.length > 1) {
-                json_content = json_array[1];
-            } else {
-                json_content = json_array[0];
-            }
-            json_array = html.split("<");
-            json_content = json_array[0]
-                    .replace("&amp;", "&");
-        }
-    }
+    private static final String bilibili_host = "https://m.bilibili.com/index.html";
+    private static final String bilibili_passport = "https://passport.bilibili.com/account/security#/home";
 
     private WebView login_web_view;
     private ImageView login_load_state;
 
     private String web_cookie;
     private String web_user_agent;
-
-    private String json_content;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -72,12 +57,12 @@ public class LoginWeb extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (url.equals(login_success)) {
+                if (url.equals(bilibili_host) || url.equals(bilibili_passport)) {
                     login_web_view.setVisibility(View.INVISIBLE);
                     login_load_state.setVisibility(View.VISIBLE);
                     login_web_view.stopLoading();
                     CookieManager manager = CookieManager.getInstance();
-                    web_cookie = Objects.requireNonNull(manager.getCookie(login_success));
+                    web_cookie = Objects.requireNonNull(manager.getCookie(url));
                     LoginHelper helper = new LoginHelper(LoginWeb.this);
                     helper.loginInWeb(web_cookie, web_user_agent, new LoginHelper.Callback() {
                         @Override

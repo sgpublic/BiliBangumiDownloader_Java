@@ -53,7 +53,7 @@ public class APIHelper {
                 {"username", username}
         };
         String[][] header_array = {
-                {"User-Agent", "Mozilla/5.0 BiliDroid/6.8.2 (bbcallen@gmail.com)"}
+                {"User-Agent", "Mozilla/5.0 BiliDroid/6.17.1 (bbcallen@gmail.com)"}
         };
         return onReturn(url, METHOD_POST, arg_array, header_array, true);
     }
