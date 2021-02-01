@@ -67,6 +67,7 @@ public class UserManager {
                         data.sign = object.getString("sign");
 
                         object = object.getJSONObject("vip");
+                        data.vip_label = object.getJSONObject("label").getString("text");
                         data.vip_type = object.getInt("type");
                         data.vip_state = object.getInt("status");
 
