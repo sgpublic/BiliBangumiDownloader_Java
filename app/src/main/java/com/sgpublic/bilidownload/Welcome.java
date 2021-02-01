@@ -16,9 +16,12 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.BaseService.UpdateHelper;
+import com.sgpublic.bilidownload.DataHelper.TokenData;
+import com.sgpublic.bilidownload.DataHelper.UserData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,45 +54,75 @@ public class Welcome extends BaseActivity {
             }
             editor.apply();
 
+            Runnable refresh_user_info = () -> {
+                UserManager manager = new UserManager(
+                        Welcome.this,
+                        sharedPreferences.getString("access_key", ""),
+                        sharedPreferences.getLong("mid", 0L)
+                );
+                manager.getInfo(new UserManager.Callback() {
+                    @Override
+                    public void onFailure(int code, String message, Throwable e) {
+                        onToast(Welcome.this, R.string.error_login);
+                        onSetupFinished(false);
+                        saveExplosion(e, code);
+                    }
+
+                    @Override
+                    public void onResult(UserData data) {
+                        SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                        editor1.putString("name", data.name);
+                        editor1.putString("sign", data.sign);
+                        editor1.putString("face", data.face);
+                        editor1.putInt("sex", data.sex);
+                        editor1.putString("vip_label", data.vip_label);
+                        editor1.putInt("vip_type", data.vip_type);
+                        editor1.putInt("vip_state", data.vip_state);
+                        editor1.putInt("level", data.level);
+                        editor1.putBoolean("is_login", true);
+                        editor1.apply();
+                        onSetupFinished(true);
+                    }
+                });
+            };
             if (!sharedPreferences.getBoolean("is_login", false)) {
                 new Handler().postDelayed(() -> onSetupFinished(false), 800);
             } else if (sharedPreferences.getLong("expires_in", 0L) > System.currentTimeMillis()) {
-                new Handler().postDelayed(() -> {
-                    UserManager manager = new UserManager(
-                            Welcome.this,
-                            sharedPreferences.getString("access_key", ""),
-                            sharedPreferences.getLong("mid", 0L)
-                    );
-                    manager.getInfo(
-                            new UserManager.Callback() {
-                                @Override
-                                public void onFailure(int code, String message, Throwable e) {
-                                    onToast(Welcome.this, R.string.error_login);
-                                    onSetupFinished(false);
-                                    saveExplosion(e, code);
-                                }
-
-                                @Override
-                                public void onResult(com.sgpublic.bilidownload.DataHelper.UserData data) {
-                                    SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                    editor1.putString("name", data.name);
-                                    editor1.putString("sign", data.sign);
-                                    editor1.putString("face", data.face);
-                                    editor1.putInt("sex", data.sex);
-                                    editor1.putInt("vip_type", data.vip_type);
-                                    editor1.putInt("vip_state", data.vip_state);
-                                    editor1.putInt("level", data.level);
-                                    editor1.putBoolean("is_login", true);
-                                    editor1.apply();
-                                    onSetupFinished(true);
-                                }
-                            });
-                }, 100);
+                new Handler().postDelayed(refresh_user_info, 100);
             } else {
-                new Handler().postDelayed(() -> {
+                String refresh_key = sharedPreferences.getString("refresh_key", "");
+                Runnable token_expires = () -> {
                     onToast(this, R.string.error_login_refresh);
                     onSetupFinished(false);
-                }, 400);
+                };
+                if (refresh_key.equals("")){
+                    new Handler().postDelayed(token_expires, 400);
+                } else {
+                    String access_key = sharedPreferences.getString("access_key", "");
+                    LoginHelper helper = new LoginHelper(Welcome.this);
+                    helper.refreshToken(access_key, refresh_key, new LoginHelper.Callback() {
+                        @Override
+                        public void onFailure(int code, String message, Throwable e) {
+                            new Handler().postDelayed(token_expires, 200);
+                        }
+
+                        @Override
+                        public void onLimited() {
+                            new Handler().postDelayed(token_expires, 200);
+                        }
+
+                        @Override
+                        public void onResult(TokenData token, long mid) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("access_key", token.access_token);
+                            editor.putString("refresh_key", token.refresh_token);
+                            editor.putLong("mid", mid);
+                            editor.putLong("expires_in", token.expires_in);
+                            editor.apply();
+                            refresh_user_info.run();
+                        }
+                    });
+                }
             }
         }, 400);
     }
