@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.DataHelper.TokenData;
 
 import java.util.Objects;
 
@@ -78,8 +79,8 @@ public class LoginWeb extends BaseActivity {
                         }
 
                         @Override
-                        public void onResult(String access_key, long mid) {
-                            getLoginResult(access_key, mid);
+                        public void onResult(TokenData token, long mid) {
+                            getLoginResult(token, mid);
                         }
                     });
                 } else {
@@ -92,14 +93,14 @@ public class LoginWeb extends BaseActivity {
         login_web_view.loadUrl(login_url);
     }
 
-    private void getLoginResult(String access_key, long mid) {
+    private void getLoginResult(TokenData token, long mid) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("access_key", access_key);
+        editor.putString("access_key", token.access_token);
         editor.putLong("mid", mid);
-        editor.putLong("expires_in", System.currentTimeMillis() + 2419200000L);
+        editor.putLong("expires_in", token.expires_in);
         editor.apply();
 
-        UserManager manager = new UserManager(LoginWeb.this, access_key, mid);
+        UserManager manager = new UserManager(LoginWeb.this, token.access_token, mid);
         manager.getInfo(new UserManager.Callback() {
             @Override
             public void onFailure(int code, String message, Throwable e) {
