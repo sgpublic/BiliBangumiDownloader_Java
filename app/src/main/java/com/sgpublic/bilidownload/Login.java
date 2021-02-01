@@ -27,6 +27,7 @@ import androidx.core.app.ActivityCompat;
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.DataHelper.TokenData;
 
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
 
@@ -84,15 +85,15 @@ public class Login extends BaseActivity {
                 }
 
                 @Override
-                public void onResult(String access_key, long mid) {
-                    Log.d(TAG, "onResult: " + access_key);
+                public void onResult(TokenData token, long mid) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("access_key", access_key);
+                    editor.putString("access_key", token.access_token);
+                    editor.putString("refresh_key", token.refresh_token);
                     editor.putLong("mid", mid);
-                    editor.putLong("expires_in", System.currentTimeMillis() + 2419200000L);
+                    editor.putLong("expires_in", token.expires_in);
                     editor.apply();
 
-                    UserManager manager = new UserManager(Login.this, access_key, mid);
+                    UserManager manager = new UserManager(Login.this, token.access_token, mid);
                     manager.getInfo(new UserManager.Callback() {
                         @Override
                         public void onFailure(int code, String message, Throwable e) {
@@ -108,6 +109,7 @@ public class Login extends BaseActivity {
                             editor.putString("sign", data.sign);
                             editor.putString("face", data.face);
                             editor.putInt("sex", data.sex);
+                            editor.putString("vip_label", data.vip_label);
                             editor.putInt("vip_type", data.vip_type);
                             editor.putInt("vip_state", data.vip_state);
                             editor.putInt("level", data.level);
