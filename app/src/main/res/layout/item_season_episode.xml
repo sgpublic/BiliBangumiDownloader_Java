@@ -35,10 +35,30 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    app:cardBackgroundColor="@color/color_random_2"
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="2dp">
+
+                    <TextView
+                        android:id="@+id/episode_index_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/episode_vip_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="top|end"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    app:cardBackgroundColor="@color/color_vip_big"
                     app:cardElevation="0dp"
                     app:cardCornerRadius="2dp">
 

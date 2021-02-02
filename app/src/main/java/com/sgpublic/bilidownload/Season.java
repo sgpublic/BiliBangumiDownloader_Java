@@ -2,6 +2,7 @@ package com.sgpublic.bilidownload;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -365,6 +367,8 @@ public class Season extends BaseActivity {
             season_grid.setColumnCount(2);
             season_grid.setRowCount(row_count);
 
+            boolean night_mode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+
             for (int episode_index = 0; episode_index < episodeData.size(); episode_index++) {
                 InfoData episodeData_index = episodeData.get(episode_index);
                 View item_season_episode = LayoutInflater.from(this).inflate(R.layout.item_season_episode, season_grid, false);
@@ -378,26 +382,29 @@ public class Season extends BaseActivity {
                         episodeData_index.pub_real_time
                 ));
 
-                TextView episode_vip = item_season_episode.findViewById(R.id.episode_vip);
-                if (episodeData_index.status == 13) {
-                    episode_vip.setVisibility(View.VISIBLE);
-                    if (seasonData.payment == 1) {
-                        episode_vip.setText(R.string.text_episode_vip_all);
-                    } else {
-                        episode_vip.setText(R.string.text_episode_vip_pre);
-                    }
-                } else {
-                    episode_vip.setVisibility(View.GONE);
-                }
+                TextView episode_index_title = item_season_episode.findViewById(R.id.episode_index_title);
+                episode_index_title.setText(episodeData_index.index);
 
-                int episode_index_final = episode_index;
-                item_season_episode.setOnClickListener(v -> {
-                    if (episodeData.get(episode_index_final).status == 13 && is_vip == 0) {
-                        onToast(Season.this, R.string.text_episode_vip_needed);
+                CardView episode_vip_background = item_season_episode.findViewById(R.id.episode_vip_background);
+                if (episodeData_index.badge.equals("")){
+                    episode_vip_background.setVisibility(View.GONE);
+                    int episode_index_final = episode_index;
+                    item_season_episode.setOnClickListener(
+                            v -> onSetupDownload(episode_index_final, (int) season_quality.getSelectedItemId())
+                    );
+                } else {
+                    episode_vip_background.setVisibility(View.VISIBLE);
+                    if (night_mode){
+                        episode_vip_background.setCardBackgroundColor(episodeData_index.badge_color_night);
                     } else {
-                        onSetupDownload(episode_index_final, (int) season_quality.getSelectedItemId());
+                        episode_vip_background.setCardBackgroundColor(episodeData_index.badge_color);
                     }
-                });
+                    TextView episode_vip = item_season_episode.findViewById(R.id.episode_vip);
+                    episode_vip.setText(episodeData_index.badge);
+                    item_season_episode.setOnClickListener(
+                            v -> onToast(Season.this, R.string.text_episode_vip_needed)
+                    );
+                }
 
                 ImageView episode_image = item_season_episode.findViewById(R.id.episode_image);
                 RequestOptions requestOptions = new RequestOptions()

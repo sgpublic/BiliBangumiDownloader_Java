@@ -47,6 +47,7 @@
                 tools:ignore="ContentDescription" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/item_banner_badge_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
@@ -57,7 +58,7 @@
                 app:cardCornerRadius="2dp">
 
                 <TextView
-                    android:id="@+id/item_banner_badges"
+                    android:id="@+id/item_banner_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="1dp"

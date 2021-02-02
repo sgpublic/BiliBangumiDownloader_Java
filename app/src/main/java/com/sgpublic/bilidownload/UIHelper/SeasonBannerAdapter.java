@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -30,12 +31,14 @@ public class SeasonBannerAdapter implements ViewHolder<BannerItem> {
         ImageView banner_image_placeholder = itemView.findViewById(R.id.banner_image_placeholder);
         ImageView banner_image = itemView.findViewById(R.id.banner_image);
         ImageView banner_image_foreground = itemView.findViewById(R.id.banner_image_foreground);
-        TextView item_banner_badges = itemView.findViewById(R.id.item_banner_badges);
-        if (data.getBadges().equals("")) {
-            item_banner_badges.setVisibility(View.GONE);
+        CardView item_banner_badge_background = itemView.findViewById(R.id.item_banner_badge_background);
+        if (data.getBadge().equals("")) {
+            item_banner_badge_background.setVisibility(View.GONE);
         } else {
-            item_banner_badges.setVisibility(View.VISIBLE);
-            item_banner_badges.setText(data.getBadges());
+            item_banner_badge_background.setVisibility(View.VISIBLE);
+            item_banner_badge_background.setCardBackgroundColor(data.getBadgeColor());
+            TextView item_banner_badge = itemView.findViewById(R.id.item_banner_badge);
+            item_banner_badge.setText(data.getBadge());
         }
         if (data.getBannerPath().equals("")) {
             RequestOptions requestOptions = new RequestOptions()

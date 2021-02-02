@@ -69,13 +69,12 @@
     <string name="title_season_series">系列</string>
     <string name="title_season_rating_null">暂无评分</string>
     <string name="text_episode_public_time">更新于%1$s</string>
+    <string name="text_episode_index">第 %1$d 话</string>
     <string name="text_season_payment_vip_all">大会员专享观看特权哦~</string>
     <string name="text_season_payment_vip_newest">大会员抢先观看最新剧集哦~</string>
     <string name="text_season_payment_normal">无需会员！赶紧下载下来观看吧~</string>
     <string name="text_season_payment_traveled">港澳台专属，大陆地区无法观看呢~</string>
     <string name="title_season_episode_list">正片</string>
-    <string name="text_episode_vip_all">会员专属</string>
-    <string name="text_episode_vip_pre">会员抢先</string>
     <string name="text_episode_vip_needed">该剧集需要大会员才能观看哦~</string>
 
     <string name="title_download_doing">正在获取链接</string>

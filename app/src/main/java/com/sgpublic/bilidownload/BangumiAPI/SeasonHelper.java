@@ -1,6 +1,8 @@
 package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 
 import com.sgpublic.bilidownload.DataHelper.Episode.InfoData;
 import com.sgpublic.bilidownload.DataHelper.SeasonData;
@@ -144,14 +146,11 @@ public class SeasonHelper {
 
         if (!object.isNull("payment")) {
             if (object.getJSONObject("publish").getInt("is_finish") == 1) {
-                seasonData.payment = 1;
                 description.append(context.getResources().getText(R.string.text_season_payment_vip_all));
             } else {
-                seasonData.payment = 2;
                 description.append(context.getResources().getText(R.string.text_season_payment_vip_newest));
             }
         } else {
-            seasonData.payment = 0;
             if (area == 0) {
                 description.append(context.getResources().getText(R.string.text_season_payment_traveled));
             } else {
@@ -200,9 +199,12 @@ public class SeasonHelper {
     private ArrayList<InfoData> getEpisodesInfo(JSONArray array) throws JSONException{
         ArrayList<InfoData> episodeData = new ArrayList<>();
         for (int episodes_index = 0; episodes_index < array.length(); episodes_index++) {
-            JSONObject object_episodes_index = array.getJSONObject(episodes_index);
-            //if (object_episodes_index.getInt("status") == 2) {
             InfoData episodeData_index = new InfoData();
+            episodeData_index.index = String.format(
+                    context.getString(R.string.text_episode_index), episodes_index + 1
+            );
+
+            JSONObject object_episodes_index = array.getJSONObject(episodes_index);
             episodeData_index.aid = object_episodes_index.getLong("aid");
             episodeData_index.cid = object_episodes_index.getLong("cid");
             episodeData_index.ep_id = object_episodes_index.getLong("id");
@@ -210,12 +212,20 @@ public class SeasonHelper {
             episodeData_index.status = object_episodes_index.getInt("status");
             episodeData_index.bvid = object_episodes_index.getString("bvid");
 
+            JSONObject object_episodes_index_badge = object_episodes_index.getJSONObject("badge_info");
+            episodeData_index.badge = object_episodes_index_badge.getString("text");
+            episodeData_index.badge_color = Color.parseColor(
+                    object_episodes_index_badge.getString("bg_color")
+            );
+            episodeData_index.badge_color_night = Color.parseColor(
+                    object_episodes_index_badge.getString("bg_color_night")
+            );
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             episodeData_index.pub_real_time = sdf.format(new Date(object_episodes_index
                     .getLong("pub_time")*1000L));
             episodeData_index.title = object_episodes_index.getString("long_title");
             episodeData.add(episodeData_index);
-            //}
         }
         return episodeData;
     }

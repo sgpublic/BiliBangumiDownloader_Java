@@ -12,16 +12,18 @@ public class BannerItem {
     private final String indicator;
     private final String title;
     private final Context context;
-    private final String badges;
+    private final String badge;
+    private final int badge_color;
 
-    public BannerItem(Context context, String cover_episode, String season_cover, long season_id, String title, String indicator, String badges) {
+    public BannerItem(Context context, String cover_episode, String season_cover, long season_id, String title, String indicator, String badge, int badge_color) {
         this.context = context;
         this.cover_episode = cover_episode;
         this.season_cover = season_cover;
         this.season_id = season_id;
         this.indicator = indicator;
         this.title = title;
-        this.badges = badges;
+        this.badge = badge;
+        this.badge_color = badge_color;
     }
 
     public Context getContext() {
@@ -48,7 +50,11 @@ public class BannerItem {
         return season_cover;
     }
 
-    String getBadges() {
-        return badges;
+    String getBadge() {
+        return badge;
+    }
+
+    public int getBadgeColor() {
+        return badge_color;
     }
 }

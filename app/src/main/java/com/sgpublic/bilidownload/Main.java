@@ -113,8 +113,15 @@ public class Main extends BaseActivity {
         list_row_size = 0;
         banner_info_list = new ArrayList<>();
 
+        boolean night_mode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         for (FollowData data_info : data_array) {
             if (data_info.is_finish == 0 || data_info.new_ep_is_new == 1) {
+                int badge_color;
+                if (night_mode){
+                    badge_color = data_info.badge_color_night;
+                } else {
+                    badge_color = data_info.badge_color;
+                }
                 banner_info_list.add(new BannerItem(
                         Main.this,
                         data_info.new_ep_cover,
@@ -122,7 +129,8 @@ public class Main extends BaseActivity {
                         data_info.season_id,
                         data_info.title,
                         data_info.new_ep_index_show,
-                        data_info.badge
+                        data_info.badge,
+                        badge_color
                 ));
                 if (banner_info_list.size() > 7) {
                     break;
@@ -141,6 +149,12 @@ public class Main extends BaseActivity {
                     }
                 }
                 if (!is_equals) {
+                    int badge_color;
+                    if (night_mode){
+                        badge_color = data_info.badge_color_night;
+                    } else {
+                        badge_color = data_info.badge_color;
+                    }
                     BannerItem item = new BannerItem(
                             Main.this,
                             data_info.new_ep_cover,
@@ -148,7 +162,8 @@ public class Main extends BaseActivity {
                             data_info.season_id,
                             data_info.title,
                             data_info.new_ep_index_show,
-                            data_info.badge
+                            data_info.badge,
+                            badge_color
                     );
                     banner_info_list.add(item);
                 }

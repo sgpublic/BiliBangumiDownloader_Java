@@ -1,5 +1,7 @@
 package com.sgpublic.bilidownload.BangumiAPI;
 
+import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.MessageDigest;
