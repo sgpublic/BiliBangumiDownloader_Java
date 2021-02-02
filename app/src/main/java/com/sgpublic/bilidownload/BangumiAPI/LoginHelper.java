@@ -199,7 +199,7 @@ public class LoginHelper {
                         TokenData token = new TokenData();
                         token.access_token = access_key;
                         token.refresh_token = "";
-                        token.expires_in = 2591999 + Long.parseLong(APIHelper.getTS());
+                        token.expires_in = 2592000000L + Long.parseLong(APIHelper.getTS());
                         callback_private.onResult(token, mid);
                     } else {
                         callback_private.onFailure(-144, null, null);
