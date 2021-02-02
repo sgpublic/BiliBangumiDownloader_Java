@@ -200,9 +200,6 @@ public class SeasonHelper {
         ArrayList<InfoData> episodeData = new ArrayList<>();
         for (int episodes_index = 0; episodes_index < array.length(); episodes_index++) {
             InfoData episodeData_index = new InfoData();
-            episodeData_index.index = String.format(
-                    context.getString(R.string.text_episode_index), episodes_index + 1
-            );
 
             JSONObject object_episodes_index = array.getJSONObject(episodes_index);
             episodeData_index.aid = object_episodes_index.getLong("aid");
@@ -225,6 +222,17 @@ public class SeasonHelper {
             episodeData_index.pub_real_time = sdf.format(new Date(object_episodes_index
                     .getLong("pub_time")*1000L));
             episodeData_index.title = object_episodes_index.getString("long_title");
+
+            String title = object_episodes_index.getString("title");
+            try {
+                Float.parseFloat(title);
+                episodeData_index.index = String.format(
+                        context.getString(R.string.text_episode_index), title
+                );
+            } catch (NumberFormatException ignore){
+                episodeData_index.index = title;
+            }
+
             episodeData.add(episodeData_index);
         }
         return episodeData;

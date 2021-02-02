@@ -46,14 +46,13 @@ import com.sgpublic.bilidownload.DataHelper.SeasonData;
 import com.sgpublic.bilidownload.DataHelper.SeriesData;
 import com.sgpublic.bilidownload.UIHelper.BlurHelper;
 import com.sgpublic.bilidownload.UIHelper.SeasonPagerAdapter;
-//import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+//import com.umeng.analytics.MobclickAgent;
 
 public class Season extends BaseActivity {
     private long season_id;
@@ -388,10 +387,6 @@ public class Season extends BaseActivity {
                 CardView episode_vip_background = item_season_episode.findViewById(R.id.episode_vip_background);
                 if (episodeData_index.badge.equals("")){
                     episode_vip_background.setVisibility(View.GONE);
-                    int episode_index_final = episode_index;
-                    item_season_episode.setOnClickListener(
-                            v -> onSetupDownload(episode_index_final, (int) season_quality.getSelectedItemId())
-                    );
                 } else {
                     episode_vip_background.setVisibility(View.VISIBLE);
                     if (night_mode){
@@ -401,10 +396,16 @@ public class Season extends BaseActivity {
                     }
                     TextView episode_vip = item_season_episode.findViewById(R.id.episode_vip);
                     episode_vip.setText(episodeData_index.badge);
-                    item_season_episode.setOnClickListener(
-                            v -> onToast(Season.this, R.string.text_episode_vip_needed)
-                    );
                 }
+
+                int episode_index_final = episode_index;
+                item_season_episode.setOnClickListener(v -> {
+                    if (episodeData.get(episode_index_final).status == 13 && is_vip == 0){
+                        onToast(Season.this, R.string.text_episode_vip_needed);
+                    } else {
+                        onSetupDownload(episode_index_final, (int) season_quality.getSelectedItemId());
+                    }
+                });
 
                 ImageView episode_image = item_season_episode.findViewById(R.id.episode_image);
                 RequestOptions requestOptions = new RequestOptions()
