@@ -126,7 +126,7 @@ public class LoginHelper {
                             TokenData token = new TokenData();
                             token.access_token = object.getString("access_token");
                             token.refresh_token = object.getString("refresh_token");
-                            token.expires_in = object.getLong("expires_in") * 1000 + Long.parseLong(APIHelper.getTS()) - 1;
+                            token.expires_in = object.getLong("expires_in") * 1000L + Long.parseLong(APIHelper.getTS());
                             callback_private.onResult(token, object.getLong("mid"));
                         } else if (object.getInt("status") == 3 || object.getInt("status") == 2) {
                             callback_private.onLimited();
@@ -236,7 +236,7 @@ public class LoginHelper {
                         TokenData token = new TokenData();
                         token.access_token = object.getString("access_token");
                         token.refresh_token = object.getString("refresh_token");
-                        token.expires_in = object.getLong("expires_in") * 1000 + Long.parseLong(APIHelper.getTS()) - 1;
+                        token.expires_in = object.getLong("expires_in") * 1000L + Long.parseLong(APIHelper.getTS());
                         callback_private.onResult(token, object.getLong("mid"));
                     } else {
                         callback_private.onFailure(-154, object.getString("message"), null);

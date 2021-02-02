@@ -35,7 +35,7 @@ public class Welcome extends BaseActivity {
         new Handler().postDelayed(() -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if (sharedPreferences.getInt("quality", -1) == -1) {
-                editor.putInt("quality", 80);
+                editor.putInt("quality", 112);
             }
             if (sharedPreferences.getInt("type", -1) == -1) {
                 editor.putInt("type", 0);
@@ -96,35 +96,35 @@ public class Welcome extends BaseActivity {
                     onSetupFinished(false);
                 };
                 if (refresh_key.equals("")){
-                    new Handler().postDelayed(token_expires, 400);
-                } else {
-                    String access_key = sharedPreferences.getString("access_key", "");
-                    LoginHelper helper = new LoginHelper(Welcome.this);
-                    helper.refreshToken(access_key, refresh_key, new LoginHelper.Callback() {
-                        @Override
-                        public void onFailure(int code, String message, Throwable e) {
-                            new Handler().postDelayed(token_expires, 200);
-                        }
-
-                        @Override
-                        public void onLimited() {
-                            new Handler().postDelayed(token_expires, 200);
-                        }
-
-                        @Override
-                        public void onResult(TokenData token, long mid) {
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("access_key", token.access_token);
-                            editor.putString("refresh_key", token.refresh_token);
-                            editor.putLong("mid", mid);
-                            editor.putLong("expires_in", token.expires_in);
-                            editor.apply();
-                            refresh_user_info.run();
-                        }
-                    });
+                    new Handler().postDelayed(token_expires, 100);
+                    return;
                 }
+                String access_key = sharedPreferences.getString("access_key", "");
+                LoginHelper helper = new LoginHelper(Welcome.this);
+                helper.refreshToken(access_key, refresh_key, new LoginHelper.Callback() {
+                    @Override
+                    public void onFailure(int code, String message, Throwable e) {
+                        new Handler().postDelayed(token_expires, 200);
+                    }
+
+                    @Override
+                    public void onLimited() {
+                        new Handler().postDelayed(token_expires, 200);
+                    }
+
+                    @Override
+                    public void onResult(TokenData token, long mid) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("access_key", token.access_token);
+                        editor.putString("refresh_key", token.refresh_token);
+                        editor.putLong("mid", mid);
+                        editor.putLong("expires_in", token.expires_in);
+                        editor.apply();
+                        refresh_user_info.run();
+                    }
+                });
             }
-        }, 400);
+        }, 300);
     }
 
     private void onSetupFinished(boolean is_login) {
