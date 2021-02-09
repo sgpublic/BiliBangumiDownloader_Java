@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.sgpublic.bilidownload.BaseService.Base64Helper;
-import com.sgpublic.bilidownload.DataHelper.TokenData;
+import com.sgpublic.bilidownload.DataItem.TokenData;
 import com.sgpublic.bilidownload.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,6 @@ import java.util.Objects;
 import javax.crypto.Cipher;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Response;
 
 public class LoginHelper {

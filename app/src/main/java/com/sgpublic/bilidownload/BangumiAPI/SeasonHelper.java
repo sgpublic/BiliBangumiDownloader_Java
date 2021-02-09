@@ -2,11 +2,10 @@ package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 
-import com.sgpublic.bilidownload.DataHelper.Episode.InfoData;
-import com.sgpublic.bilidownload.DataHelper.SeasonData;
-import com.sgpublic.bilidownload.DataHelper.SeriesData;
+import com.sgpublic.bilidownload.DataItem.Episode.InfoData;
+import com.sgpublic.bilidownload.DataItem.SeasonData;
+import com.sgpublic.bilidownload.DataItem.SeriesData;
 import com.sgpublic.bilidownload.R;
 
 import org.json.JSONArray;
@@ -109,6 +108,7 @@ public class SeasonHelper {
         seasonData.actors_lines = seasonData.actors.split("\n").length;
 
         seasonData.alias = object.getString("alias");
+        seasonData.season_type = object.getInt("type");
 
         JSONArray array = object.getJSONArray("seasons");
         ArrayList<SeriesData> list = new ArrayList<>();
@@ -118,6 +118,15 @@ public class SeasonHelper {
                 SeriesData seriesData = new SeriesData();
                 seriesData.season_id = object_index.getLong("season_id");
                 seriesData.badge = object_index.getString("badge");
+
+                JSONObject object_index_badge_info = object_index.getJSONObject("badge_info");
+                seriesData.badge_color = Color.parseColor(
+                        object_index_badge_info.getString("bg_color")
+                );
+                seriesData.badge_color_night = Color.parseColor(
+                        object_index_badge_info.getString("bg_color_night")
+                );
+
                 seriesData.cover = object_index.getString("cover");
                 seriesData.title = object_index.getString("title");
                 list.add(seriesData);
@@ -209,7 +218,7 @@ public class SeasonHelper {
             episodeData_index.status = object_episodes_index.getInt("status");
             episodeData_index.bvid = object_episodes_index.getString("bvid");
 
-            JSONObject object_episodes_index_badge = object_episodes_index.getJSONObject("badge_info");
+                    JSONObject object_episodes_index_badge = object_episodes_index.getJSONObject("badge_info");
             episodeData_index.badge = object_episodes_index_badge.getString("text");
             episodeData_index.badge_color = Color.parseColor(
                     object_episodes_index_badge.getString("bg_color")

@@ -2,7 +2,7 @@ package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
 
-import com.sgpublic.bilidownload.DataHelper.UserData;
+import com.sgpublic.bilidownload.DataItem.UserData;
 import com.sgpublic.bilidownload.R;
 
 import org.json.JSONException;

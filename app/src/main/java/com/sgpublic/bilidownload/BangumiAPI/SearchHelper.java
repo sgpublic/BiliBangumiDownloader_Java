@@ -5,7 +5,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 
-import com.sgpublic.bilidownload.DataHelper.SearchData;
+import com.sgpublic.bilidownload.DataItem.SearchData;
 import com.sgpublic.bilidownload.R;
 
 import org.json.JSONArray;

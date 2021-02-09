@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -27,7 +26,7 @@ import androidx.core.app.ActivityCompat;
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.DataHelper.TokenData;
+import com.sgpublic.bilidownload.DataItem.TokenData;
 
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
 
@@ -103,7 +102,7 @@ public class Login extends BaseActivity {
                         }
 
                         @Override
-                        public void onResult(com.sgpublic.bilidownload.DataHelper.UserData data) {
+                        public void onResult(com.sgpublic.bilidownload.DataItem.UserData data) {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("name", data.name);
                             editor.putString("sign", data.sign);

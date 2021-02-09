@@ -1,6 +1,4 @@
-package com.sgpublic.bilidownload.DataHelper;
-
-import android.graphics.Color;
+package com.sgpublic.bilidownload.DataItem;
 
 public class FollowData {
     public String badge;

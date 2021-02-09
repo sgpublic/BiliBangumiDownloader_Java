@@ -3,7 +3,7 @@ package com.sgpublic.bilidownload.BangumiAPI;
 import android.content.Context;
 import android.graphics.Color;
 
-import com.sgpublic.bilidownload.DataHelper.FollowData;
+import com.sgpublic.bilidownload.DataItem.FollowData;
 import com.sgpublic.bilidownload.R;
 
 import org.json.JSONArray;

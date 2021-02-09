@@ -31,7 +31,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.sgpublic.bilidownload.BangumiAPI.SearchHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.DataHelper.SearchData;
+import com.sgpublic.bilidownload.DataItem.SearchData;
 import com.sgpublic.bilidownload.UIHelper.FlowLayout;
 //import com.umeng.analytics.MobclickAgent;
 
@@ -45,8 +45,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Search extends BaseActivity {
     private int search_count = 0;

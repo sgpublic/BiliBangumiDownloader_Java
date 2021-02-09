@@ -31,7 +31,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.DataHelper.FollowData;
+import com.sgpublic.bilidownload.DataItem.FollowData;
 import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
 
 public class OtherFollows extends BaseActivity {

@@ -20,8 +20,8 @@ import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.BaseService.UpdateHelper;
-import com.sgpublic.bilidownload.DataHelper.TokenData;
-import com.sgpublic.bilidownload.DataHelper.UserData;
+import com.sgpublic.bilidownload.DataItem.TokenData;
+import com.sgpublic.bilidownload.DataItem.UserData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,6 +32,7 @@ public class Welcome extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         new Handler().postDelayed(() -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if (sharedPreferences.getInt("quality", -1) == -1) {

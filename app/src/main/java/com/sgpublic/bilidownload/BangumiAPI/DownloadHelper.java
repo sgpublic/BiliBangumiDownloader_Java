@@ -6,10 +6,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 
-import com.sgpublic.bilidownload.DataHelper.Episode.DASHDownloadData;
-import com.sgpublic.bilidownload.DataHelper.Episode.FLVDownloadData;
-import com.sgpublic.bilidownload.DataHelper.Episode.InfoData;
-import com.sgpublic.bilidownload.DataHelper.Episode.QualityData;
+import com.sgpublic.bilidownload.DataItem.Episode.DASHDownloadData;
+import com.sgpublic.bilidownload.DataItem.Episode.FLVDownloadData;
+import com.sgpublic.bilidownload.DataItem.Episode.InfoData;
+import com.sgpublic.bilidownload.DataItem.Episode.QualityData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,12 +72,9 @@ public class DownloadHelper {
         return file_path;
     }
 
-    public void setFormatJSON(DASHDownloadData downloadData,
-                              InfoData infoData,
-                              QualityData qualityData,
-                              String season_title,
-                              String season_cover,
-                              int ep_index) throws JSONException, NullPointerException, IOException {
+    public void setFormatJSON(DASHDownloadData downloadData, InfoData infoData, QualityData qualityData,
+                              String season_title, String season_cover, String ep_index, int session_type)
+            throws JSONException, NullPointerException, IOException {
         type_tag = String.valueOf(qualityData.getQuality());
         String default_dir;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -98,12 +95,20 @@ public class DownloadHelper {
         object_entry.put("title", season_title);
         object_entry.put("type_tag", type_tag);
         object_entry.put("cover", season_cover);
+        object_entry.put("video_quality", qualityData.getQuality());
         object_entry.put("prefered_video_quality", qualityData.getQuality());
         object_entry.put("guessed_total_bytes", 0);
         object_entry.put("total_time_milli", downloadData.time_length);
         object_entry.put("danmaku_count", 3000);
         object_entry.put("time_update_stamp", System.currentTimeMillis());
         object_entry.put("time_create_stamp", System.currentTimeMillis());
+        object_entry.put("can_play_in_advance", true);
+        object_entry.put("interrupt_transform_temp_file", false);
+        object_entry.put("quality_pithy_description", 6181000);
+        object_entry.put("preferred_audio_quality", 0);
+        object_entry.put("audio_quality", 0);
+        object_entry.put("cache_version_code", "");
+        object_entry.put("quality_superscript", "");
         object_entry.put("season_id", season_id);
         JSONObject object_entry_source = new JSONObject();
         object_entry_source.put("av_id", infoData.aid);
@@ -119,7 +124,7 @@ public class DownloadHelper {
         object_entry_ep.put("index", ep_index);
         object_entry_ep.put("index_title", infoData.title);
         object_entry_ep.put("from", "bangumi");
-        object_entry_ep.put("season_type", 1);
+        object_entry_ep.put("season_type", session_type);
         object_entry_ep.put("width", 0);
         object_entry_ep.put("height", 0);
         object_entry_ep.put("rotate", 0);
@@ -128,6 +133,7 @@ public class DownloadHelper {
         object_entry.put("ep", object_entry_ep);
 
         JSONObject object_index = new JSONObject();
+
         JSONArray object_content_video = new JSONArray();
         JSONObject object_index_video = new JSONObject();
         object_index_video.put("id", downloadData.video_id);
@@ -138,6 +144,7 @@ public class DownloadHelper {
         object_index_video.put("codecid", downloadData.video_codecid);
         object_index_video.put("size", downloadData.video_size);
         object_index_video.put("md5", downloadData.video_md5);
+        object_index_video.put("no_rexcode", false);
         object_content_video.put(object_index_video);
         object_index.put("video", object_content_video);
 
@@ -151,6 +158,7 @@ public class DownloadHelper {
         object_index_audio.put("codecid", downloadData.audio_codecid);
         object_index_audio.put("size", downloadData.audio_size);
         object_index_audio.put("md5", downloadData.audio_md5);
+        object_index_audio.put("no_rexcode", false);
         object_content_audio.put(object_index_audio);
         object_index.put("audio", object_content_audio);
 
@@ -158,12 +166,9 @@ public class DownloadHelper {
         save(object_index.toString(), getFilePath(), "index.json");
     }
 
-    public void setFormatJSON(FLVDownloadData downloadData,
-                              InfoData infoData,
-                              QualityData qualityData,
-                              String season_title,
-                              String season_cover,
-                              int ep_index) throws JSONException, NullPointerException, IOException {
+    public void setFormatJSON(FLVDownloadData downloadData, InfoData infoData, QualityData qualityData,
+                              String season_title, String season_cover, String ep_index, int session_type)
+            throws JSONException, NullPointerException, IOException {
         type_tag = "lua." + quality_set + ".bb2api." + qualityData.getQuality();
         root_path = sharedPreferences.getString("location", "/storage/emulated/0/Android/data/") + type_set + "/download/s_"
                 + season_id + "/" + ep_id + "/";
@@ -199,7 +204,7 @@ public class DownloadHelper {
         object_entry_ep.put("index", ep_index);
         object_entry_ep.put("index_title", infoData.title);
         object_entry_ep.put("from", "bangumi");
-        object_entry_ep.put("season_type", 1);
+        object_entry_ep.put("season_type", session_type);
         object_entry_ep.put("width", 0);
         object_entry_ep.put("height", 0);
         object_entry_ep.put("rotate", 0);

@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.DataHelper.Episode;
+package com.sgpublic.bilidownload.DataItem.Episode;
 
 public class InfoData {
     public String index;

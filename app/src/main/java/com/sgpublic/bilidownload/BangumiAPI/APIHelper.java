@@ -187,6 +187,7 @@ public class APIHelper {
         return onReturn(url, METHOD_GET, arg_array, true);
     }
 
+    @Deprecated
     Call getSeasonInfoOldRequest(long sid) {
         String url = "https://bangumi.bilibili.com/view/web_api/season";
         String[][] arg_array = new String[][]{
@@ -309,7 +310,7 @@ public class APIHelper {
             }
         }
 
-        //Log.d(TAG, "onReturn: " + url_final);
+        Log.d(TAG, "onReturn: " + url_final);
 
         requestBuilder.url(url_final);
         return client.newCall(requestBuilder.build());

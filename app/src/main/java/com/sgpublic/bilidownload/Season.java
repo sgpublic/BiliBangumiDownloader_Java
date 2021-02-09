@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.se.omapi.Session;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,12 +39,12 @@ import com.sgpublic.bilidownload.BangumiAPI.DownloadHelper;
 import com.sgpublic.bilidownload.BangumiAPI.EpisodeHelper;
 import com.sgpublic.bilidownload.BangumiAPI.SeasonHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.DataHelper.Episode.DASHDownloadData;
-import com.sgpublic.bilidownload.DataHelper.Episode.FLVDownloadData;
-import com.sgpublic.bilidownload.DataHelper.Episode.InfoData;
-import com.sgpublic.bilidownload.DataHelper.Episode.QualityData;
-import com.sgpublic.bilidownload.DataHelper.SeasonData;
-import com.sgpublic.bilidownload.DataHelper.SeriesData;
+import com.sgpublic.bilidownload.DataItem.Episode.DASHDownloadData;
+import com.sgpublic.bilidownload.DataItem.Episode.FLVDownloadData;
+import com.sgpublic.bilidownload.DataItem.Episode.InfoData;
+import com.sgpublic.bilidownload.DataItem.Episode.QualityData;
+import com.sgpublic.bilidownload.DataItem.SeasonData;
+import com.sgpublic.bilidownload.DataItem.SeriesData;
 import com.sgpublic.bilidownload.UIHelper.BlurHelper;
 import com.sgpublic.bilidownload.UIHelper.SeasonPagerAdapter;
 
@@ -61,7 +62,7 @@ public class Season extends BaseActivity {
     private int season_area;
     private int is_vip;
 
-    private int episode_download_count = 0;
+//    private int episode_download_count = 0;
 
     private int[] quality_access_int;
     private ArrayList<String> quality_access_string;
@@ -161,9 +162,9 @@ public class Season extends BaseActivity {
                         }
                     });
                 } else {
-                    runOnUiThread(() ->
-                            new Handler().postDelayed(() -> onSetupSeasonInfo(), 500)
-                    );
+                    runOnUiThread(() -> new Handler().postDelayed(
+                            () -> onSetupSeasonInfo(), 500
+                    ));
                 }
             }
         });
@@ -263,16 +264,25 @@ public class Season extends BaseActivity {
             int view_height = image_height + dip2px(Season.this, 38);
 
             int data_info_index = 0;
+
+            boolean night_mode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+
             for (SeriesData data : seasonData.series) {
                 View item_bangume_follow = LayoutInflater.from(Season.this).inflate(R.layout.item_bangumi_follow, season_series, false);
                 TextView follow_content = item_bangume_follow.findViewById(R.id.follow_content);
                 follow_content.setText(data.title);
 
-                TextView item_follow_badges = item_bangume_follow.findViewById(R.id.item_follow_badges);
-                if (data.badge.equals("")) {
-                    item_follow_badges.setVisibility(View.GONE);
+                CardView episode_vip_background = item_bangume_follow.findViewById(R.id.item_follow_badges_background);
+                if (data.badge.equals("")){
+                    episode_vip_background.setVisibility(View.GONE);
                 } else {
-                    item_follow_badges.setVisibility(View.VISIBLE);
+                    episode_vip_background.setVisibility(View.VISIBLE);
+                    if (night_mode){
+                        episode_vip_background.setCardBackgroundColor(data.badge_color_night);
+                    } else {
+                        episode_vip_background.setCardBackgroundColor(data.badge_color);
+                    }
+                    TextView item_follow_badges = item_bangume_follow.findViewById(R.id.item_follow_badges);
                     item_follow_badges.setText(data.badge);
                 }
 
@@ -398,12 +408,11 @@ public class Season extends BaseActivity {
                     episode_vip.setText(episodeData_index.badge);
                 }
 
-                int episode_index_final = episode_index;
                 item_season_episode.setOnClickListener(v -> {
-                    if (episodeData.get(episode_index_final).status == 13 && is_vip == 0){
+                    if (episodeData_index.status == 13 && is_vip == 0){
                         onToast(Season.this, R.string.text_episode_vip_needed);
                     } else {
-                        onSetupDownload(episode_index_final, (int) season_quality.getSelectedItemId());
+                        onSetupDownload(episodeData_index, (int)season_quality.getSelectedItemId());
                     }
                 });
 
@@ -445,14 +454,14 @@ public class Season extends BaseActivity {
         }
     }
 
-    private void onSetupDownload(int episode_index, int quality_index) {
+    private void onSetupDownload(InfoData infoData, int quality_index) {
         Runnable runnable = () -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
             builder.setCancelable(false);
             builder.setView(R.layout.dialog_season_download);
             dialog = builder.show();
 
-            episodeHelper.getDownloadInfo(episodeData.get(episode_index).cid,
+            episodeHelper.getDownloadInfo(infoData.cid,
                     season_area,
                     qualityData.get(quality_index).getQuality(),
                     new EpisodeHelper.Callback() {
@@ -467,18 +476,19 @@ public class Season extends BaseActivity {
                         public void onResult(DASHDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
                             try {
                                 DownloadHelper downloadHelper = new DownloadHelper(
-                                        Season.this, sharedPreferences, season_id, episodeData.get(episode_index).ep_id
+                                        Season.this, sharedPreferences, season_id, infoData.ep_id
                                 );
                                 downloadHelper.setFormatJSON(
-                                        downloadData, episodeData.get(episode_index), qualityData.get(quality_index), season_title, cover_url, episode_index
+                                        downloadData, infoData, qualityData.get(quality_index),
+                                        season_title, cover_url, infoData.index, seasonData.season_type
                                 );
                                 downloadHelper.handleDownload(
-                                        downloadData.video_url, episodeData.get(episode_index).title, downloadHelper.getFilePath(), "video.m4s"
+                                        downloadData.video_url, infoData.title, downloadHelper.getFilePath(), "video.m4s"
                                 );
                                 downloadHelper.handleDownload(
-                                        downloadData.audio_url, episodeData.get(episode_index).title, downloadHelper.getFilePath(), "audio.m4s"
+                                        downloadData.audio_url, infoData.title, downloadHelper.getFilePath(), "audio.m4s"
                                 );
-                                episode_download_count++;
+//                                episode_download_count++;
                                 onToast(Season.this, R.string.text_download_start);
                                 runOnUiThread(dialog::dismiss);
                             } catch (NullPointerException | JSONException | IllegalArgumentException | IOException | SecurityException e) {
@@ -524,24 +534,17 @@ public class Season extends BaseActivity {
                         public void onResult(FLVDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
                             try {
                                 DownloadHelper downloadHelper = new DownloadHelper(
-                                        Season.this,
-                                        sharedPreferences,
-                                        season_id,
-                                        episodeData.get(episode_index).ep_id
+                                        Season.this, sharedPreferences, season_id, infoData.ep_id
                                 );
                                 downloadHelper.setFormatJSON(
-                                        downloadData,
-                                        episodeData.get(episode_index),
-                                        qualityData.get(quality_index),
-                                        season_title,
-                                        cover_url,
-                                        episode_index
+                                        downloadData, infoData, qualityData.get(quality_index),
+                                        season_title, cover_url, infoData.index, seasonData.season_type
                                 );
                                 for (int url_index = 0; url_index < downloadData.flv_url.length; url_index++) {
                                     String url_index_string = downloadData.flv_url[url_index];
                                     downloadHelper.handleDownload(
                                             url_index_string,
-                                            episodeData.get(episode_index).title,
+                                            infoData.title,
                                             downloadHelper.getFilePath(),
                                             url_index + ".blv"
                                     );

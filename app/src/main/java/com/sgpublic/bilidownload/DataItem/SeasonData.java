@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.DataHelper;
+package com.sgpublic.bilidownload.DataItem;
 
 import java.util.ArrayList;
 
@@ -9,11 +9,12 @@ public class SeasonData {
     public String staff;
     public String styles;
     public String description;
-    public int payment;
     public Double rating;
 
     public int actors_lines;
     public int staff_lines;
+
+    public int season_type;
 
     public ArrayList<SeriesData> series;
 }

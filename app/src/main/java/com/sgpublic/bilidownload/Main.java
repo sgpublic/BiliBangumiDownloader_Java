@@ -28,7 +28,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.DataHelper.FollowData;
+import com.sgpublic.bilidownload.DataItem.FollowData;
 import com.sgpublic.bilidownload.UIHelper.BannerItem;
 import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
 import com.sgpublic.bilidownload.UIHelper.SeasonBannerAdapter;

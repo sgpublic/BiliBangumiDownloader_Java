@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -22,7 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.DataHelper.TokenData;
+import com.sgpublic.bilidownload.DataItem.TokenData;
 
 import java.util.Objects;
 
@@ -111,7 +109,7 @@ public class LoginWeb extends BaseActivity {
             }
 
             @Override
-            public void onResult(com.sgpublic.bilidownload.DataHelper.UserData data) {
+            public void onResult(com.sgpublic.bilidownload.DataItem.UserData data) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("name", data.name);
                 editor.putString("sign", data.sign);

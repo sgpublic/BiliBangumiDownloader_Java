@@ -2,9 +2,9 @@ package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.content.Context;
 
-import com.sgpublic.bilidownload.DataHelper.Episode.DASHDownloadData;
-import com.sgpublic.bilidownload.DataHelper.Episode.FLVDownloadData;
-import com.sgpublic.bilidownload.DataHelper.Episode.QualityData;
+import com.sgpublic.bilidownload.DataItem.Episode.DASHDownloadData;
+import com.sgpublic.bilidownload.DataItem.Episode.FLVDownloadData;
+import com.sgpublic.bilidownload.DataItem.Episode.QualityData;
 import com.sgpublic.bilidownload.R;
 
 import org.jetbrains.annotations.NotNull;

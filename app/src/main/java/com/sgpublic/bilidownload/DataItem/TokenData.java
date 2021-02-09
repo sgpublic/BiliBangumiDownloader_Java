@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.DataHelper;
+package com.sgpublic.bilidownload.DataItem;
 
 public class TokenData {
     public String access_token;
