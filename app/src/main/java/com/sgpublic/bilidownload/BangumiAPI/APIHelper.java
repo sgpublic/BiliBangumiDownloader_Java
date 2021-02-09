@@ -2,6 +2,8 @@ package com.sgpublic.bilidownload.BangumiAPI;
 
 import android.util.Log;
 
+import com.sgpublic.bilidownload.BaseService.MyLog;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.MessageDigest;
@@ -310,7 +312,7 @@ public class APIHelper {
             }
         }
 
-        Log.d(TAG, "onReturn: " + url_final);
+        MyLog.d(TAG, "onReturn: " + url_final);
 
         requestBuilder.url(url_final);
         return client.newCall(requestBuilder.build());
