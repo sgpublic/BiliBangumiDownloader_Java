@@ -498,7 +498,7 @@ public class Season extends BaseActivity {
                                     exception_code = -613;
                                 } else if (e instanceof IllegalArgumentException) {
                                     exception_code = -615;
-                                } else if (e instanceof IOException || e instanceof SecurityException) {
+                                } else if (e instanceof SecurityException) {
                                     exception_code = -616;
                                     AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
                                     builder.setTitle(R.string.title_download_alert_dir);
@@ -543,10 +543,8 @@ public class Season extends BaseActivity {
                                 for (int url_index = 0; url_index < downloadData.flv_url.length; url_index++) {
                                     String url_index_string = downloadData.flv_url[url_index];
                                     downloadHelper.handleDownload(
-                                            url_index_string,
-                                            infoData.title,
-                                            downloadHelper.getFilePath(),
-                                            url_index + ".blv"
+                                            url_index_string, infoData.title,
+                                            downloadHelper.getFilePath(), url_index + ".blv"
                                     );
                                 }
                                 onToast(Season.this, R.string.text_download_start);

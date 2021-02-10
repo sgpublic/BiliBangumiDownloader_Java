@@ -27,8 +27,7 @@ public class APIHelper {
 
     private String access_token;
 
-    public APIHelper() {
-    }
+    public APIHelper() { }
 
     APIHelper(String access_token) {
         this.access_token = access_token;

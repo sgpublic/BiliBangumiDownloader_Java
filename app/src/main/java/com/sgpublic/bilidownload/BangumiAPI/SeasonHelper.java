@@ -199,6 +199,7 @@ public class SeasonHelper {
         callback_private.onResult(episodeData, seasonData, area);
     }
 
+    @Deprecated
     private void doParseOldResult(JSONObject object, SeasonData seasonData, int area) throws JSONException{
         JSONArray array = object.getJSONArray("episodes");
         ArrayList<InfoData> episodeData = getEpisodesInfo(array);
