@@ -12,17 +12,17 @@
     <string name="text_login_username">用户名/手机号</string>
     <string name="text_login_password">密码</string>
     <string name="text_login_action">登录</string>
+    <string name="text_login_success">登录成功</string>
     <string name="text_login_error_empty">账号或密码为空</string>
-    <string name="text_login_success">登陆成功</string>
 
     <string name="title_login_web">网页登录</string>
 
     <string name="text_permission_title">欢迎使用哔哩番剧</string>
     <string name="text_permission_detail">为了向您提供正常的服务，哔哩番剧将向您申请以下必要权限，如果您不授予这些权限，哔哩番剧可能无法正常运行。</string>
-    <string name="title_permission_title_write_external">储存权限</string>
-    <string name="text_permission_content_write_external">读写手机上照片及文件。</string>
-    <string name="title_permission_title_phone_state">读取手机信息</string>
-    <string name="text_permission_content_phone_state">获取手机信息及IMEI。</string>
+    <string name="title_permission_title_write_external">读写手机存储</string>
+    <string name="text_permission_content_write_external">创建和下载番剧播放所需的必要文件</string>
+<!--    <string name="title_permission_title_phone_state">读取手机信息</string>-->
+<!--    <string name="text_permission_content_phone_state">获取手机信息及IMEI。</string>-->
     <string name="title_permission_granted">同意</string>
     <string name="text_permission_denied">哔哩番剧需要获得权限授权才能正常使用哦~</string>
 
@@ -58,7 +58,7 @@
 
     <string name="title_season_info">详情</string>
     <string name="title_season_download">下载</string>
-    <string name="text_season_placeholder">\n\n\n</string>
+    <string name="text_season_placeholder" translatable="false">\n\n\n</string>
     <string name="title_season_desc">别名</string>
     <string name="title_season_styles">风格</string>
     <string name="title_season_actors">角色声优</string>
@@ -71,7 +71,7 @@
     <string name="text_season_payment_vip_all">大会员专享观看特权哦~</string>
     <string name="text_season_payment_vip_newest">大会员抢先观看最新剧集哦~</string>
     <string name="text_season_payment_normal">无需会员！赶紧下载下来观看吧~</string>
-    <string name="text_season_payment_traveled">港澳台专属，大陆地区无法观看呢~</string>
+    <string name="text_season_payment_traveled">港澳台专属，您当前地区无法观看呢~</string>
     <string name="title_season_episode_list">正片</string>
     <string name="text_episode_vip_needed">该剧集需要大会员才能观看哦~</string>
 
@@ -90,7 +90,7 @@
 
     <string name="error_network">请检查网络连接</string>
     <string name="error_login">登陆失败</string>
-    <string name="error_login_refresh">登陆状态失效，请重新登陆</string>
+    <string name="error_login_refresh">登录状态失效，请重新登陆</string>
     <string name="error_login_verify">您的账号登录受限，请使用网页登陆</string>
     <string name="error_bangumi_load">数据加载出错</string>
     <string name="error_update">检查更新出错</string>
