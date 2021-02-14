@@ -169,11 +169,16 @@ public class Welcome extends BaseActivity {
                 int[] update_header = {
                         R.string.text_update_content,
                         R.string.text_update_content_force,
+                        R.string.text_update_content_beta
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(Welcome.this);
                 builder.setTitle(R.string.title_update_get);
                 builder.setCancelable(force == 0);
-                builder.setMessage(String.format(Welcome.this.getString(update_header[force]), size_string) + "\n" +
+                int header = update_header[force];
+                if (ver_name.contains("Build")){
+                    header = update_header[2];
+                }
+                builder.setMessage(String.format(Welcome.this.getString(header), size_string) + "\n" +
                         Welcome.this.getString(R.string.text_update_version) + ver_name + "\n" +
                         Welcome.this.getString(R.string.text_update_changelog) + "\n" + changelog);
                 builder.setPositiveButton(R.string.text_ok, (dialog, which) -> {

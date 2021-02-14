@@ -106,6 +106,7 @@
     <string name="title_update_already">已是最新版本</string>
     <string name="text_update_content">有更新版本，APK大小 %1$s，是否更新？</string>
     <string name="text_update_content_force">有更新版本，APK大小 %1$s，请更新。</string>
+    <string name="text_update_content_beta">哔哩番剧邀请您体验最新内测版，APK大小 %1$s，是否更新？</string>
     <string name="text_update_content_disable">非常抱歉，我们遗憾的告诉您，由于%1$s，从 %2$s 开始，哔哩番剧正式停止使用，感谢您的支持，我们有缘再见~</string>
     <string name="text_update_disable_unknown">不可抗因素</string>
     <string name="text_update_version">最新版本：</string>

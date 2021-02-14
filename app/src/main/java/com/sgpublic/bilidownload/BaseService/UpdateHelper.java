@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,6 +28,8 @@ import java.util.Objects;
 import okhttp3.Call;
 import okhttp3.Response;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class UpdateHelper {
     private final String TAG = "UpdateHelper";
 
@@ -41,7 +44,7 @@ public class UpdateHelper {
         APIHelper helper = new APIHelper();
         this.callback_private = callback;
         String version;
-        if (type != 1 && !APIHelper.getTS().endsWith("7")){
+        if (type != 1 && !APIHelper.getTS().endsWith("387")){
             version = "release";
         } else {
             version = "debug";
@@ -71,18 +74,28 @@ public class UpdateHelper {
                         if (ver_code > ver_code_now) {
                             String url_dl = "https://sgpublic.xyz/bilidl/update/apk/app-"
                                     + version + ".apk";
-
-                            int is_force = 0;
-                            if (version.equals("release")) {
-                                is_force = update_table
-                                        .getInt("force_ver") > ver_code_now ? 1 : 0;
-                            }
-
+                            String ver_name = update_table.getString("ver_name");
                             String size_string = new DownloadHelper(context).getSizeString(url_dl);
-                            callback_private.onUpdate(
-                                    is_force, update_table.getString("ver_name"), size_string,
-                                    update_table.getString("changelog"), url_dl
-                            );
+                            if (version.equals("debug")) {
+                                SharedPreferences sharedPreferences = context.getSharedPreferences("user", MODE_PRIVATE);
+                                if (!sharedPreferences.getString("beta", "").equals(ver_name)){
+                                    sharedPreferences.edit()
+                                            .putString("beta", ver_name)
+                                            .apply();
+                                    callback_private.onUpdate(
+                                            0, ver_name, size_string,
+                                            update_table.getString("changelog"), url_dl
+                                    );
+                                } else {
+                                    callback_private.onUpToDate();
+                                }
+                            } else {
+                                int is_force = update_table.getInt("force_ver") > ver_code_now ? 1 : 0;
+                                callback_private.onUpdate(
+                                        is_force, ver_name, size_string,
+                                        update_table.getString("changelog"), url_dl
+                                );
+                            }
                         } else {
                             callback_private.onUpToDate();
                         }

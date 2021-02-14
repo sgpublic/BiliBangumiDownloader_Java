@@ -85,7 +85,7 @@
     <string name="title_update_get">Updated version available</string>
     <string name="title_update_disable">Bili Bangumi has been discontinued</string>
     <string name="title_update_already">No update</string>
-    <string name="text_update_content">There is an updated version, APK size %1$s, do you want to update?</string>
+    <string name="text_update_content">There is an updated version, APK size %1$s, would you like to update?</string>
     <string name="text_update_content_force">There is a newer version, APK size %1$s, please update.</string>
     <string name="text_update_content_disable">We are very sorry, we regret to inform you that due to %1$s, starting from %2$s, the Biliban drama is officially discontinued, thank you for your support, we are destined to see you~</string>
     <string name="text_update_disable_unknown">majeure</string>
@@ -98,4 +98,5 @@
     <string name="text_episode_no_app_installed">You have not installed any Bilibili client, please download after installation~</string>
     <string name="text_setting_no_app_installed">You have not installed any Bilibili client~</string>
     <string name="text_setting_type_no_install">Not Installed</string>
+    <string name="text_update_content_beta">Bili Bangumi invites you to experience the latest beta version, APK size %1$s, would you like to update?</string>
 </resources>
