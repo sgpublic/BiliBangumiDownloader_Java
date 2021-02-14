@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.se.omapi.Session;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,12 +38,14 @@ import com.sgpublic.bilidownload.BangumiAPI.DownloadHelper;
 import com.sgpublic.bilidownload.BangumiAPI.EpisodeHelper;
 import com.sgpublic.bilidownload.BangumiAPI.SeasonHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseService.ConfigManager;
 import com.sgpublic.bilidownload.DataItem.Episode.DASHDownloadData;
 import com.sgpublic.bilidownload.DataItem.Episode.FLVDownloadData;
 import com.sgpublic.bilidownload.DataItem.Episode.InfoData;
 import com.sgpublic.bilidownload.DataItem.Episode.QualityData;
 import com.sgpublic.bilidownload.DataItem.SeasonData;
 import com.sgpublic.bilidownload.DataItem.SeriesData;
+import com.sgpublic.bilidownload.R;
 import com.sgpublic.bilidownload.UIHelper.BlurHelper;
 import com.sgpublic.bilidownload.UIHelper.SeasonPagerAdapter;
 
@@ -409,8 +410,10 @@ public class Season extends BaseActivity {
                 }
 
                 item_season_episode.setOnClickListener(v -> {
-                    if (episodeData_index.status == 13 && is_vip == 0){
+                    if (episodeData_index.status == 13 && is_vip == 0) {
                         onToast(Season.this, R.string.text_episode_vip_needed);
+                    } else if (ConfigManager.checkClient(Season.this) == null){
+                        onToast(Season.this, R.string.text_episode_no_app_installed);
                     } else {
                         onSetupDownload(episodeData_index, (int)season_quality.getSelectedItemId());
                     }
