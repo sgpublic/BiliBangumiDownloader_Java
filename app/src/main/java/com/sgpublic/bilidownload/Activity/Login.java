@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -27,6 +27,7 @@ import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.TokenData;
+import com.sgpublic.bilidownload.R;
 
 import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
 

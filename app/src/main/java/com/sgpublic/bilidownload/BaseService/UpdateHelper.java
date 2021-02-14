@@ -40,11 +40,11 @@ public class UpdateHelper {
     public void getUpdate(int type, Callback callback) {
         APIHelper helper = new APIHelper();
         this.callback_private = callback;
-        final String version;
-        if (type == 1) {
-            version = "debug";
-        } else {
+        String version;
+        if (type != 1 && !APIHelper.getTS().endsWith("7")){
             version = "release";
+        } else {
+            version = "debug";
         }
         Call call = helper.getUpdateRequest(version);
         call.enqueue(new okhttp3.Callback() {

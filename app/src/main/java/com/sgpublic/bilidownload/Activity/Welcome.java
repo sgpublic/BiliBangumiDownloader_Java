@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -19,9 +19,11 @@ import androidx.core.content.ContextCompat;
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseService.ConfigManager;
 import com.sgpublic.bilidownload.BaseService.UpdateHelper;
 import com.sgpublic.bilidownload.DataItem.TokenData;
 import com.sgpublic.bilidownload.DataItem.UserData;
+import com.sgpublic.bilidownload.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,9 +40,7 @@ public class Welcome extends BaseActivity {
             if (sharedPreferences.getInt("quality", -1) == -1) {
                 editor.putInt("quality", 112);
             }
-            if (sharedPreferences.getInt("type", -1) == -1) {
-                editor.putInt("type", 0);
-            }
+            ConfigManager.checkClient(this);
             String default_dir;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 default_dir = "/storage/emulated/0/Download/";

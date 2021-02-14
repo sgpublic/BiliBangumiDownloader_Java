@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 
+import com.sgpublic.bilidownload.BaseService.ConfigManager;
 import com.sgpublic.bilidownload.DataItem.Episode.DASHDownloadData;
 import com.sgpublic.bilidownload.DataItem.Episode.FLVDownloadData;
 import com.sgpublic.bilidownload.DataItem.Episode.InfoData;
@@ -39,17 +40,6 @@ public class DownloadHelper {
     private long ep_id;
 
     private static final String user_agent = "Bilibili Freedoooooom/MarkII";
-    private static final String[] types_pack = {
-            "tv.danmaku.bili",
-            "com.bilibili.app.blue",
-            "com.bilibili.app.in"
-    };
-    private static final int[] quality_int = {
-            112, 80, 64, 32, 16
-    };
-    private static final String[] quality_format = {
-            "hdflv2", "flv", "flv720", "flv480", "mp4"
-    };
 
     public DownloadHelper(Context context) {
         this.context = context;
@@ -58,8 +48,8 @@ public class DownloadHelper {
     public DownloadHelper(Context context, SharedPreferences sharedPreferences, long season_id, long ep_id) {
         this.context = context;
         this.sharedPreferences = sharedPreferences;
-        this.quality_set = quality_format[getIndex(quality_int, sharedPreferences.getInt("quality", 80))];
-        this.type_set = types_pack[sharedPreferences.getInt("type", 0)];
+        this.quality_set = ConfigManager.checkQuality(context).getName();
+        this.type_set = ConfigManager.checkClient(context).getPackageName();
         this.season_id = season_id;
         this.ep_id = ep_id;
     }
@@ -325,16 +315,5 @@ public class DownloadHelper {
             size_string = returnValue + " KB";
         }
         return size_string;
-    }
-
-    private int getIndex(int[] all_args, int finding_arg) {
-        int result = -1;
-        for (int arg_index : all_args) {
-            result = result + 1;
-            if (arg_index == finding_arg) {
-                break;
-            }
-        }
-        return result;
     }
 }

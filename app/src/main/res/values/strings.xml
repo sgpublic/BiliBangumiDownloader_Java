@@ -30,6 +30,8 @@
 
     <string name="title_setting_type">客户端类型</string>
     <string name="text_setting_type">选择所使用的哔哩哔哩客户端</string>
+    <string name="text_setting_type_no_install">未安装</string>
+    <string name="text_setting_no_app_installed">您尚未安装任何哔哩哔哩客户端~</string>
     <string name="title_setting_location">下载路径</string>
     <string name="text_setting_location">选择的客户端中设置的路径</string>
     <string name="title_setting_quality">默认清晰度</string>
@@ -74,6 +76,7 @@
     <string name="text_season_payment_traveled">港澳台专属，您当前地区无法观看呢~</string>
     <string name="title_season_episode_list">正片</string>
     <string name="text_episode_vip_needed">该剧集需要大会员才能观看哦~</string>
+    <string name="text_episode_no_app_installed">您尚未安装任何哔哩哔哩客户端，请安装后下载哦~</string>
 
     <string name="title_download_doing">正在获取链接</string>
     <string name="title_download_alert_dir">您当前设置的目录无法访问</string>

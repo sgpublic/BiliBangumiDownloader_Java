@@ -1,13 +1,14 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import android.os.Bundle;
 import android.widget.ListView;
-import android.widget.TextView;
+
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.ActionBar;
 
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.R;
 import com.sgpublic.bilidownload.UIHelper.LicenseListAdapter;
 import com.sgpublic.bilidownload.UIHelper.LicenseListItem;
 

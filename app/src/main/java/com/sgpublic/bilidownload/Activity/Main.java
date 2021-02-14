@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -29,6 +29,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.FollowData;
+import com.sgpublic.bilidownload.R;
 import com.sgpublic.bilidownload.UIHelper.BannerItem;
 import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
 import com.sgpublic.bilidownload.UIHelper.SeasonBannerAdapter;

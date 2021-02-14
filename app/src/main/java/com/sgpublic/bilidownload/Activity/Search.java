@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -32,6 +32,7 @@ import com.bumptech.glide.request.target.Target;
 import com.sgpublic.bilidownload.BangumiAPI.SearchHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.SearchData;
+import com.sgpublic.bilidownload.R;
 import com.sgpublic.bilidownload.UIHelper.FlowLayout;
 //import com.umeng.analytics.MobclickAgent;
 

@@ -311,7 +311,7 @@ public class APIHelper {
             }
         }
 
-        MyLog.d(TAG, "onReturn: " + url_final);
+        MyLog.v(TAG, "onReturn: " + url_final);
 
         requestBuilder.url(url_final);
         return client.newCall(requestBuilder.build());

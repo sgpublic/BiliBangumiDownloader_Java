@@ -95,4 +95,7 @@
     <string name="text_ok">OK</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_download_start">ダウンロードが開始されました。ダウンロードが完了するまでお待ちください</string>
+    <string name="text_episode_no_app_installed">Bilibiliクライアントをインストールしていません。インストール後にダウンロードしてください〜</string>
+    <string name="text_setting_no_app_installed">Bilibiliクライアントをインストールしていません〜</string>
+    <string name="text_setting_type_no_install">インストールされていない</string>
 </resources>

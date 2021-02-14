@@ -1,18 +1,15 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.ActionBar;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.BaseService.UpdateHelper;
+import com.sgpublic.bilidownload.R;
 import com.sgpublic.bilidownload.UIHelper.DoubleClickListener;
 
 import java.text.SimpleDateFormat;

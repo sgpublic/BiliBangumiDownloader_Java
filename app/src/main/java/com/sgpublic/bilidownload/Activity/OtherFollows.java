@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload;
+package com.sgpublic.bilidownload.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +32,7 @@ import com.bumptech.glide.request.target.Target;
 import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
 import com.sgpublic.bilidownload.BaseService.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.FollowData;
+import com.sgpublic.bilidownload.R;
 import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
 
 public class OtherFollows extends BaseActivity {
