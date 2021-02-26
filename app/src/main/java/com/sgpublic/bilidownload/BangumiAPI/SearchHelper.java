@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan;
 import com.sgpublic.bilidownload.DataItem.SearchData;
 import com.sgpublic.bilidownload.R;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +40,7 @@ public class SearchHelper {
         Call call = helper.getHotWordRequest();
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback.onFailure(-801, null, e);
                 } else {
@@ -48,7 +49,7 @@ public class SearchHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
@@ -74,7 +75,7 @@ public class SearchHelper {
         Call call = helper.getSearchSuggestRequest(keyword);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback.onFailure(-811, context.getString(R.string.error_network), e);
                 } else {
@@ -83,7 +84,7 @@ public class SearchHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
@@ -126,7 +127,7 @@ public class SearchHelper {
         Call call = helper.getSearchResultRequest(keyword);
         call.enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback.onFailure(-821, context.getString(R.string.error_network), e);
                 } else {
@@ -135,7 +136,7 @@ public class SearchHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);

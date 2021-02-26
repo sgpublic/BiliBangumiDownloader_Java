@@ -1,6 +1,6 @@
-package com.sgpublic.bilidownload.BaseService;
+package com.sgpublic.bilidownload.Unit;
 
-public class Base64Helper {
+public class Base64Unit {
     public static byte[] Decode(String content) {
         char[] data = content.toCharArray();
         byte[] codes = new byte[256];

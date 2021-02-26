@@ -27,12 +27,18 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.FollowData;
 import com.sgpublic.bilidownload.R;
-import com.sgpublic.bilidownload.UIHelper.BannerItem;
-import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
-import com.sgpublic.bilidownload.UIHelper.SeasonBannerAdapter;
+import com.sgpublic.bilidownload.Service.DownloadService;
+import com.sgpublic.bilidownload.UI.BannerItem;
+import com.sgpublic.bilidownload.Unit.ConfigManager;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
+import com.sgpublic.bilidownload.Unit.DownloadTaskManager;
+import com.sgpublic.bilidownload.Unit.MyLog;
+import com.sgpublic.bilidownload.Widget.ObservableScrollView;
+import com.sgpublic.bilidownload.UI.SeasonBannerAdapter;
+import com.sgpublic.bilidownload.Widget.ScrollTextView;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.bannerview.constants.IndicatorGravity;
 
@@ -40,7 +46,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
+import static com.sgpublic.bilidownload.Unit.ActivityController.finishAll;
 
 public class Main extends BaseActivity {
     private View layout_bangumi;
@@ -69,6 +75,13 @@ public class Main extends BaseActivity {
         bangumi_base.setVisibility(View.INVISIBLE);
         startOnLoadingState(bangumi_load_state);
         getFollowData(1);
+
+        if (!ConfigManager.checkTaskAutoStart(Main.this)){
+            return;
+        }
+        if (!DownloadTaskManager.isAllTaskFinished(Main.this)){
+            DownloadService.startService(Main.this);
+        }
     }
 
     private void getFollowData(final int page_index) {
@@ -82,7 +95,7 @@ public class Main extends BaseActivity {
                     bangumi_load_state.setImageResource(R.drawable.pic_load_failed);
                     setRefreshState(false);
                 });
-                saveExplosion(e, code);
+                CrashHandler.saveExplosion(Main.this, e, code);
             }
 
             @Override
@@ -177,7 +190,7 @@ public class Main extends BaseActivity {
             bangumi_banner.setIndicatorGravity(IndicatorGravity.CENTER);
             bangumi_banner.setOnPageClickListener(i -> {
                 BannerItem data_info = banner_info_list.get(i);
-                onGetSeason(data_info.getTitle(), data_info.getSeasonId(), data_info.getSeasonCover());
+                Season.startActivity(Main.this, data_info.getTitle(), data_info.getSeasonId(), data_info.getSeasonCover());
             });
             bangumi_banner.setHolderCreator(SeasonBannerAdapter::new);
             bangumi_banner.create(banner_info_list);
@@ -262,7 +275,7 @@ public class Main extends BaseActivity {
         boolean night_mode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         for (FollowData data_info : data_array) {
             View item_bangumi_follow = LayoutInflater.from(Main.this).inflate(R.layout.item_bangumi_follow, bangumi_follows, false);
-            TextView follow_content = item_bangumi_follow.findViewById(R.id.follow_content);
+            ScrollTextView follow_content = item_bangumi_follow.findViewById(R.id.follow_content);
             follow_content.setText(data_info.title);
 
             CardView item_follow_badges_background = item_bangumi_follow.findViewById(R.id.item_follow_badges_background);
@@ -318,7 +331,7 @@ public class Main extends BaseActivity {
             params.height = view_height;
 
             item_bangumi_follow.setOnClickListener(v ->
-                    Main.this.onGetSeason(data_info.title, data_info.season_id, data_info.cover)
+                    Season.startActivity(Main.this, data_info.title, data_info.season_id, data_info.cover)
             );
 
             bangumi_follows.addView(item_bangumi_follow, params);
@@ -340,14 +353,6 @@ public class Main extends BaseActivity {
                 }
             }
         });
-    }
-
-    private void onGetSeason(String title, long sid, String cover_url) {
-        Intent intent = new Intent(Main.this, Season.class);
-        intent.putExtra("season_id", sid);
-        intent.putExtra("cover_url", cover_url);
-        intent.putExtra("title", title);
-        startActivity(intent);
     }
 
     boolean is_first_change = true;

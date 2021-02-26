@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.BaseService;
+package com.sgpublic.bilidownload.Unit;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -17,6 +17,7 @@ import com.sgpublic.bilidownload.BangumiAPI.APIHelper;
 import com.sgpublic.bilidownload.BangumiAPI.DownloadHelper;
 import com.sgpublic.bilidownload.R;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +53,7 @@ public class UpdateHelper {
         Call call = helper.getUpdateRequest(version);
         call.enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback_private.onFailure(-711, context.getString(R.string.error_network), e);
                 } else {
@@ -61,7 +62,7 @@ public class UpdateHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = response.body().string();
                 try {
                     int ver_code_now = context.getPackageManager()
@@ -75,7 +76,7 @@ public class UpdateHelper {
                             String url_dl = "https://sgpublic.xyz/bilidl/update/apk/app-"
                                     + version + ".apk";
                             String ver_name = update_table.getString("ver_name");
-                            String size_string = new DownloadHelper(context).getSizeString(url_dl);
+                            String size_string = DownloadTaskManager.getSizeString(url_dl);
                             if (version.equals("debug")) {
                                 SharedPreferences sharedPreferences = context.getSharedPreferences("user", MODE_PRIVATE);
                                 if (!sharedPreferences.getString("beta", "").equals(ver_name)){

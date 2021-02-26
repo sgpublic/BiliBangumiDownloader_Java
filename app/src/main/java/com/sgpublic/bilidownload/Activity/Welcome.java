@@ -18,9 +18,10 @@ import androidx.core.content.ContextCompat;
 
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.BaseService.ConfigManager;
-import com.sgpublic.bilidownload.BaseService.UpdateHelper;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
+import com.sgpublic.bilidownload.Unit.ConfigManager;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
+import com.sgpublic.bilidownload.Unit.UpdateHelper;
 import com.sgpublic.bilidownload.DataItem.TokenData;
 import com.sgpublic.bilidownload.DataItem.UserData;
 import com.sgpublic.bilidownload.R;
@@ -28,7 +29,7 @@ import com.sgpublic.bilidownload.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
+import static com.sgpublic.bilidownload.Unit.ActivityController.finishAll;
 
 public class Welcome extends BaseActivity {
     @Override
@@ -38,7 +39,7 @@ public class Welcome extends BaseActivity {
         new Handler().postDelayed(() -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if (sharedPreferences.getInt("quality", -1) == -1) {
-                editor.putInt("quality", 112);
+                editor.putInt("quality", 80);
             }
             ConfigManager.checkClient(this);
             String default_dir;
@@ -49,9 +50,6 @@ public class Welcome extends BaseActivity {
             }
             if (sharedPreferences.getString("location", null) == null) {
                 editor.putString("location", default_dir);
-            }
-            if (!sharedPreferences.getBoolean("alert_dir", false)) {
-                editor.putBoolean("alert_dir", false);
             }
             editor.apply();
 
@@ -66,7 +64,7 @@ public class Welcome extends BaseActivity {
                     public void onFailure(int code, String message, Throwable e) {
                         onToast(Welcome.this, R.string.error_login);
                         onSetupFinished(false);
-                        saveExplosion(e, code);
+                        CrashHandler.saveExplosion(Welcome.this, e, code);
                     }
 
                     @Override
@@ -155,7 +153,7 @@ public class Welcome extends BaseActivity {
         helper.getUpdate(0, new UpdateHelper.Callback() {
             @Override
             public void onFailure(int code, String message, Throwable e) {
-                saveExplosion(e, code);
+                CrashHandler.saveExplosion(Welcome.this, e, code);
                 runOnUiThread(() -> Welcome.this.startActivity(intent));
             }
 

@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.UIHelper;
+package com.sgpublic.bilidownload.UI;
 
 
 import android.view.View;
@@ -6,14 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.viewpager.widget.PagerAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class SeasonPagerAdapter extends PagerAdapter {
     private final ArrayList<View> view_list;

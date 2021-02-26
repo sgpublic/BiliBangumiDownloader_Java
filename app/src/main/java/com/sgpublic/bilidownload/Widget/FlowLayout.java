@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.UIHelper;
+package com.sgpublic.bilidownload.Widget;
 
 import android.content.Context;
 import android.os.Handler;
@@ -29,9 +29,6 @@ public class FlowLayout extends ViewGroup {
     private int mUsedWidth = 0;
     private final List<Line> mLines = new ArrayList<>();
     private int isAlignByCenter = 1;
-
-    private int mMaxLinesCount = Integer.MAX_VALUE;
-    boolean mNeedLayout = true;
 
     public FlowLayout(Context context) {
         this(context, null);
@@ -69,7 +66,7 @@ public class FlowLayout extends ViewGroup {
         });
     }
 
-    public void setAdapter(List<?> list, int res, ItemView mItemView) {
+    public void setAdapter(List<?> list, int res, ItemView<Object> mItemView) {
         if (list == null) {
             return;
         }
@@ -229,6 +226,7 @@ public class FlowLayout extends ViewGroup {
      */
     private boolean newLine() {
         mLines.add(mLine);
+        int mMaxLinesCount = Integer.MAX_VALUE;
         if (mLines.size() < mMaxLinesCount) {
             mLine = new Line();
             mUsedWidth = 0;

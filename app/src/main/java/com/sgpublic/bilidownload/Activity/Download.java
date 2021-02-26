@@ -6,10 +6,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.R;
 
-public class DownloadManager extends BaseActivity {
+public class Download extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,10 +1,9 @@
 package com.sgpublic.bilidownload.Activity;
 
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -34,33 +33,24 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
-import com.sgpublic.bilidownload.BangumiAPI.DownloadHelper;
-import com.sgpublic.bilidownload.BangumiAPI.EpisodeHelper;
 import com.sgpublic.bilidownload.BangumiAPI.SeasonHelper;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.BaseService.ConfigManager;
-import com.sgpublic.bilidownload.DataItem.Episode.DASHDownloadData;
-import com.sgpublic.bilidownload.DataItem.Episode.FLVDownloadData;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
+import com.sgpublic.bilidownload.Unit.ConfigManager;
 import com.sgpublic.bilidownload.DataItem.Episode.InfoData;
 import com.sgpublic.bilidownload.DataItem.Episode.QualityData;
 import com.sgpublic.bilidownload.DataItem.SeasonData;
 import com.sgpublic.bilidownload.DataItem.SeriesData;
 import com.sgpublic.bilidownload.R;
-import com.sgpublic.bilidownload.UIHelper.BlurHelper;
-import com.sgpublic.bilidownload.UIHelper.SeasonPagerAdapter;
+import com.sgpublic.bilidownload.UI.BlurHelper;
+import com.sgpublic.bilidownload.UI.SeasonPagerAdapter;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
+import com.sgpublic.bilidownload.Unit.DownloadTaskManager;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 //import com.umeng.analytics.MobclickAgent;
 
 public class Season extends BaseActivity {
-    private long season_id;
-    private String cover_url;
-    private String season_title;
-    private int season_area;
     private int is_vip;
 
 //    private int episode_download_count = 0;
@@ -68,10 +58,9 @@ public class Season extends BaseActivity {
     private int[] quality_access_int;
     private ArrayList<String> quality_access_string;
 
-    private ArrayList<QualityData> qualityData;
     private ArrayList<InfoData> episodeData;
     private SeasonData seasonData;
-    private EpisodeHelper episodeHelper;
+    private SeriesData season_info;
 
     private ImageView season_loading;
     private ViewPager season_viewpager;
@@ -100,23 +89,20 @@ public class Season extends BaseActivity {
 
     private ArrayList<String> tab_titles;
 
-    private AlertDialog dialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        season_id = intent.getLongExtra("season_id", 0);
-        cover_url = intent.getStringExtra("cover_url");
-        season_title = intent.getStringExtra("title");
+        season_info = new SeriesData();
+        season_info.season_id = intent.getLongExtra("season_id", 0);
+        season_info.cover = intent.getStringExtra("cover_url");
+        season_info.title = intent.getStringExtra("title");
         super.onCreate(savedInstanceState);
 
         String access_key = sharedPreferences.getString("access_key", "");
         is_vip = sharedPreferences.getInt("vip_state", 0);
 
-        episodeHelper = new EpisodeHelper(Season.this, access_key);
-
-        SeasonHelper helper = new SeasonHelper(this, access_key);
-        helper.getInfoBySid(season_id, new SeasonHelper.Callback() {
+        SeasonHelper helper = new SeasonHelper(Season.this, access_key);
+        helper.getInfoBySid(season_info.season_id, new SeasonHelper.Callback() {
             @Override
             public void onFailure(int code, String message, Throwable e) {
                 onToast(Season.this, R.string.error_bangumi_load, message, code);
@@ -124,67 +110,38 @@ public class Season extends BaseActivity {
                     stopOnLoadingState();
                     season_loading.setImageResource(R.drawable.pic_load_failed);
                 });
-                saveExplosion(e, code);
+                CrashHandler.saveExplosion(Season.this, e, code);
             }
 
             @Override
-            public void onResult(ArrayList<InfoData> episodeData, SeasonData seasonData, int area) {
-                Season.this.season_area = area;
+            public void onResult(ArrayList<InfoData> episodeData, SeasonData seasonData) {
                 Season.this.episodeData = episodeData;
                 Season.this.seasonData = seasonData;
-
-//                Map<String, Object> season_view = new HashMap<>();
-//                season_view.put("name", season_title + " (" + season_id + ")");
-//                season_view.put("area", season_area == 0 ? "港澳台" : "大陆");
-//                MobclickAgent.onEventObject(Season.this, "season_view", season_view);
-
-                if (episodeData.size() > 0) {
-                    episodeHelper.getDownloadInfo(episodeData.get(0).cid, season_area, new EpisodeHelper.Callback() {
-                        @Override
-                        public void onFailure(int code, String message, Throwable e) {
-                            onToast(Season.this, R.string.error_bangumi_load, message, code);
-                            runOnUiThread(() -> {
-                                try {
-                                    stopOnLoadingState();
-                                    season_loading.setImageResource(R.drawable.pic_load_failed);
-                                } catch (NullPointerException ignored) {}
-                            });
-                            saveExplosion(e, code);
-                        }
-
-                        @Override
-                        public void onResult(DASHDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
-                            onSetupSeasonInfo(qualityData);
-                        }
-
-                        @Override
-                        public void onResult(FLVDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
-                            onSetupSeasonInfo(qualityData);
-                        }
-                    });
-                } else {
-                    runOnUiThread(() -> new Handler().postDelayed(
-                            () -> onSetupSeasonInfo(), 500
-                    ));
-                }
+                Season.this.season_info = seasonData.base_info;
+                runOnUiThread(() -> new Handler().postDelayed(
+                        () -> onSetupSeasonInfo(), 500
+                ));
             }
         });
     }
 
-    private void onSetupSeasonInfo() {
-        onSetupSeasonInfo(null);
+    @Deprecated
+    private void handleSeasonInfoAction() {
+//        Map<String, Object> season_view = new HashMap<>();
+//        season_view.put("name", season_title + " (" + season_id + ")");
+//        season_view.put("area", season_area == 0 ? "港澳台" : "大陆");
+//        MobclickAgent.onEventObject(Season.this, "season_view", season_view);
     }
 
-    private void onSetupSeasonInfo(ArrayList<QualityData> qualityData) {
-        if (qualityData != null) {
-            Season.this.qualityData = qualityData;
-            Season.this.quality_access_int = new int[qualityData.size()];
-            Season.this.quality_access_string = new ArrayList<>();
-            for (int qd_index = 0; qd_index < qualityData.size(); qd_index++) {
-                if (is_vip == 0 && qd_index == 0 && season_area == 1) {
+    private void onSetupSeasonInfo() {
+        if (seasonData.qualities != null) {
+            this.quality_access_int = new int[seasonData.qualities.size()];
+            this.quality_access_string = new ArrayList<>();
+            for (int qd_index = 0; qd_index < seasonData.qualities.size(); qd_index++) {
+                if (is_vip == 0 && qd_index == 0) {
                     continue;
                 }
-                QualityData qualityData_index = qualityData.get(qd_index);
+                QualityData qualityData_index = seasonData.qualities.get(qd_index);
                 quality_access_string.add(qualityData_index.getDescription());
                 quality_access_int[qd_index] = qualityData_index.getQuality();
             }
@@ -203,7 +160,6 @@ public class Season extends BaseActivity {
                     }
                     onSeasonInfoLoad();
                     onEpisodeLoad();
-                    episodeHelper.onSetupFinish();
                 } catch (NullPointerException ignore) {}
             }, 310);
         });
@@ -325,7 +281,9 @@ public class Season extends BaseActivity {
                 params.width = view_width;
                 params.height = view_height;
 
-                item_bangume_follow.setOnClickListener(v -> onGetSeason(data.title, data.season_id, data.cover));
+                item_bangume_follow.setOnClickListener(v -> startActivity(
+                        Season.this, data.title, data.season_id, data.cover
+                ));
 
                 season_series.addView(item_bangume_follow, params);
                 data_info_index = data_info_index + 1;
@@ -338,14 +296,6 @@ public class Season extends BaseActivity {
         season_actors.setOnClickListener(v ->
                 season_actors.setMaxLines(seasonData.actors_lines == season_actors.getMaxLines() ? 3 : seasonData.actors_lines)
         );
-    }
-
-    private void onGetSeason(String title, long sid, String cover_url) {
-        Intent intent = new Intent(Season.this, Season.class);
-        intent.putExtra("season_id", sid);
-        intent.putExtra("cover_url", cover_url);
-        intent.putExtra("title", title);
-        startActivity(intent);
     }
 
     private void onEpisodeLoad() {
@@ -393,7 +343,14 @@ public class Season extends BaseActivity {
                 ));
 
                 TextView episode_index_title = item_season_episode.findViewById(R.id.episode_index_title);
-                episode_index_title.setText(episodeData_index.index);
+                String index_title = episodeData_index.index;
+                try {
+                    Float.parseFloat(index_title);
+                    index_title = String.format(
+                            getString(R.string.text_episode_index), index_title
+                    );
+                } catch (NumberFormatException ignore){ }
+                episode_index_title.setText(index_title);
 
                 CardView episode_vip_background = item_season_episode.findViewById(R.id.episode_vip_background);
                 if (episodeData_index.badge.equals("")){
@@ -410,7 +367,7 @@ public class Season extends BaseActivity {
                 }
 
                 item_season_episode.setOnClickListener(v -> {
-                    if (episodeData_index.status == 13 && is_vip == 0) {
+                    if (episodeData_index.payment == 13 && is_vip == 0) {
                         onToast(Season.this, R.string.text_episode_vip_needed);
                     } else if (ConfigManager.checkClient(Season.this) == null){
                         onToast(Season.this, R.string.text_episode_no_app_installed);
@@ -457,134 +414,27 @@ public class Season extends BaseActivity {
         }
     }
 
+
     private void onSetupDownload(InfoData infoData, int quality_index) {
-        Runnable runnable = () -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
-            builder.setCancelable(false);
-            builder.setView(R.layout.dialog_season_download);
-            dialog = builder.show();
+        //TODO
+        DownloadTaskManager helper = new DownloadTaskManager(Season.this, season_info);
+        int quality = seasonData.qualities.get(quality_index).getQuality();
+        helper.addDownloadTask(infoData, quality, new DownloadTaskManager.TaskCreateCallback() {
+            @Override
+            public void onFailure(int code, String message, Throwable e) {
+                onToast(Season.this, R.string.error_download_start, message, code);
+            }
 
-            episodeHelper.getDownloadInfo(infoData.cid,
-                    season_area,
-                    qualityData.get(quality_index).getQuality(),
-                    new EpisodeHelper.Callback() {
-                        @Override
-                        public void onFailure(int code, String message, Throwable e) {
-                            runOnUiThread(dialog::dismiss);
-                            onToast(Season.this, R.string.error_download, message, code);
-                            saveExplosion(e, code);
-                        }
+            @Override
+            public void onTaskExist() {
+                onToast(Season.this, R.string.error_download_task_exist);
+            }
 
-                        @Override
-                        public void onResult(DASHDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
-                            try {
-                                DownloadHelper downloadHelper = new DownloadHelper(
-                                        Season.this, sharedPreferences, season_id, infoData.ep_id
-                                );
-                                downloadHelper.setFormatJSON(
-                                        downloadData, infoData, qualityData.get(quality_index),
-                                        season_title, cover_url, infoData.index, seasonData.season_type
-                                );
-                                downloadHelper.handleDownload(
-                                        downloadData.video_url, infoData.title, downloadHelper.getFilePath(), "video.m4s"
-                                );
-                                downloadHelper.handleDownload(
-                                        downloadData.audio_url, infoData.title, downloadHelper.getFilePath(), "audio.m4s"
-                                );
-//                                episode_download_count++;
-                                onToast(Season.this, R.string.text_download_start);
-                                runOnUiThread(dialog::dismiss);
-                            } catch (NullPointerException | JSONException | IllegalArgumentException | IOException | SecurityException e) {
-                                e.printStackTrace();
-                                int exception_code;
-                                if (e instanceof JSONException) {
-                                    exception_code = -613;
-                                } else if (e instanceof IllegalArgumentException) {
-                                    exception_code = -615;
-                                } else if (e instanceof SecurityException) {
-                                    exception_code = -616;
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
-                                    builder.setTitle(R.string.title_download_alert_dir);
-
-                                    String default_dir;
-                                    String alert_info;
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                        default_dir = "/storage/emulated/0/Download/";
-                                        alert_info = getString(R.string.text_download_alert_dir_p);
-                                    } else {
-                                        default_dir = "/storage/emulated/0/Android/data/";
-                                        alert_info = "";
-                                    }
-                                    sharedPreferences.edit()
-                                            .putString("location", default_dir)
-                                            .apply();
-
-                                    builder.setMessage(String.format(
-                                            getString(R.string.text_download_alert_dir),
-                                            alert_info
-                                    ));
-                                    builder.setPositiveButton(R.string.text_ok, null);
-                                    runOnUiThread(builder::show);
-                                } else {
-                                    exception_code = -617;
-                                }
-                                onToast(Season.this, R.string.error_download_start, exception_code);
-                                runOnUiThread(dialog::dismiss);
-                            }
-                        }
-
-                        @Override
-                        public void onResult(FLVDownloadData downloadData, ArrayList<QualityData> qualityData) throws NullPointerException {
-                            try {
-                                DownloadHelper downloadHelper = new DownloadHelper(
-                                        Season.this, sharedPreferences, season_id, infoData.ep_id
-                                );
-                                downloadHelper.setFormatJSON(
-                                        downloadData, infoData, qualityData.get(quality_index),
-                                        season_title, cover_url, infoData.index, seasonData.season_type
-                                );
-                                for (int url_index = 0; url_index < downloadData.flv_url.length; url_index++) {
-                                    String url_index_string = downloadData.flv_url[url_index];
-                                    downloadHelper.handleDownload(
-                                            url_index_string, infoData.title,
-                                            downloadHelper.getFilePath(), url_index + ".blv"
-                                    );
-                                }
-                                onToast(Season.this, R.string.text_download_start);
-                                runOnUiThread(dialog::dismiss);
-                            } catch (NullPointerException | JSONException | IllegalArgumentException | IOException e) {
-                                e.printStackTrace();
-                                int exception_code;
-                                if (e instanceof JSONException) {
-                                    exception_code = -603;
-                                } else if (e instanceof IllegalArgumentException) {
-                                    exception_code = -605;
-                                } else if (e instanceof IOException) {
-                                    exception_code = -606;
-                                } else {
-                                    exception_code = -607;
-                                }
-                                onToast(Season.this, R.string.error_download_start, exception_code);
-                                runOnUiThread(dialog::dismiss);
-                            }
-                        }
-                    });
-        };
-        if (!sharedPreferences.getBoolean("alert_dir", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            AlertDialog.Builder builder = new AlertDialog.Builder(Season.this);
-            builder.setTitle(R.string.title_download_alert_dir_p);
-            builder.setMessage(R.string.text_download_alert_dir_p);
-            builder.setPositiveButton(R.string.text_download_alert_dir_positive, (dialogInterface, i) -> runnable.run());
-            builder.setNegativeButton(R.string.text_download_alert_dir_negative, (dialogInterface, i) -> {
-                sharedPreferences.edit()
-                        .putBoolean("alert_dir", true)
-                        .apply();
-                runnable.run();
-            });
-            builder.show();
-        } else {
-            runnable.run();
-        }
+            @Override
+            public void onResult() {
+                onToast(Season.this, R.string.text_download_success);
+            }
+        });
     }
 
     @Override
@@ -624,7 +474,7 @@ public class Season extends BaseActivity {
         season_tab.setupWithViewPager(season_viewpager);
 
         CollapsingToolbarLayout season_collapsing_toolbar = findViewById(R.id.season_collapsing_toolbar);
-        season_collapsing_toolbar.setTitle(season_title);
+        season_collapsing_toolbar.setTitle(season_info.title);
 
         RequestOptions requestOptions = new RequestOptions()
                 .error(R.drawable.pic_load_failed)
@@ -632,7 +482,7 @@ public class Season extends BaseActivity {
 
         ImageView season_cover_background = findViewById(R.id.season_cover_background);
         Glide.with(this)
-                .load(cover_url)
+                .load(season_info.cover)
                 .apply(requestOptions)
                 .apply(RequestOptions
                         .bitmapTransform(new BlurHelper())
@@ -658,7 +508,7 @@ public class Season extends BaseActivity {
         ImageView season_cover_placeholder = findViewById(R.id.season_cover_placeholder);
         ImageView season_cover = findViewById(R.id.season_cover);
         Glide.with(this)
-                .load(cover_url)
+                .load(season_info.cover)
                 .apply(requestOptions
                         .placeholder(R.drawable.pic_doing_v)
                 )
@@ -720,9 +570,6 @@ public class Season extends BaseActivity {
     @Override
     protected void onDestroy() {
         stopOnLoadingState();
-        if (dialog != null) {
-            dialog.dismiss();
-        }
 
 //        if (qualityData != null && episode_download_count != 0) {
 //            Map<String, Object> episode_download = new HashMap<>();
@@ -735,5 +582,13 @@ public class Season extends BaseActivity {
 //        }
 
         super.onDestroy();
+    }
+
+    public static void startActivity(Context context, String title, long sid, String cover_url){
+        Intent intent = new Intent(context, Season.class);
+        intent.putExtra("season_id", sid);
+        intent.putExtra("cover_url", cover_url);
+        intent.putExtra("title", title);
+        context.startActivity(intent);
     }
 }

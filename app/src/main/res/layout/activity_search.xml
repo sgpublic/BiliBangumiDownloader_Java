@@ -103,7 +103,7 @@
                             tools:ignore="ContentDescription" />
                     </LinearLayout>
 
-                    <com.sgpublic.bilidownload.UIHelper.FlowLayout
+                    <com.sgpublic.bilidownload.Widget.FlowLayout
                         android:id="@+id/search_history_list"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                         android:textStyle="bold"
                         android:textSize="16sp" />
 
-                    <com.sgpublic.bilidownload.UIHelper.FlowLayout
+                    <com.sgpublic.bilidownload.Widget.FlowLayout
                         android:id="@+id/search_hot_word_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

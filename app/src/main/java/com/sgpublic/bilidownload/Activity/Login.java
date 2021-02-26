@@ -25,11 +25,12 @@ import androidx.core.app.ActivityCompat;
 
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.TokenData;
 import com.sgpublic.bilidownload.R;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
 
-import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
+import static com.sgpublic.bilidownload.Unit.ActivityController.finishAll;
 
 public class Login extends BaseActivity {
 
@@ -74,7 +75,7 @@ public class Login extends BaseActivity {
                 public void onFailure(int code, String message, Throwable e) {
                     onToast(Login.this, R.string.error_login, message, code);
                     setLoadState(false);
-                    saveExplosion(e, code);
+                    CrashHandler.saveExplosion(Login.this, e, code);
                 }
 
                 @Override
@@ -99,7 +100,7 @@ public class Login extends BaseActivity {
                         public void onFailure(int code, String message, Throwable e) {
                             onToast(Login.this, R.string.error_login, message, code);
                             setLoadState(false);
-                            saveExplosion(e, code);
+                            CrashHandler.saveExplosion(Login.this, e, code);
                         }
 
                         @Override

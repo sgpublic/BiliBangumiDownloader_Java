@@ -21,15 +21,16 @@ import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
-import com.sgpublic.bilidownload.BaseService.UpdateHelper;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
+import com.sgpublic.bilidownload.Unit.UpdateHelper;
 import com.sgpublic.bilidownload.R;
-import com.sgpublic.bilidownload.UIHelper.DoubleClickListener;
+import com.sgpublic.bilidownload.UI.DoubleClickListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.sgpublic.bilidownload.BaseService.ActivityController.finishAll;
+import static com.sgpublic.bilidownload.Unit.ActivityController.finishAll;
 
 public class About extends BaseActivity {
     private ProgressBar about_progress;
@@ -132,7 +133,8 @@ public class About extends BaseActivity {
                 runOnUiThread(() -> {
                     onToast(About.this, R.string.error_update, code);
                     about_progress.setVisibility(View.GONE);
-                    saveExplosion(e, code);
+
+                    CrashHandler.saveExplosion(About.this, e, code);
                 });
             }
 

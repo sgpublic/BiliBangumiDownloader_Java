@@ -1,319 +1,200 @@
 package com.sgpublic.bilidownload.BangumiAPI;
 
-import android.app.DownloadManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
 
-import com.sgpublic.bilidownload.BaseService.ConfigManager;
-import com.sgpublic.bilidownload.DataItem.Episode.DASHDownloadData;
-import com.sgpublic.bilidownload.DataItem.Episode.FLVDownloadData;
-import com.sgpublic.bilidownload.DataItem.Episode.InfoData;
-import com.sgpublic.bilidownload.DataItem.Episode.QualityData;
+import com.sgpublic.bilidownload.DataItem.Episode.DownloadData;
+import com.sgpublic.bilidownload.DataItem.Episode.TaskData;
+import com.sgpublic.bilidownload.R;
+import com.sgpublic.bilidownload.Unit.DownloadTaskManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.net.UnknownHostException;
+
+import okhttp3.Call;
+import okhttp3.Response;
+
+import static com.sgpublic.bilidownload.DataItem.Episode.InfoData.PAYMENT_NORMAL;
 
 public class DownloadHelper {
-    private static final String TAG = "DownloadHelper";
-
     private final Context context;
-    private SharedPreferences sharedPreferences;
-    private String quality_set;
-    private String type_set;
-    private String type_tag;
-    private String root_path;
-    private String file_path;
+    private final APIHelper helper;
+    private final DownloadData downloadData = new DownloadData();
 
-    private long season_id;
-    private long ep_id;
-
-    private static final String user_agent = "Bilibili Freedoooooom/MarkII";
-
-    public DownloadHelper(Context context) {
+    public DownloadHelper(Context context){
         this.context = context;
+        String access_token = context.getSharedPreferences("user", Context.MODE_PRIVATE)
+                .getString("access_token", "");
+        helper = new APIHelper(access_token);
     }
 
-    public DownloadHelper(Context context, SharedPreferences sharedPreferences, long season_id, long ep_id) {
-        this.context = context;
-        this.sharedPreferences = sharedPreferences;
-        this.quality_set = ConfigManager.checkQuality(context).getName();
-        this.type_set = ConfigManager.checkClient(context).getPackageName();
-        this.season_id = season_id;
-        this.ep_id = ep_id;
+    //{"code":-10403,"message":"抱歉您所在地区不可观看！"}
+    //{"code":-10403,"message":"大会员专享限制"}
+    public DownloadData getDownloadInfo(TaskData data){
+        getOfficialDownloadInfo(data);
+        return downloadData;
     }
 
-    public String getRootPath() {
-        return root_path;
-    }
-
-    public String getFilePath() {
-        return file_path;
-    }
-
-    public void setFormatJSON(DASHDownloadData downloadData, InfoData infoData, QualityData qualityData,
-                              String season_title, String season_cover, String ep_index, int session_type)
-            throws JSONException, NullPointerException, IOException {
-        type_tag = String.valueOf(qualityData.getQuality());
-        String default_dir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            default_dir = "/storage/emulated/0/Download/";
-        } else {
-            default_dir = "/storage/emulated/0/Android/data/";
-        }
-        root_path = sharedPreferences.getString("location", default_dir) + type_set + "/download/s_"
-                + season_id + "/" + ep_id + "/";
-        file_path = root_path + type_tag + "/";
-
-        JSONObject object_entry = new JSONObject();
-        object_entry.put("media_type", 2);
-        object_entry.put("has_dash_audio", true);
-        object_entry.put("is_completed", true);
-        object_entry.put("total_bytes", downloadData.total_size);
-        object_entry.put("downloaded_bytes", downloadData.total_size);
-        object_entry.put("title", season_title);
-        object_entry.put("type_tag", type_tag);
-        object_entry.put("cover", season_cover);
-        object_entry.put("video_quality", qualityData.getQuality());
-        object_entry.put("prefered_video_quality", qualityData.getQuality());
-        object_entry.put("guessed_total_bytes", 0);
-        object_entry.put("total_time_milli", downloadData.time_length);
-        object_entry.put("danmaku_count", 3000);
-        object_entry.put("time_update_stamp", System.currentTimeMillis());
-        object_entry.put("time_create_stamp", System.currentTimeMillis());
-        object_entry.put("can_play_in_advance", true);
-        object_entry.put("interrupt_transform_temp_file", false);
-        object_entry.put("quality_pithy_description", 6181000);
-        object_entry.put("preferred_audio_quality", 0);
-        object_entry.put("audio_quality", 0);
-        object_entry.put("cache_version_code", "");
-        object_entry.put("quality_superscript", "");
-        object_entry.put("season_id", season_id);
-        JSONObject object_entry_source = new JSONObject();
-        object_entry_source.put("av_id", infoData.aid);
-        object_entry_source.put("cid", infoData.cid);
-        object_entry_source.put("website", "bangumi");
-        object_entry.put("source", object_entry_source);
-        JSONObject object_entry_ep = new JSONObject();
-        object_entry_ep.put("av_id", infoData.aid);
-        object_entry_ep.put("page", 0);
-        object_entry_ep.put("danmaku", infoData.cid);
-        object_entry_ep.put("cover", infoData.cover);
-        object_entry_ep.put("episode_id", infoData.ep_id);
-        object_entry_ep.put("index", ep_index);
-        object_entry_ep.put("index_title", infoData.title);
-        object_entry_ep.put("from", "bangumi");
-        object_entry_ep.put("season_type", session_type);
-        object_entry_ep.put("width", 0);
-        object_entry_ep.put("height", 0);
-        object_entry_ep.put("rotate", 0);
-        object_entry_ep.put("link", "https://www.bilibili.com/bangumi/play/ep" + infoData.ep_id);
-        object_entry_ep.put("bvid", infoData.bvid);
-        object_entry.put("ep", object_entry_ep);
-
-        JSONObject object_index = new JSONObject();
-
-        JSONArray object_content_video = new JSONArray();
-        JSONObject object_index_video = new JSONObject();
-        object_index_video.put("id", downloadData.video_id);
-        object_index_video.put("base_url", downloadData.video_url);
-        JSONArray object_index_video_backup_url = new JSONArray();
-        object_index_video.put("backup_url", object_index_video_backup_url);
-        object_index_video.put("bandwidth", downloadData.video_bandwidth);
-        object_index_video.put("codecid", downloadData.video_codecid);
-        object_index_video.put("size", downloadData.video_size);
-        object_index_video.put("md5", downloadData.video_md5);
-        object_index_video.put("no_rexcode", false);
-        object_content_video.put(object_index_video);
-        object_index.put("video", object_content_video);
-
-        JSONArray object_content_audio = new JSONArray();
-        JSONObject object_index_audio = new JSONObject();
-        object_index_audio.put("id", downloadData.audio_id);
-        object_index_audio.put("base_url", downloadData.audio_url);
-        JSONArray object_index_audio_backup_url = new JSONArray();
-        object_index_audio.put("backup_url", object_index_audio_backup_url);
-        object_index_audio.put("bandwidth", downloadData.audio_bandwidth);
-        object_index_audio.put("codecid", downloadData.audio_codecid);
-        object_index_audio.put("size", downloadData.audio_size);
-        object_index_audio.put("md5", downloadData.audio_md5);
-        object_index_audio.put("no_rexcode", false);
-        object_content_audio.put(object_index_audio);
-        object_index.put("audio", object_content_audio);
-
-        save(object_entry.toString(), getRootPath(), "entry.json");
-        save(object_index.toString(), getFilePath(), "index.json");
-    }
-
-    public void setFormatJSON(FLVDownloadData downloadData, InfoData infoData, QualityData qualityData,
-                              String season_title, String season_cover, String ep_index, int session_type)
-            throws JSONException, NullPointerException, IOException {
-        type_tag = "lua." + quality_set + ".bb2api." + qualityData.getQuality();
-        root_path = sharedPreferences.getString("location", "/storage/emulated/0/Android/data/") + type_set + "/download/s_"
-                + season_id + "/" + ep_id + "/";
-        file_path = root_path + type_tag + "/";
-
-        JSONObject object_entry = new JSONObject();
-        object_entry.put("media_type", 1);
-        object_entry.put("has_dash_audio", false);
-        object_entry.put("is_completed", true);
-        object_entry.put("total_bytes", downloadData.flv_size);
-        object_entry.put("downloaded_bytes", downloadData.flv_size);
-        object_entry.put("title", season_title);
-        object_entry.put("type_tag", type_tag);
-        object_entry.put("cover", season_cover);
-        object_entry.put("prefered_video_quality", qualityData.getQuality());
-        object_entry.put("guessed_total_bytes", 0);
-        object_entry.put("total_time_milli", downloadData.time_length);
-        object_entry.put("danmaku_count", 3000);
-        object_entry.put("time_update_stamp", System.currentTimeMillis());
-        object_entry.put("time_create_stamp", System.currentTimeMillis());
-        object_entry.put("season_id", season_id);
-        JSONObject object_entry_source = new JSONObject();
-        object_entry_source.put("av_id", infoData.aid);
-        object_entry_source.put("cid", infoData.cid);
-        object_entry_source.put("website", "bangumi");
-        object_entry.put("source", object_entry_source);
-        JSONObject object_entry_ep = new JSONObject();
-        object_entry_ep.put("av_id", infoData.aid);
-        object_entry_ep.put("page", 0);
-        object_entry_ep.put("danmaku", infoData.cid);
-        object_entry_ep.put("cover", infoData.cover);
-        object_entry_ep.put("episode_id", infoData.ep_id);
-        object_entry_ep.put("index", ep_index);
-        object_entry_ep.put("index_title", infoData.title);
-        object_entry_ep.put("from", "bangumi");
-        object_entry_ep.put("season_type", session_type);
-        object_entry_ep.put("width", 0);
-        object_entry_ep.put("height", 0);
-        object_entry_ep.put("rotate", 0);
-        object_entry_ep.put("link", "https://www.bilibili.com/bangumi/play/ep" + infoData.ep_id);
-        object_entry_ep.put("bvid", infoData.bvid);
-        object_entry.put("ep", object_entry_ep);
-
-        JSONObject object_index = new JSONObject();
-        object_index.put("from", "bangumi");
-        object_index.put("quality", qualityData.getQuality());
-        object_index.put("type_tag", type_tag);
-        object_index.put("description", qualityData.getDescription());
-        object_index.put("is_stub", false);
-        object_index.put("psedo_bitrate", 0);
-
-        JSONArray object_index_segment_list = new JSONArray();
-        for (int list_index = 0; list_index < downloadData.section_count; list_index++) {
-            JSONObject object_index_segment = new JSONObject();
-            object_index_segment.put("url", downloadData.flv_url[list_index]);
-            object_index_segment.put("duration", downloadData.flv_length[list_index]);
-            object_index_segment.put("bytes", downloadData.flv_size[list_index]);
-            object_index_segment.put("meta_url", "");
-            object_index_segment.put("ahead", "");
-            object_index_segment.put("vhead", "");
-            object_index_segment.put("md5", downloadData.flv_md5[list_index]);
-            JSONArray object_index_segment_list_backup_urls = new JSONArray();
-            object_index_segment.put("backup_urls", object_index_segment_list_backup_urls);
-            object_index_segment_list.put(object_index_segment);
-        }
-
-        object_index.put("segment_list", object_index_segment_list);
-        object_index.put("parse_timestamp_milli", System.currentTimeMillis());
-        object_index.put("available_period_milli", 0);
-        object_index.put("local_proxy_type", 0);
-        object_index.put("user_agent", user_agent);
-        object_index.put("is_downloaded", false);
-        object_index.put("is_resolved", false);
-        JSONArray player_codec_config_list = new JSONArray();
-        JSONObject player_codec_config = new JSONObject();
-        player_codec_config.put("use_ijk_media_codec", false);
-        player_codec_config.put("player", "IJK_PLAYER");
-        player_codec_config_list.put(player_codec_config);
-        player_codec_config = new JSONObject();
-        player_codec_config.put("use_ijk_media_codec", false);
-        player_codec_config.put("player", "ANDROID_PLAYER");
-        player_codec_config_list.put(player_codec_config);
-        object_index.put("player_codec_config_list", player_codec_config_list);
-        object_index.put("time_length", downloadData.time_length);
-        object_index.put("marlin_token", "");
-        object_index.put("video_codec_id", downloadData.flv_codecid);
-        object_index.put("video_project", false);
-
-        save(object_entry.toString(), getRootPath(), "entry.json");
-        save(object_index.toString(), getFilePath(), "index.json");
-    }
-
-    public void handleDownload(String dl_url, String ep_title, String file_path, String file_name) {
-        Uri url = Uri.parse(dl_url);
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request req = new DownloadManager.Request(url);
-        req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        req.addRequestHeader("User-Agent", user_agent);
-        req.setDestinationUri(Uri.fromFile(new File(file_path, file_name)));
-        req.setVisibleInDownloadsUi(true);
-        req.setTitle(ep_title + "_" + file_name);
-        downloadManager.enqueue(req);
-    }
-
-    private void save(String string_data, String file_path, String file_name) throws IOException {
-        File file = new File(file_path);
-        boolean create = file.exists();
-        if (!create) {
-            create = file.mkdirs();
-        }
-        if (create) {
-            file = new File(file_path, file_name);
-            FileOutputStream outputStream = new FileOutputStream(file);
-            OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-            writer.write(string_data);
-            writer.flush();
-            outputStream.flush();
-            writer.close();
-            outputStream.close();
-        } else {
-            throw new IOException(file_path + file_name + " (Can not create dirs)");
-        }
-    }
-
-    long getSizeLong(String url_string) {
+    private void getOfficialDownloadInfo(TaskData data){
+        Call call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality);
         try {
-            URL url = new URL(url_string);
-            HttpURLConnection url_con = (HttpURLConnection) url.openConnection();
-            url_con.setRequestProperty("accept", "*/*");
-            url_con.setRequestProperty("connection", "Keep-Alive");
-            url_con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            url_con.setRequestProperty("User-Agent", user_agent);
-            long size = url_con.getContentLength();
-            url_con.disconnect();
-            return size;
-        } catch (IOException e) {
-            return 0;
+            Response response = call.execute();
+            JSONObject object = new JSONObject(response.body().string());
+            if (object.getInt("code") != 0) {
+                if (object.getInt("code") == -10403 & data.episodeData.payment == PAYMENT_NORMAL){
+                    getBiliplusDownloadInfo(data);
+                } else {
+                    downloadData.code = -501;
+                    downloadData.message = object.getString("message");
+                }
+            } else {
+                String type = object.getString("type");
+                if (type.equals("FLV")) {
+                    downloadData.code = -505;
+                    downloadData.message = context.getString(R.string.error_download_flv);
+                } else if (type.equals("DASH")) {
+                    getDASHData(object, data.quality);
+                } else {
+                    downloadData.code = -506;
+                }
+            }
+        } catch (IOException e){
+            if (e instanceof UnknownHostException) {
+                downloadData.code = -501;
+                downloadData.message = context.getString(R.string.error_network);
+            } else {
+                downloadData.code = -502;
+                downloadData.message = e.getMessage();
+            }
+            downloadData.e = e;
+        } catch (JSONException e){
+            downloadData.code = -503;
+            downloadData.e = e;
         }
     }
 
-    public String getSizeString(String url_string) {
-        long size = getSizeLong(url_string);
-        String size_string;
-        BigDecimal fileSize = new BigDecimal(size);
-        BigDecimal megabyte = new BigDecimal(1024 * 1024);
-        float returnValue = fileSize.divide(megabyte, 2, BigDecimal.ROUND_UP)
-                .floatValue();
-        if (returnValue > 1) {
-            size_string = returnValue + " MB";
-        } else {
-            BigDecimal kilobyte = new BigDecimal(1024);
-            returnValue = fileSize.divide(kilobyte, 2, BigDecimal.ROUND_UP)
-                    .floatValue();
-            size_string = returnValue + " KB";
+    private void getBiliplusDownloadInfo(TaskData data){
+        Call call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality);
+        try {
+            Response response = call.execute();
+            if (response.code() == -504){
+                getKghostDownloadInfo(data);
+                return;
+            }
+            JSONObject object = new JSONObject(response.body().string());
+            if (object.getInt("code") != 0) {
+                downloadData.code = -514;
+                downloadData.message = object.getString("message");
+            } else {
+                if (!object.isNull("durl")) {
+                    downloadData.code = -515;
+                    downloadData.message = context.getString(R.string.error_download_flv);
+                } else if (!object.isNull("dash")) {
+                    getDASHData(object, data.quality);
+                } else {
+                    downloadData.code = -516;
+                }
+            }
+        } catch (IOException e){
+            if (e instanceof UnknownHostException) {
+                downloadData.code = -511;
+                downloadData.message = context.getString(R.string.error_network);
+            } else {
+                downloadData.code = -512;
+                downloadData.message = e.getMessage();
+            }
+            downloadData.e = e;
+        } catch (JSONException e){
+            downloadData.code = -513;
+            downloadData.e = e;
         }
-        return size_string;
+    }
+
+    private void getKghostDownloadInfo(TaskData data) {
+        Call call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality);
+        try {
+            Response response = call.execute();
+            JSONObject object = new JSONObject(response.body().string());
+            if (object.getInt("code") != 0) {
+                downloadData.code = -524;
+                downloadData.message = object.getString("message");
+            } else {
+                if (!object.isNull("durl")) {
+                    downloadData.code = -525;
+                    downloadData.message = context.getString(R.string.error_download_flv);
+                } else if (!object.isNull("dash")) {
+                    getDASHData(object, data.quality);
+                } else {
+                    downloadData.code = -526;
+                }
+            }
+        } catch (IOException e){
+            if (e instanceof UnknownHostException) {
+                downloadData.code = -521;
+                downloadData.message = context.getString(R.string.error_network);
+            } else {
+                downloadData.code = -522;
+                downloadData.message = e.getMessage();
+            }
+            downloadData.e = e;
+        } catch (JSONException | IndexOutOfBoundsException e){
+            downloadData.code = -523;
+            downloadData.e = e;
+        }
+    }
+
+    private void getDASHData(JSONObject object, int qn) throws JSONException {
+        DownloadData.DASHDownloadData downloadData = new DownloadData.DASHDownloadData();
+        downloadData.time_length = object.getLong("timelength");
+
+        JSONObject private_object = object.getJSONObject("dash");
+        JSONArray array;
+        array = private_object.getJSONArray("video");
+        JSONObject object_video = null;
+        for (int array_index = 0; array_index < array.length(); array_index++) {
+            JSONObject object_video_index = array.getJSONObject(array_index);
+            int video_qn_pre = object_video == null ? -1 : object_video.getInt("id");
+            int video_qn_this = object_video_index.getInt("id");
+            if (video_qn_this > video_qn_pre && video_qn_this <= qn){
+                object_video = object_video_index;
+            }
+        }
+        if (object_video != null){
+            downloadData.video_url = object_video.getString("base_url");
+            downloadData.video_bandwidth = object_video.getLong("bandwidth");
+            downloadData.video_codecid = object_video.isNull("codecid") ? 0 : object_video.getInt("codecid");
+            downloadData.video_id = object_video.getInt("id");
+            downloadData.video_md5 = object_video.isNull("md5") ? "" : object_video.getString("md5");
+            downloadData.video_size = DownloadTaskManager.getSizeLong(downloadData.video_url);
+        }
+        array = private_object.getJSONArray("audio");
+        JSONObject object_audio = null;
+        for (int array_index = 0; array_index < array.length(); array_index++) {
+            JSONObject object_audio_index = array.getJSONObject(array_index);
+            int audio_qn_pre = object_audio == null ? -1 : object_audio.getInt("id") - 30200;
+            int audio_qn_this = object_audio_index.getInt("id") - 30200;
+            if (audio_qn_this > audio_qn_pre && audio_qn_this <= qn){
+                object_audio = object_audio_index;
+            }
+        }
+        if (object_audio != null) {
+            downloadData.audio_url = object_audio.getString("base_url");
+            downloadData.audio_bandwidth = object_audio.getLong("bandwidth");
+            downloadData.audio_codecid = object_audio.isNull("codecid") ? 0 : object_audio.getInt("codecid");
+            downloadData.audio_id = object_audio.getInt("id");
+            downloadData.audio_md5 = object_audio.isNull("md5") ? "" : object_audio.getString("md5");
+            downloadData.audio_size = DownloadTaskManager.getSizeLong(downloadData.audio_url);
+        }
+        if (object_video != null && object_audio != null){
+            this.downloadData.code = 0;
+            downloadData.total_size = downloadData.audio_size + downloadData.video_size;
+            this.downloadData.data = downloadData;
+        } else {
+            this.downloadData.code = -531;
+            this.downloadData.message = context.getString(R.string.error_download_url);
+        }
     }
 }

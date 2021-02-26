@@ -1,8 +1,6 @@
-package com.sgpublic.bilidownload.UIHelper;
+package com.sgpublic.bilidownload.UI;
 
 import android.content.Context;
-
-import androidx.annotation.Nullable;
 
 public class BannerItem {
 

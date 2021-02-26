@@ -62,7 +62,7 @@
     <string name="text_season_payment_traveled">港澳台專屬，您當前地區無法觀看呢~</string>
     <string name="title_season_episode_list">正片</string>
     <string name="text_episode_vip_needed">該劇集需要大會員才能觀看哦~</string>
-    <string name="title_download_doing">正在獲取鏈接……</string>
+    <string name="text_download_doing">正在獲取鏈接……</string>
     <string name="title_download_alert_dir">無法訪問您設置的下載目錄</string>
     <string name="text_download_alert_dir">您當前設置的目錄無法訪問，已為您重置為默認目錄。\n%1$s</string>
     <string name="title_download_alert_dir_p">讀寫權限受限</string>

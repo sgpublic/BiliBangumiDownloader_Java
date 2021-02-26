@@ -1,23 +1,24 @@
-package com.sgpublic.bilidownload.BaseService;
+package com.sgpublic.bilidownload.BaseStation;
 
 import android.app.Application;
-import android.content.Context;
-import android.os.Build;
 
 import com.sgpublic.bilidownload.BuildConfig;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
+import com.sgpublic.bilidownload.Unit.MyLog;
+
 //import com.umeng.analytics.MobclickAgent;
 //import com.umeng.commonsdk.UMConfigure;
 
-import okhttp3.OkHttpClient;
-import okio.Buffer;
 
 public class Main extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        if (!BuildConfig.DEBUG){
-//            initSDK(this);
-//        }
+        if (BuildConfig.DEBUG){
+            MyLog.setup();
+        }
+        CrashHandler.getInstance().init(this);
+//        initSDK(this);
     }
 
 //    private void initSDK(Context context) {

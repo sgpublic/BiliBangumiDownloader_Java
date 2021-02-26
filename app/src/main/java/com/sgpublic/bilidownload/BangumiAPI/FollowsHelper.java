@@ -3,9 +3,11 @@ package com.sgpublic.bilidownload.BangumiAPI;
 import android.content.Context;
 import android.graphics.Color;
 
+import com.sgpublic.bilidownload.Unit.MyLog;
 import com.sgpublic.bilidownload.DataItem.FollowData;
 import com.sgpublic.bilidownload.R;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +41,7 @@ public class FollowsHelper {
         Call call = helper.getFollowsRequest(mid, page_index, status);
         call.enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback_private.onFailure(-301, context.getString(R.string.error_network), e);
                 } else {
@@ -48,7 +50,7 @@ public class FollowsHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
@@ -66,6 +68,7 @@ public class FollowsHelper {
                             followDataArray = new FollowData[total_page];
                             for (int follow_list_index = 0; follow_list_index < total_page; follow_list_index++) {
                                 object = array.getJSONObject(follow_list_index);
+                                MyLog.v(FollowsHelper.class, object);
 
                                 FollowData followData = new FollowData();
                                 followData.season_id = object.getLong("season_id");

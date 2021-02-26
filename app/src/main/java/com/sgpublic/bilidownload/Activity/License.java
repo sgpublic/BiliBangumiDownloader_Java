@@ -7,10 +7,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.ActionBar;
 
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.R;
-import com.sgpublic.bilidownload.UIHelper.LicenseListAdapter;
-import com.sgpublic.bilidownload.UIHelper.LicenseListItem;
+import com.sgpublic.bilidownload.UI.LicenseListAdapter;
+import com.sgpublic.bilidownload.UI.LicenseListItem;
 
 import java.util.ArrayList;
 

@@ -16,6 +16,6 @@
         android:layout_marginStart="15dp"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:text="@string/title_download_doing"
+        android:text="@string/text_download_doing"
         android:textSize="16sp" />
 </LinearLayout>

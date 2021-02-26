@@ -1,8 +1,6 @@
 package com.sgpublic.bilidownload.BangumiAPI;
 
-import android.util.Log;
-
-import com.sgpublic.bilidownload.BaseService.MyLog;
+import com.sgpublic.bilidownload.Unit.MyLog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -259,6 +257,14 @@ public class APIHelper {
         return onReturn(url, METHOD_GET, arg_array, true);
     }
 
+    Call getProxyRequest_iill(Call call){
+        String url = "https://biliproxy.iill.moe/";
+        String[][] arg_array = new String[][]{
+                {"url", call.request().url().toString()}
+        };
+        return onReturn(url, METHOD_GET, arg_array, false);
+    }
+
     Call getDanmakuRequest(long cid) {
         String url = "https://api.bilibili.com/x/v1/dm/list.so";
         String[][] arg_array = new String[][]{
@@ -311,7 +317,7 @@ public class APIHelper {
             }
         }
 
-        MyLog.v(TAG, "onReturn: " + url_final);
+        MyLog.v(APIHelper.class, "onReturn: " + url_final);
 
         requestBuilder.url(url_final);
         return client.newCall(requestBuilder.build());

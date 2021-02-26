@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_search_base_go"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="132dp"
@@ -9,6 +10,7 @@
     android:paddingEnd="30dp"
     android:paddingTop="10dp"
     android:paddingBottom="15dp"
+    android:foreground="?android:attr/selectableItemBackground"
     tools:ignore="NestedWeights">
 
     <androidx.cardview.widget.CardView

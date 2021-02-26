@@ -3,7 +3,7 @@ package com.sgpublic.bilidownload.BangumiAPI;
 import android.content.Context;
 import android.util.Log;
 
-import com.sgpublic.bilidownload.BaseService.Base64Helper;
+import com.sgpublic.bilidownload.Unit.Base64Unit;
 import com.sgpublic.bilidownload.DataItem.TokenData;
 import com.sgpublic.bilidownload.R;
 
@@ -57,7 +57,7 @@ public class LoginHelper {
         Call call = helper.getKeyRequest();
         call.enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback_private.onFailure(-101, context.getString(R.string.error_network), e);
                 } else {
@@ -66,7 +66,7 @@ public class LoginHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
@@ -90,12 +90,12 @@ public class LoginHelper {
 
         public_key = public_key.replace("\n", "").substring(26, 242);
         try {
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64Helper.Decode(public_key));
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64Unit.Decode(public_key));
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PublicKey pubKey = keyFactory.generatePublic(keySpec);
             Cipher cp = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cp.init(Cipher.ENCRYPT_MODE, pubKey);
-            password_encrypted = Base64Helper.Encode(cp.doFinal(hash.concat(password).getBytes()));
+            password_encrypted = Base64Unit.Encode(cp.doFinal(hash.concat(password).getBytes()));
             password_encrypted = URLEncoder.encode(password_encrypted, "UTF-8");
         } catch (Exception e) {
             callback_private.onFailure(-125, e.getMessage(), e);
@@ -105,7 +105,7 @@ public class LoginHelper {
 
         call.enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback_private.onFailure(-121, context.getString(R.string.error_network), null);
                 } else {
@@ -114,7 +114,7 @@ public class LoginHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
@@ -153,7 +153,7 @@ public class LoginHelper {
         Call call = helper.getLoginWebRequest(cookie, user_agent);
         call.enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback_private.onFailure(-131, context.getString(R.string.error_network), e);
                 } else {
@@ -162,7 +162,7 @@ public class LoginHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String result = Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject object = new JSONObject(result);
@@ -179,7 +179,7 @@ public class LoginHelper {
         Call call = helper.getLoginConfirmRequest(confirm_uri, cookie, user_agent);
         call.enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 if (e instanceof UnknownHostException) {
                     callback_private.onFailure(-141, context.getString(R.string.error_network), e);
                 } else {
@@ -188,7 +188,7 @@ public class LoginHelper {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String location = response.header("Location");
                 if (location != null && !Objects.equals(location, "")) {
                     if (location.startsWith("http://link.acg.tv/forum.php")) {

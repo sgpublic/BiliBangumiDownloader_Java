@@ -14,10 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.R;
-import com.sgpublic.bilidownload.UIHelper.ExploreFolderAdapter;
-import com.sgpublic.bilidownload.UIHelper.ExploreFolderItem;
+import com.sgpublic.bilidownload.UI.ExploreFolderAdapter;
+import com.sgpublic.bilidownload.UI.ExploreFolderItem;
 
 import java.io.File;
 import java.util.ArrayList;

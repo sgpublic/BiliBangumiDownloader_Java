@@ -18,8 +18,8 @@ android {
         applicationId "com.sgpublic.bilidownload"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 210214
-        versionName "3.3.4.210214"
+        versionCode 210226
+        versionName "3.4.0 Build 2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         if (file("./gradle.properties").exists()) {
@@ -29,9 +29,7 @@ android {
 
     buildTypes {
         debug {
-            if (file("./gradle.properties").exists()){
-                signingConfig signingConfigs.release
-            }
+            applicationIdSuffix ".debug"
         }
         release {
             minifyEnabled false

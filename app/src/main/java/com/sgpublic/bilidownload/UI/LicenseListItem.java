@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.UIHelper;
+package com.sgpublic.bilidownload.UI;
 
 public class LicenseListItem {
     private final String title;

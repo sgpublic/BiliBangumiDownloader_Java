@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.UIHelper;
+package com.sgpublic.bilidownload.UI;
 
 import android.graphics.drawable.Drawable;
 import android.os.Handler;

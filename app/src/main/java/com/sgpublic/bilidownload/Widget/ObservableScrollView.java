@@ -1,8 +1,7 @@
-package com.sgpublic.bilidownload.UIHelper;
+package com.sgpublic.bilidownload.Widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ScrollView;
 
 import androidx.core.widget.NestedScrollView;
 

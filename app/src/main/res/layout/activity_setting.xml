@@ -97,7 +97,7 @@
                         android:textSize="14sp"
                         android:textColor="@color/color_text_dark" />
                 </LinearLayout>
-                <TextView
+                <com.sgpublic.bilidownload.Widget.ScrollTextView
                     android:id="@+id/setting_location_string"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -106,8 +106,6 @@
                     android:layout_gravity="center_vertical"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:maxLines="2"
-                    android:ellipsize="end"
                     android:textSize="14sp"
                     android:textColor="@color/color_text_dark" />
                 <ImageView
@@ -130,19 +128,16 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:background="?android:attr/selectableItemBackground">
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/title_setting_quality"
                         android:textSize="16sp"
                         android:textColor="@color/color_text_normal" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,7 +145,6 @@
                         android:textSize="14sp"
                         android:textColor="@color/color_text_dark" />
                 </LinearLayout>
-
                 <TextView
                     android:id="@+id/setting_quality_string"
                     android:layout_width="0dp"
@@ -165,7 +159,6 @@
                     android:ellipsize="start"
                     android:textSize="14sp"
                     android:textColor="@color/color_text_dark" />
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
@@ -173,6 +166,92 @@
                     android:src="@drawable/ic_check_mark_checked"
                     tools:ignore="ContentDescription"
                     app:tint="@color/color_text_dark" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/setting_task_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:background="?android:attr/selectableItemBackground">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_setting_task"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_text_normal" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_setting_task"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_text_dark" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/setting_task_count_string"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="end"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:maxLines="2"
+                    android:ellipsize="start"
+                    android:textSize="14sp"
+                    android:textColor="@color/color_text_dark" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_check_mark_checked"
+                    tools:ignore="ContentDescription"
+                    app:tint="@color/color_text_dark" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/setting_auto_start_base"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:background="?selectableItemBackground">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_setting_auto_start"
+                        android:textColor="@color/color_text_normal"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_setting_auto_start"
+                        android:textColor="@color/color_text_dark"
+                        android:textSize="14sp" />
+                </LinearLayout>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/setting_auto_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

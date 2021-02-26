@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.UIHelper;
+package com.sgpublic.bilidownload.UI;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

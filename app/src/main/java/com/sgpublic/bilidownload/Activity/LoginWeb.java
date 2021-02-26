@@ -19,9 +19,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.sgpublic.bilidownload.BangumiAPI.LoginHelper;
 import com.sgpublic.bilidownload.BangumiAPI.UserManager;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.TokenData;
 import com.sgpublic.bilidownload.R;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
 
 import java.util.Objects;
 
@@ -105,7 +106,7 @@ public class LoginWeb extends BaseActivity {
             public void onFailure(int code, String message, Throwable e) {
                 onToast(LoginWeb.this, R.string.error_login, message, code);
                 stopOnLoadingState();
-                saveExplosion(e, code);
+                CrashHandler.saveExplosion(LoginWeb.this, e, code);
                 finish();
             }
 

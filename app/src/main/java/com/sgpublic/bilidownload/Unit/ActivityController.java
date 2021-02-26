@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.BaseService;
+package com.sgpublic.bilidownload.Unit;
 
 import android.app.Activity;
 
@@ -8,11 +8,11 @@ import java.util.List;
 public class ActivityController {
     private static final List<Activity> activities = new ArrayList<>();
 
-    static void addActivity(Activity activity) {
+    public static void addActivity(Activity activity) {
         activities.add(activity);
     }
 
-    static void removeActivity(Activity activity) {
+    public static void removeActivity(Activity activity) {
         activities.remove(activity);
     }
 

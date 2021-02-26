@@ -30,10 +30,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.sgpublic.bilidownload.BangumiAPI.SearchHelper;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.SearchData;
 import com.sgpublic.bilidownload.R;
-import com.sgpublic.bilidownload.UIHelper.FlowLayout;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
+import com.sgpublic.bilidownload.Widget.FlowLayout;
 //import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
@@ -158,7 +159,7 @@ public class Search extends BaseActivity {
                     fileOutputStream.write("".getBytes());
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    saveExplosion(e, -725);
+                    CrashHandler.saveExplosion(Search.this, e, -725);
                 }
                 setAnimateState(false, 500, search_history, null);
             });
@@ -172,7 +173,7 @@ public class Search extends BaseActivity {
             @Override
             public void onFailure(int code, String message, Throwable e) {
                 if (e instanceof JSONException) {
-                    saveExplosion(e, code);
+                    CrashHandler.saveExplosion(Search.this, e, code);
                 }
             }
 
@@ -202,7 +203,7 @@ public class Search extends BaseActivity {
             public void onFailure(int code, String message, Throwable e) {
                 setAnimateState(false, 150, search_suggestion_base, null);
                 if (e instanceof JSONException) {
-                    saveExplosion(e, code);
+                    CrashHandler.saveExplosion(Search.this, e, code);
                 }
             }
 
@@ -277,7 +278,7 @@ public class Search extends BaseActivity {
                             stopOnLoadingState();
                             search_load_state.setImageResource(R.drawable.pic_load_failed);
                         });
-                        saveExplosion(e, code);
+                        CrashHandler.saveExplosion(Search.this, e, code);
                     }
 
                     @Override
@@ -318,6 +319,7 @@ public class Search extends BaseActivity {
                                             item_search_rating_start.setProgress(
                                                     (int) Math.round(data.media_score)
                                             );
+                                            search_item.findViewById(R.id.item_search_base_go).setOnClickListener(v -> goToSeason(data));
                                             search_item.findViewById(R.id.item_search_go).setOnClickListener(v -> goToSeason(data));
                                             ImageView item_search_season_cover = search_item.findViewById(R.id.item_search_season_cover);
                                             ImageView item_search_season_placeholder = search_item.findViewById(R.id.item_search_season_placeholder);
@@ -405,11 +407,7 @@ public class Search extends BaseActivity {
     }
 
     private void goToSeason(SearchData data) {
-        Intent intent = new Intent(Search.this, Season.class);
-        intent.putExtra("season_id", data.season_id);
-        intent.putExtra("cover_url", data.season_cover);
-        intent.putExtra("title", data.season_title.toString());
-        startActivity(intent);
+        Season.startActivity(Search.this, data.season_title.toString(), data.season_id, data.season_cover);
     }
 
     private void getHistory() {
@@ -440,11 +438,11 @@ public class Search extends BaseActivity {
             }
         } catch (IOException e) {
             if (!(e instanceof FileNotFoundException)) {
-                saveExplosion(e, -705);
+                CrashHandler.saveExplosion(Search.this, e, -705);
             }
             search_history.setVisibility(View.GONE);
         } catch (JSONException e) {
-            saveExplosion(e, -703);
+            CrashHandler.saveExplosion(Search.this, e, -703);
             search_history.setVisibility(View.GONE);
         }
     }
@@ -477,9 +475,9 @@ public class Search extends BaseActivity {
             fileOutputStream.write(array_save.toString().getBytes());
             fileOutputStream.close();
         } catch (IOException e) {
-            saveExplosion(e, -715);
+            CrashHandler.saveExplosion(Search.this, e, -715);
         } catch (JSONException e) {
-            saveExplosion(e, -713);
+            CrashHandler.saveExplosion(Search.this, e, -713);
         }
     }
 

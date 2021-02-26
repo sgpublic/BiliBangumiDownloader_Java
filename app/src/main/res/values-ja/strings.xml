@@ -62,7 +62,7 @@
     <string name="text_season_payment_traveled">香港、マカオ、台湾限定で、現在のエリアではご覧いただけません〜</string>
     <string name="title_season_episode_list">ポジティブ</string>
     <string name="text_episode_vip_needed">このエピソードを見るには大會員が必要です〜</string>
-    <string name="title_download_doing">リンクを取得しています...</string>
+    <string name="text_download_doing">リンクを取得しています...</string>
     <string name="title_download_alert_dir">ディレクトリアクセスが拒否されました</string>
     <string name="text_download_alert_dir">現在設定しているディレクトリにアクセスできず、デフォルトのディレクトリにリセットされています。\n%1$s</string>
     <string name="title_download_alert_dir_p">制限付きの読み取りおよび書き込み権限</string>

@@ -7,7 +7,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import androidx.appcompat.app.ActionBar;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -30,10 +29,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.sgpublic.bilidownload.BangumiAPI.FollowsHelper;
-import com.sgpublic.bilidownload.BaseService.BaseActivity;
+import com.sgpublic.bilidownload.BaseStation.BaseActivity;
 import com.sgpublic.bilidownload.DataItem.FollowData;
 import com.sgpublic.bilidownload.R;
-import com.sgpublic.bilidownload.UIHelper.ObservableScrollView;
+import com.sgpublic.bilidownload.Unit.CrashHandler;
+import com.sgpublic.bilidownload.Widget.ObservableScrollView;
 
 public class OtherFollows extends BaseActivity {
     private ImageView others_follow_end;
@@ -147,7 +147,7 @@ public class OtherFollows extends BaseActivity {
             item_others_follow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onGetSeason(data_info.title, data_info.season_id, data_info.cover);
+                    Season.startActivity(OtherFollows.this, data_info.title, data_info.season_id, data_info.cover);
                 }
             });
 
@@ -186,47 +186,34 @@ public class OtherFollows extends BaseActivity {
                         try {
                             stopOnLoadingState();
                             others_load_state.setImageResource(R.drawable.pic_load_failed);
-                        } catch (NullPointerException ignored) {
-                        }
+                        } catch (NullPointerException ignored) { }
                     }
                 });
-                saveExplosion(e, code);
+                CrashHandler.saveExplosion(OtherFollows.this, e, code);
             }
 
             @Override
             public void onResult(final FollowData[] followData, final int has_next) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        stopOnLoadingState();
-                        try {
-                            if (followData.length == 0) {
-                                others_load_state.setImageResource(R.drawable.pic_null);
-                            } else {
-                                others_load_state.setVisibility(View.INVISIBLE);
-                                others_base.setVisibility(View.VISIBLE);
-                                if (page_index == 1) {
-                                    if (others_refresh.isRefreshing()) {
-                                        others_refresh.setRefreshing(false);
-                                    }
-                                    others_grid.removeAllViews();
+                runOnUiThread(() -> {
+                    stopOnLoadingState();
+                    try {
+                        if (followData.length == 0) {
+                            others_load_state.setImageResource(R.drawable.pic_null);
+                        } else {
+                            others_load_state.setVisibility(View.INVISIBLE);
+                            others_base.setVisibility(View.VISIBLE);
+                            if (page_index == 1) {
+                                if (others_refresh.isRefreshing()) {
+                                    others_refresh.setRefreshing(false);
                                 }
-                                setGrid(followData, has_next);
+                                others_grid.removeAllViews();
                             }
-                        } catch (NullPointerException ignored) {
+                            setGrid(followData, has_next);
                         }
-                    }
+                    } catch (NullPointerException ignored) { }
                 });
             }
         });
-    }
-
-    private void onGetSeason(String title, long sid, String cover_url) {
-        Intent intent = new Intent(OtherFollows.this, Season.class);
-        intent.putExtra("season_id", sid);
-        intent.putExtra("cover_url", cover_url);
-        intent.putExtra("title", title);
-        startActivity(intent);
     }
 
     @Override

@@ -1,9 +1,10 @@
-package com.sgpublic.bilidownload.BaseService;
+package com.sgpublic.bilidownload.Unit;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,17 @@ public class ConfigManager {
         return packageInfo != null;
     }
 
+    public static String getDownloadDir(Context context){
+        String default_dir;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            default_dir = "/storage/emulated/0/Download/";
+        } else {
+            default_dir = "/storage/emulated/0/Android/data/";
+        }
+        return context.getSharedPreferences("user", MODE_PRIVATE)
+                .getString("location", default_dir);
+    }
+
     public static ClientItem checkClient(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences("user", MODE_PRIVATE);
         ArrayList<ClientItem> clientItems = getInstalledClients(context);
@@ -73,6 +85,23 @@ public class ConfigManager {
         return result;
     }
 
+    public static int checkTaskCount(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("user", MODE_PRIVATE);
+        int result = sharedPreferences.getInt("task_parallel_count", 1);
+        if (result > 3 | result < 1){
+            result = 1;
+            sharedPreferences.edit()
+                    .putInt("task_parallel_count", 1)
+                    .apply();
+        }
+        return result;
+    }
+
+    public static boolean checkTaskAutoStart(Context context){
+        return context.getSharedPreferences("user", MODE_PRIVATE)
+                .getBoolean("task_auto_start", true);
+    }
+
     public static ArrayList<ClientItem> getInstalledClients(Context context){
         ArrayList<ClientItem> clientItems = new ArrayList<>();
         for (int index = 0; index < types_pack.length; index++){
@@ -87,13 +116,16 @@ public class ConfigManager {
         SharedPreferences sharedPreferences = context.getSharedPreferences("user", MODE_PRIVATE);
         int quality_index = 2;
         int quality_set = sharedPreferences.getInt("quality", quality_int[quality_index]);
-        for (int index = 0; index < types_pack.length; index++){
+        MyLog.d(ConfigManager.class, "quality_set: " + quality_set);
+        for (int index = 0; index < quality_description.length; index++){
             int quality = quality_int[index];
             if (quality == quality_set) {
+                MyLog.d(ConfigManager.class, "quality: " + quality);
                 quality_index = index;
                 break;
             }
         }
+        MyLog.d(ConfigManager.class, "quality_index: " + quality_index);
         sharedPreferences.edit()
                 .putInt("quality", quality_int[quality_index])
                 .apply();
@@ -133,6 +165,7 @@ public class ConfigManager {
             return package_name;
         }
     }
+
     public static class QualityItem {
         private final String name;
         private final int quality;

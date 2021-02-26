@@ -62,7 +62,7 @@
     <string name="text_season_payment_traveled">Exclusive to Hong Kong, Macau and Taiwan, you cannot watch it in your current area~</string>
     <string name="title_season_episode_list">Positive</string>
     <string name="text_episode_vip_needed">This episode requires VIP to watch~</string>
-    <string name="title_download_doing">Getting link…</string>
+    <string name="text_download_doing">Getting link…</string>
     <string name="title_download_alert_dir">Directory access denied</string>
     <string name="text_download_alert_dir">The directory you currently set is inaccessible and has been reset to the default directory for you.\n%1$s</string>
     <string name="title_download_alert_dir_p">Limited read and write permissions</string>
