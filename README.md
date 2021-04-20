@@ -1,5 +1,7 @@
 # 哔哩番剧
 
+哔哩番剧Java实现已停止更新，将迁移至Kotlin，新项目地址：[BiliBangumiDownloader_Kotlin](https://github.com/SGPublic/BiliBangumiDownloader_Kotlin)
+
 ## 申明
 
 这是一款开源的哔哩下载工具，本人不会为此项目申请计算机软件著作权、商标等其他任何形式的版权保护证明。

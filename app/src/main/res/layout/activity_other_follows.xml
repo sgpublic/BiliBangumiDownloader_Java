@@ -24,7 +24,7 @@
             android:layout_marginTop="3dp"
             android:paddingTop="3dp">
 
-            <com.sgpublic.bilidownload.Widget.ObservableScrollView
+            <com.sgpublic.bilidownload.widget.ObservableScrollView
                 android:id="@+id/others_base"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -51,7 +51,7 @@
                         android:scaleType="fitCenter"
                         tools:ignore="ContentDescription" />
                 </LinearLayout>
-            </com.sgpublic.bilidownload.Widget.ObservableScrollView>
+            </com.sgpublic.bilidownload.widget.ObservableScrollView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <ImageView

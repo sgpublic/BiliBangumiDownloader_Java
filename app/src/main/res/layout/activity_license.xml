@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context=".Activity.License">
+    tools:context=".activity.License">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/license_toolbar"

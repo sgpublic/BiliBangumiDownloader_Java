@@ -97,7 +97,7 @@
                         android:textSize="14sp"
                         android:textColor="@color/color_text_dark" />
                 </LinearLayout>
-                <com.sgpublic.bilidownload.Widget.ScrollTextView
+                <com.sgpublic.bilidownload.widget.ScrollTextView
                     android:id="@+id/setting_location_string"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

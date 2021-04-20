@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.sgpublic.bilidownload.Widget.ObservableScrollView
+            <com.sgpublic.bilidownload.widget.ObservableScrollView
                 android:id="@+id/bangumi_base"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -97,7 +97,7 @@
                         android:scaleType="fitCenter"
                         tools:ignore="ContentDescription" />
                 </LinearLayout>
-            </com.sgpublic.bilidownload.Widget.ObservableScrollView>
+            </com.sgpublic.bilidownload.widget.ObservableScrollView>
 
             <ImageView
                 android:id="@+id/bangumi_load_state"

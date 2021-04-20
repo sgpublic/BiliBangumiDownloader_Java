@@ -20,7 +20,7 @@
     </queries>
 
     <application
-        android:name=".BaseStation.Main"
+        android:name=".base.Main"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -31,23 +31,23 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,InnerclassSeparator"
         tools:targetApi="q">
-        <activity android:name=".Activity.License" />
-        <activity android:name=".Activity.Search" />
-        <activity android:name=".Activity.LoginWeb" />
-        <activity android:name=".Activity.Explore" />
-        <activity android:name=".Activity.Setting" />
-        <activity android:name=".Activity.About" />
-        <activity android:name=".Activity.OtherFollows" />
-        <activity android:name=".Activity.Season" />
-        <activity android:name=".Activity.Download"/>
+        <activity android:name=".activity.License" />
+        <activity android:name=".activity.Search" />
+        <activity android:name=".activity.LoginWeb" />
+        <activity android:name=".activity.Explore" />
+        <activity android:name=".activity.Setting" />
+        <activity android:name=".activity.About" />
+        <activity android:name=".activity.OtherFollows" />
+        <activity android:name=".activity.Season" />
+        <activity android:name=".activity.Download"/>
         <activity
-            android:name=".Activity.Main"
+            android:name=".activity.Main"
             android:launchMode="singleTop" />
         <activity
-            android:name=".Activity.Login"
+            android:name=".activity.Login"
             android:launchMode="singleTop" />
         <activity
-            android:name=".Activity.Welcome"
+            android:name=".activity.Welcome"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,7 +57,7 @@
         </activity>
 
         <service
-            android:name=".Service.DownloadService"
+            android:name=".service.DownloadService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE">
         </service>
